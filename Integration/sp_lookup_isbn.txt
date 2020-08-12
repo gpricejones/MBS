@@ -1,0 +1,28 @@
+DELIMITER $$
+
+USE `pricer`$$
+
+DROP PROCEDURE IF EXISTS `sp_lookup_isbn`$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_lookup_isbn`(
+    IN i_isbn VARCHAR(50))
+BEGIN
+    
+	SELECT
+		itemid,
+		dept,
+		course,
+		section,
+		term
+	FROM
+		t_links
+	WHERE
+		isbn = i_isbn
+	ORDER BY
+		dept,
+		course,
+		section,
+		term;
+    END$$
+
+DELIMITER ;
