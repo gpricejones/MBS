@@ -27,7 +27,7 @@ def main():
 
         origin_time = time.time()
 
-        global file_name, drive_letter, log_level, log_file, log_path, log_delete_after, log_max, use_pricer_level, logger, data_path, data_delete, data_input_delete_after, input_data_path, page_size, page_delay, use_checksum, token, item_url, promo_url, use_api, use_soap, api_page_count, rest_api_url, rest_token, soap_api_ip, soap_token, soap_user, total_api_req_counter
+        global file_name, drive_letter, log_level, log_file, log_path, log_delete_after, log_max, use_pricer_level, logger, data_path, data_delete, data_input_delete_after, input_data_path, wait_time, page_size, page_delay, use_checksum, token, item_url, promo_url, use_api, use_soap, api_page_count, rest_api_url, rest_token, soap_api_ip, soap_token, soap_user, total_api_req_counter
         global requests, db, client, config_path, license_status, pricer_api_alive, origin_time
 
         key = 'yjhtlsic64,9w6H1'
@@ -155,6 +155,7 @@ def main():
 
             data_input_delete_after = config.datain.get('deleteafter')
             input_data_path = config.datain.get('path')
+            wait_time = config.datain.get('filewaittime')
 
 
             ####Dataout
@@ -287,26 +288,26 @@ def main():
             sleep_count = 0
             if current_file[:-4] + '.tx1' in sorted(file_tx1_list, key=file_tx1_list.get, reverse=False):
                 file_list_new.append(current_file)
-                print('Found matching file for {}'.format(current_file))
+                logger.debug('Found matching file for {}'.format(current_file))
             else:
                 while current_file[:-4] + '.tx1' not in sorted(file_tx1_list, key=file_tx1_list.get, reverse=False):
                     time.sleep(1)
                     sleep_count += 1
-                    if sleep_count == 2:
-                        print("could not find matching file for {}".format(current_file))
+                    if sleep_count == wait_time:
+                        logger.debug("could not find matching file for {}".format(current_file))
                         break
 
         for current_file in sorted(file_tx1_list, key=file_tx1_list.get, reverse=False):
             sleep_count = 0
             if current_file[:-4] + '.txt' in sorted(file_txt_list, key=file_txt_list.get, reverse=False):
                 file_list_new.append(current_file)
-                print('Found matching file for {}'.format(current_file))
+                logger.debug('Found matching file for {}'.format(current_file))
             else:
                 while current_file[:-4] + '.txt' not in sorted(file_txt_list, key=file_txt_list.get, reverse=False):
                     time.sleep(1)
                     sleep_count += 1
-                    if sleep_count == 2:
-                        print("could not find matching file for {}".format(current_file))
+                    if sleep_count == wait_time:
+                        logger.debug("could not find matching file for {}".format(current_file))
                         break
 
         if len(file_list_new) > 0:

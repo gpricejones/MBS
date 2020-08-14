@@ -16,6 +16,7 @@
 		DataInputSave="False"
 		DeleteAfter="7"
 		Path="Pricer\import\data\"
+		FileWaitTime="60"
 	/>
     <Sort
 		Order="Natural"
