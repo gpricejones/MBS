@@ -28,7 +28,7 @@ def main():
         origin_time = time.time()
 
         global file_name, drive_letter, log_level, log_file, log_path, log_delete_after, log_max, use_pricer_level, logger, data_path, data_delete, data_input_delete_after, input_data_path, page_size, page_delay, use_checksum, token, item_url, promo_url, use_api, use_soap, api_page_count, rest_api_url, rest_token, soap_api_ip, soap_token, soap_user, total_api_req_counter
-        global requests, db, client, config_path, license_status, pricer_api_alive
+        global requests, db, client, config_path, license_status, pricer_api_alive, origin_time
 
         key = 'yjhtlsic64,9w6H1'
 
@@ -261,8 +261,66 @@ def main():
         if data_in_save and int(data_input_delete_after) > 0:
             DirectoryCleaner.clean_directory(data_input_delete_after, input_data_path, log_file, log_level, config_path)
 
+        ################### Main File Content Processing ###################
 
+        file_list = {}
+        file_list_new = []
 
+        for ext_file_name in os.listdir(data_path):
+            if ext_file_name.lower().endswith("tx1") or ext_file_name.lower().endswith("txt"):
+                file_list.update({ext_file_name: str(os.stat(data_path + ext_file_name).st_mtime)})
+
+        for current_file in sorted(file_list, key=file_list.get, reverse=False):
+            file_list_new.append(current_file)
+
+        file_txt_list = {}
+        file_tx1_list = {}
+        file_list_new = []
+
+        for ext_file_name in os.listdir(data_path):
+            if ext_file_name.lower().endswith("txt"):
+                file_txt_list.update({ext_file_name: str(os.stat(data_path + ext_file_name).st_mtime)})
+            if ext_file_name.lower().endswith("tx1"):
+                file_tx1_list.update({ext_file_name: str(os.stat(data_path + ext_file_name).st_mtime)})
+
+        for current_file in sorted(file_txt_list, key=file_txt_list.get, reverse=False):
+            if current_file[:-4] + '.tx1' in sorted(file_tx1_list, key=file_tx1_list.get, reverse=False):
+                file_list_new.append(current_file)
+
+        for current_file in sorted(file_tx1_list, key=file_tx1_list.get, reverse=False):
+            if current_file[:-4] + '.txt' in sorted(file_txt_list, key=file_txt_list.get, reverse=False):
+                file_list_new.append(current_file)
+
+        if len(file_list) > 0:
+
+            api_out_page_count = 0
+            api_out_line_count = 0
+            page_line_count = 0
+            out_count = 0
+            row_counter = 0
+
+            json_outstring = []
+            soap_update_str = []
+
+            # process each file
+
+            for new_file in file_list_new:
+                file_content = file_handler(new_file)
+                logger.info("Start processing output from {} to API".format(new_file))
+
+                if new_file.lower().endswith("txt"):
+
+                    for file_row in file_content:
+                        row_counter += 1
+                        file_row = file_row.rstrip(os.linesep)
+                        row_fields = file_row.split('|')
+
+                if new_file.lower().endswith("tx1"):
+
+                    for file_row in file_content:
+                        row_counter += 1
+                        file_row = file_row.rstrip(os.linesep)
+                        row_fields = file_row.split('|')
 
 
     except:
@@ -278,10 +336,24 @@ def main():
     else:
         logger.info("Execution time: " + str("%.2f" % (float(total_time) / 60)) + " minutes.")
     logger.info("---")
+
 ###end main
 
 #################################################start subroutines###########################################################
+def file_handler(data_file):
+    file_path = data_path + data_file
 
+    # check file for stability
+    current_size = 0
+    new_size = os.path.getsize(file_path)
+    while new_size > current_size:
+        time.sleep(0.25)
+        current_size = new_size
+        new_size = os.path.getsize(file_path)
+
+    file_content = open(data_path + data_file, "r", encoding='utf-8')
+
+    return file_content
 #################################################end subroutines#############################################################
 
 if __name__ == '__main__':
