@@ -284,14 +284,32 @@ def main():
                 file_tx1_list.update({ext_file_name: str(os.stat(data_path + ext_file_name).st_mtime)})
 
         for current_file in sorted(file_txt_list, key=file_txt_list.get, reverse=False):
+            sleep_count = 0
             if current_file[:-4] + '.tx1' in sorted(file_tx1_list, key=file_tx1_list.get, reverse=False):
                 file_list_new.append(current_file)
+                print('Found matching file for {}'.format(current_file))
+            else:
+                while current_file[:-4] + '.tx1' not in sorted(file_tx1_list, key=file_tx1_list.get, reverse=False):
+                    time.sleep(1)
+                    sleep_count += 1
+                    if sleep_count == 2:
+                        print("could not find matching file for {}".format(current_file))
+                        break
 
         for current_file in sorted(file_tx1_list, key=file_tx1_list.get, reverse=False):
+            sleep_count = 0
             if current_file[:-4] + '.txt' in sorted(file_txt_list, key=file_txt_list.get, reverse=False):
                 file_list_new.append(current_file)
+                print('Found matching file for {}'.format(current_file))
+            else:
+                while current_file[:-4] + '.txt' not in sorted(file_txt_list, key=file_txt_list.get, reverse=False):
+                    time.sleep(1)
+                    sleep_count += 1
+                    if sleep_count == 2:
+                        print("could not find matching file for {}".format(current_file))
+                        break
 
-        if len(file_list) > 0:
+        if len(file_list_new) > 0:
 
             api_out_page_count = 0
             api_out_line_count = 0
