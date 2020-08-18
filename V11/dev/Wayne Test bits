@@ -1,0 +1,46 @@
+import os
+import time
+
+wait_time = 2
+
+file_txt_list = {}
+file_tx1_list = {}
+file_list_new = []
+sleep_count = 0
+
+for ext_file_name in os.listdir('C:\\Users\\Wayne\\PycharmProjects\\MBS\\V11\\data'):
+    if ext_file_name.lower().endswith("txt"):
+        file_txt_list.update({ext_file_name: str(os.stat('C:\\Users\\Wayne\\PycharmProjects\\MBS\\V11\\data\\' + ext_file_name).st_mtime)})
+    if ext_file_name.lower().endswith("tx1"):
+        file_tx1_list.update({ext_file_name: str(os.stat('C:\\Users\\Wayne\\PycharmProjects\\MBS\\V11\\data\\' + ext_file_name).st_mtime)})
+
+
+
+for current_file in sorted(file_txt_list, key=file_txt_list.get, reverse=False):
+    sleep_count = 0
+    if current_file[:-4] + '.tx1' in sorted(file_tx1_list, key=file_tx1_list.get, reverse=False):
+        file_list_new.append(current_file)
+        print('Found matching file for {}'.format(current_file))
+    else:
+        while current_file[:-4] + '.tx1' not in sorted(file_tx1_list, key=file_tx1_list.get, reverse=False):
+            time.sleep(1)
+            sleep_count += 1
+            if sleep_count == wait_time:
+                print("could not find matching file for {}".format(current_file))
+                break
+
+
+for current_file in sorted(file_tx1_list, key=file_tx1_list.get, reverse=False):
+    sleep_count = 0
+    if current_file[:-4] + '.txt' in sorted(file_txt_list, key=file_txt_list.get, reverse=False):
+        file_list_new.append(current_file)
+        print('Found matching file for {}'.format(current_file))
+    else:
+        while current_file[:-4] + '.txt' not in sorted(file_txt_list, key=file_txt_list.get, reverse=False):
+            time.sleep(1)
+            sleep_count += 1
+            if sleep_count == wait_time:
+                print("could not find matching file for {}".format(current_file))
+                break
+
+print(sorted(file_list_new))
