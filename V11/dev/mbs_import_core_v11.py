@@ -157,6 +157,49 @@ def main():
             input_data_path = config.datain.get('path')
             wait_time = config.datain.get('filewaittime')
 
+            #### Sort
+            order = config.sort.get('order')
+
+            #### Price
+            if (config.price.get('none_100')).lower() == "true":
+                none_100 = True
+            else:
+                none_100 = False
+
+            ### Usage
+            if (config.usage.get('convert')).lower() == "true":
+                convert = True
+            else:
+                convert = False
+
+            ### Zero_Zero
+            if (config.zero_zero.get('ipf100')).lower() == "true":
+                ipf_100 = True
+            else:
+                ipf_100 = False
+
+            ### Term
+            if (config.term.get('multi')).lower() == "true":
+                multi = True
+            else:
+                multi = False
+
+            ### Date formate
+            date_format = config.date.get('format')
+
+            ### IPF1X5
+            threshold = config.ipf1x5.get('threshold')
+
+            ### Replace
+            if (config.term.get('multi')).lower() == "true":
+                multi = True
+            else:
+                multi = False
+
+            date_format = config.date.get('format')
+
+
+
 
             ####Dataout
             if (config.dataout.get('usepfi')).lower() == "true":
@@ -183,6 +226,7 @@ def main():
             soap_user = str(triple_des(key).decrypt(base64.b64decode(config.dataout.get('soapuser')), padmode=2), 'utf-8')
             rest_api_url = str(triple_des(key).decrypt(base64.b64decode(config.dataout.get('soapip')), padmode=2), 'utf-8')
             rest_token = str(triple_des(key).decrypt(base64.b64decode(config.dataout.get('soaptoken')), padmode=2), 'utf-8')
+
 
         except IOError as e:
             EventLogger.event_log_writer(file_name + " failed to find configuration file " + config_path + " I/O error({0}): {1}".format(e.errno, e.strerror), "error", "Pricer", 101, log_path)
@@ -334,12 +378,189 @@ def main():
                         file_row = file_row.rstrip(os.linesep)
                         row_fields = file_row.split('|')
 
+                        GenKey          = row_fields[0]
+                        FormatFlag      = row_fields[1]
+                        Author          = row_fields[2]
+                        Title           = row_fields[3]
+                        ISBN            = row_fields[4]
+                        ISBN_HR         = row_fields[5]
+                        Vendor_Style    = row_fields[6]
+                        Publisher       = row_fields[7]
+                        Imprint         = row_fields[8]
+                        Edition         = row_fields[9]
+                        Edition_Status  = row_fields[10]
+                        New_Price    = row_fields[11]
+                        New_Price_Text    = row_fields[12]
+                        Used_Price    = row_fields[13]
+                        Used_Price_Text    = row_fields[14]
+                        New_Rental_Price    = row_fields[15]
+                        New_Rental_Price_Text    = row_fields[16]
+                        Ebook_Price    = row_fields[17]
+                        Ebook_Price_Text    = row_fields[18]
+                        Used_Rental_Price    = row_fields[19]
+                        Used_Rental_Price_Text    = row_fields[20]
+                        Sale_Price1    = row_fields[21]
+                        Sale_Start_Date1    = row_fields[22]
+                        Sale_End_Date1    = row_fields[23]
+                        Sale_Start_Time1    = row_fields[24]
+                        Sale_End_Time1    = row_fields[25]
+                        Sale_Price2    = row_fields[26]
+                        Sale_Start_Date2    = row_fields[27]
+                        Sale_End_Date2    = row_fields[28]
+                        Sale_Start_Time2    = row_fields[29]
+                        Sale_End_Time2    = row_fields[30]
+                        Sale_Price3    = row_fields[31]
+                        Sale_Start_Date3    = row_fields[32]
+                        Sale_End_Date3    = row_fields[33]
+                        Sale_Start_Time3    = row_fields[34]
+                        Sale_End_Time3    = row_fields[35]
+                        Sale_Price4    = row_fields[36]
+                        Sale_Start_Date4    = row_fields[37]
+                        Sale_End_Date4    = row_fields[38]
+                        Sale_Start_Time4    = row_fields[39]
+                        Sale_End_Time4    = row_fields[40]
+                        Term    = row_fields[41]
+                        Term_Description    = row_fields[42]
+                        Requested_Qty    = row_fields[43]
+                        Class_Capacity_Qty    = row_fields[44]
+                        Actual_Enrollment_Qty    = row_fields[45]
+                        Est_Sales_Qty    = row_fields[46]
+                        Category    = row_fields[47]
+                        Division    = row_fields[48]
+                        Department    = row_fields[49]
+                        Class    = row_fields[50]
+                        New_Store_Qty    = row_fields[51]
+                        New_Warehouse_Qty    = row_fields[52]
+                        Used_Store_Qty    = row_fields[53]
+                        Used_Warehouse_Qty    = row_fields[54]
+                        New_Pending_Return_Qty    = row_fields[55]
+                        Used_Pending_Return_Qty    = row_fields[56]
+                        New_insite_Pending_Order    = row_fields[57]
+                        Used_insite_Pending_Order    = row_fields[58]
+                        New_Rental_insite_Pending_Order    = row_fields[59]
+                        Used_Rental_insite_Pending_Order    = row_fields[60]
+                        On_Order_PO1    = row_fields[61]
+                        On_Order_PO1_Vendor    = row_fields[62]
+                        On_Order_Qty1    = row_fields[63]
+                        On_Order_Qty1_Used    = row_fields[64]
+                        On_Order_Date1    = row_fields[65]
+                        On_Order_PO2    = row_fields[66]
+                        On_Order_PO2_Vendor    = row_fields[67]
+                        On_Order_Qty2    = row_fields[68]
+                        On_Order_Qty2_Used    = row_fields[69]
+                        On_Order_Date2    = row_fields[70]
+                        On_Order_PO3    = row_fields[71]
+                        On_Order_PO3_Vendor    = row_fields[72]
+                        On_Order_Qty3    = row_fields[73]
+                        On_Order_Qty3_Used    = row_fields[74]
+                        On_Order_Date3    = row_fields[75]
+                        Total_PO_Qty    = row_fields[76]
+                        image_name = ISBN + ".png"
+
+                        if
+
                 if new_file.lower().endswith("tx1"):
+
+                    secondary_file_data_list = []
 
                     for file_row in file_content:
                         row_counter += 1
                         file_row = file_row.rstrip(os.linesep)
                         row_fields = file_row.split('|')
+
+                        secondary_file_dict = {}
+
+                        if len(row_fields) >= 19:
+                            secondary_file_dict.update({"GenKey": row_fields[0]})
+                            secondary_file_dict.update({"csn": row_fields[1]})
+                            secondary_file_dict.update({"seq_no": row_fields[2]})
+                            secondary_file_dict.update({"ISBN": row_fields[3]})
+                            secondary_file_dict.update({"Term": row_fields[4]})
+                            secondary_file_dict.update({"Term_Description": row_fields[5]})
+                            secondary_file_dict.update({"dept": row_fields[6]})
+                            secondary_file_dict.update({"course": row_fields[7]})
+                            secondary_file_dict.update({"section": row_fields[8]})
+                            secondary_file_dict.update({"loc_code": row_fields[9]})
+                            secondary_file_dict.update({"bookxofy": row_fields[10]})
+                            secondary_file_dict.update({"course_id": row_fields[11]})
+                            secondary_file_dict.update({"instructor": row_fields[12]})
+                            secondary_file_dict.update({"course_code": row_fields[13]})
+                            secondary_file_dict.update({"delete_flag": row_fields[14]})
+                            secondary_file_dict.update({"ebook_adopted": row_fields[15]})
+                            secondary_file_dict.update({"class_cap": row_fields[16]})
+                            secondary_file_dict.update({"prof_requested": row_fields[17]})
+                            secondary_file_dict.update({"estimated_sales": row_fields[18]})
+                            secondary_file_dict.update({"ebook1_vendor": 0})
+                            secondary_file_dict.update({"ebook1_period_1": 0})
+                            secondary_file_dict.update({"ebook1_price_1": 0})
+                            secondary_file_dict.update({"ebook1_period_2": 0})
+                            secondary_file_dict.update({"ebook1_price_2": 0})
+                            secondary_file_dict.update({"ebook1_period_3": 0})
+                            secondary_file_dict.update({"ebook1_price_3": 0})
+                            secondary_file_dict.update({"ebook1_period_4": 0})
+                            secondary_file_dict.update({"ebook1_price_4": 0})
+                            secondary_file_dict.update({"ebook1_period_5": 0})
+                            secondary_file_dict.update({"ebook1_price_5": 0})
+                            secondary_file_dict.update({"ebook2_vendor": 0})
+                            secondary_file_dict.update({"ebook2_period_1": 0})
+                            secondary_file_dict.update({"ebook2_price_1": 0})
+                            secondary_file_dict.update({"ebook2_period_2": 0})
+                            secondary_file_dict.update({"ebook2_price_2": 0})
+                            secondary_file_dict.update({"ebook2_period_3": 0})
+                            secondary_file_dict.update({"ebook2_price_3": 0})
+                            secondary_file_dict.update({"ebook2_period_4": 0})
+                            secondary_file_dict.update({"ebook2_price_4": 0})
+                            secondary_file_dict.update({"ebook2_period_5": 0})
+                            secondary_file_dict.update({"ebook2_price_5": 0})
+                        if len(row_fields) >= 20:
+                            secondary_file_dict.update({"ebook1_vendor": row_fields[19]})
+                        if len(row_fields) >= 21:
+                            secondary_file_dict.update({"ebook1_period_1": row_fields[20]})
+                        if len(row_fields) >= 22:
+                            secondary_file_dict.update({"ebook1_price_1": row_fields[21]})
+                        if len(row_fields) >= 23:
+                            secondary_file_dict.update({"ebook1_period_2": row_fields[22]})
+                        if len(row_fields) >= 24:
+                            secondary_file_dict.update({"ebook1_price_2": row_fields[23]})
+                        if len(row_fields) >= 25:
+                            secondary_file_dict.update({"ebook1_period_3": row_fields[24]})
+                        if len(row_fields) >= 26:
+                            secondary_file_dict.update({"ebook1_price_3": row_fields[25]})
+                        if len(row_fields) >= 27:
+                            secondary_file_dict.update({"ebook1_period_4": row_fields[26]})
+                        if len(row_fields) >= 28:
+                            secondary_file_dict.update({"ebook1_price_4": row_fields[27]})
+                        if len(row_fields) >= 29:
+                            secondary_file_dict.update({"ebook1_period_5": row_fields[28]})
+                        if len(row_fields) >= 30:
+                            secondary_file_dict.update({"ebook1_price_5": row_fields[29]})
+                        if len(row_fields) >= 31:
+                            secondary_file_dict.update({"ebook2_vendor": row_fields[30]})
+                        if len(row_fields) >= 32:
+                            secondary_file_dict.update({"ebook2_period_1": row_fields[31]})
+                        if len(row_fields) >= 33:
+                            secondary_file_dict.update({"ebook2_price_1": row_fields[32]})
+                        if len(row_fields) >= 34:
+                            secondary_file_dict.update({"ebook2_period_2": row_fields[33]})
+                        if len(row_fields) >= 35:
+                            secondary_file_dict.update({"ebook2_price_2": row_fields[34]})
+                        if len(row_fields) >= 36:
+                            secondary_file_dict.update({"ebook2_period_3": row_fields[35]})
+                        if len(row_fields) >= 37:
+                            secondary_file_dict.update({"ebook2_price_3": row_fields[36]})
+                        if len(row_fields) >= 38:
+                            secondary_file_dict.update({"ebook2_period_4": row_fields[37]})
+                        if len(row_fields) >= 39:
+                            secondary_file_dict.update({"ebook2_price_4": row_fields[38]})
+                        if len(row_fields) >= 40:
+                            secondary_file_dict.update({"ebook2_period_5": row_fields[39]})
+                        if len(row_fields) == 41:
+                            secondary_file_dict.update({"ebook2_price_5": row_fields[40]})
+
+                        secondary_file_data_list.append(secondary_file_dict)
+
+
+
 
 
     except:

@@ -8,11 +8,14 @@ file_tx1_list = {}
 file_list_new = []
 sleep_count = 0
 
-for ext_file_name in os.listdir('C:\\Users\\Wayne\\PycharmProjects\\MBS\\V11\\data'):
+# data_path = 'C:\\Users\\Wayne\\PycharmProjects\\MBS\\V11\\data'
+data_path = 'C:\\Users\\Glenn Price-Jones\\Dropbox\\MarginMate\\Systems and Development\\Python Data Integration\\MBS\\V11\\data\\'
+
+for ext_file_name in os.listdir(data_path):
     if ext_file_name.lower().endswith("txt"):
-        file_txt_list.update({ext_file_name: str(os.stat('C:\\Users\\Wayne\\PycharmProjects\\MBS\\V11\\data\\' + ext_file_name).st_mtime)})
+        file_txt_list.update({ext_file_name: str(os.stat(os.path.join(data_path + ext_file_name)).st_mtime)})
     if ext_file_name.lower().endswith("tx1"):
-        file_tx1_list.update({ext_file_name: str(os.stat('C:\\Users\\Wayne\\PycharmProjects\\MBS\\V11\\data\\' + ext_file_name).st_mtime)})
+        file_tx1_list.update({ext_file_name: str(os.stat(os.path.join(data_path + ext_file_name)).st_mtime)})
 
 
 
@@ -44,3 +47,116 @@ for current_file in sorted(file_tx1_list, key=file_tx1_list.get, reverse=False):
                 break
 
 print(sorted(file_list_new))
+row_counter = 0
+for data_file in sorted(file_list_new):
+    file_path = data_path + data_file
+
+    # check file for stability
+    current_size = 0
+    new_size = os.path.getsize(file_path)
+    while new_size > current_size:
+        time.sleep(0.25)
+        current_size = new_size
+        new_size = os.path.getsize(file_path)
+
+    secondary_file_data_list = []
+
+    if data_file.lower().endswith("tx1"):
+        with open(data_path + data_file, "r", encoding='utf-8') as file_content:
+            # print(data_file)
+            for file_row in file_content:
+                row_counter += 1
+                file_row = file_row.rstrip(os.linesep)
+                row_fields = file_row.split('|')
+
+                secondary_file_dict = {}
+
+                if len(row_fields) >= 19:
+                    secondary_file_dict.update({"GenKey": row_fields[0]})
+                    secondary_file_dict.update({"csn": row_fields[1]})
+                    secondary_file_dict.update({"seq_no": row_fields[2]})
+                    secondary_file_dict.update({"ISBN": row_fields[3]})
+                    secondary_file_dict.update({"Term": row_fields[4]})
+                    secondary_file_dict.update({"Term_Description": row_fields[5]})
+                    secondary_file_dict.update({"dept": row_fields[6]})
+                    secondary_file_dict.update({"course": row_fields[7]})
+                    secondary_file_dict.update({"section": row_fields[8]})
+                    secondary_file_dict.update({"loc_code": row_fields[9]})
+                    secondary_file_dict.update({"bookxofy": row_fields[10]})
+                    secondary_file_dict.update({"course_id": row_fields[11]})
+                    secondary_file_dict.update({"instructor": row_fields[12]})
+                    secondary_file_dict.update({"course_code": row_fields[13]})
+                    secondary_file_dict.update({"delete_flag": row_fields[14]})
+                    secondary_file_dict.update({"ebook_adopted": row_fields[15]})
+                    secondary_file_dict.update({"class_cap": row_fields[16]})
+                    secondary_file_dict.update({"prof_requested": row_fields[17]})
+                    secondary_file_dict.update({"estimated_sales": row_fields[18]})
+                    secondary_file_dict.update({"ebook1_vendor": 0})
+                    secondary_file_dict.update({"ebook1_period_1": 0})
+                    secondary_file_dict.update({"ebook1_price_1": 0})
+                    secondary_file_dict.update({"ebook1_period_2": 0})
+                    secondary_file_dict.update({"ebook1_price_2": 0})
+                    secondary_file_dict.update({"ebook1_period_3": 0})
+                    secondary_file_dict.update({"ebook1_price_3": 0})
+                    secondary_file_dict.update({"ebook1_period_4": 0})
+                    secondary_file_dict.update({"ebook1_price_4": 0})
+                    secondary_file_dict.update({"ebook1_period_5": 0})
+                    secondary_file_dict.update({"ebook1_price_5": 0})
+                    secondary_file_dict.update({"ebook2_vendor": 0})
+                    secondary_file_dict.update({"ebook2_period_1": 0})
+                    secondary_file_dict.update({"ebook2_price_1": 0})
+                    secondary_file_dict.update({"ebook2_period_2": 0})
+                    secondary_file_dict.update({"ebook2_price_2": 0})
+                    secondary_file_dict.update({"ebook2_period_3": 0})
+                    secondary_file_dict.update({"ebook2_price_3": 0})
+                    secondary_file_dict.update({"ebook2_period_4": 0})
+                    secondary_file_dict.update({"ebook2_price_4": 0})
+                    secondary_file_dict.update({"ebook2_period_5": 0})
+                    secondary_file_dict.update({"ebook2_price_5": 0})
+                if len(row_fields) >= 20:
+                    secondary_file_dict.update({"ebook1_vendor" : row_fields[19]})
+                if len(row_fields) >= 21:
+                    secondary_file_dict.update({"ebook1_period_1" : row_fields[20]})
+                if len(row_fields) >= 22:
+                    secondary_file_dict.update({"ebook1_price_1" : row_fields[21]})
+                if len(row_fields) >= 23:
+                    secondary_file_dict.update({"ebook1_period_2" : row_fields[22]})
+                if len(row_fields) >= 24:
+                    secondary_file_dict.update({"ebook1_price_2" : row_fields[23]})
+                if len(row_fields) >= 25:
+                    secondary_file_dict.update({"ebook1_period_3" : row_fields[24]})
+                if len(row_fields) >= 26:
+                    secondary_file_dict.update({"ebook1_price_3" : row_fields[25]})
+                if len(row_fields) >= 27:
+                    secondary_file_dict.update({"ebook1_period_4" : row_fields[26]})
+                if len(row_fields) >= 28:
+                    secondary_file_dict.update({"ebook1_price_4" : row_fields[27]})
+                if len(row_fields) >= 29:
+                    secondary_file_dict.update({"ebook1_period_5" : row_fields[28]})
+                if len(row_fields) >= 30:
+                    secondary_file_dict.update({"ebook1_price_5" : row_fields[29]})
+                if len(row_fields) >= 31:
+                    secondary_file_dict.update({"ebook2_vendor" : row_fields[30]})
+                if len(row_fields) >= 32:
+                    secondary_file_dict.update({"ebook2_period_1" : row_fields[31]})
+                if len(row_fields) >= 33:
+                    secondary_file_dict.update({"ebook2_price_1" : row_fields[32]})
+                if len(row_fields) >= 34:
+                    secondary_file_dict.update({"ebook2_period_2" : row_fields[33]})
+                if len(row_fields) >= 35:
+                    secondary_file_dict.update({"ebook2_price_2" : row_fields[34]})
+                if len(row_fields) >= 36:
+                    secondary_file_dict.update({"ebook2_period_3" : row_fields[35]})
+                if len(row_fields) >= 37:
+                    secondary_file_dict.update({"ebook2_price_3" : row_fields[36]})
+                if len(row_fields) >= 38:
+                    secondary_file_dict.update({"ebook2_period_4" : row_fields[37]})
+                if len(row_fields) >= 39:
+                    secondary_file_dict.update({"ebook2_price_4" : row_fields[38]})
+                if len(row_fields) >= 40:
+                    secondary_file_dict.update({"ebook2_period_5" : row_fields[39]})
+                if len(row_fields) == 41:
+                    secondary_file_dict.update({"ebook2_price_5" : row_fields[40]})
+
+                secondary_file_data_list.append(secondary_file_dict)
+            print(secondary_file_data_list)
