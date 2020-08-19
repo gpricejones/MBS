@@ -500,6 +500,166 @@ def main():
                         base_Total_PO_Qty = row_fields[76]
                         base_image_name = base_ISBN + ".png"
 
+                        base_ISBN = base_ISBN.strip('0')
+
+                        ###format PO Dates
+
+                        if date_format != "YYYYMMDD":
+
+                            year_part1 = ''
+                            year_part2 = ''
+                            year_part3 = ''
+                            month_part1 = ''
+                            month_part2 = ''
+                            month_part3 = ''
+                            day_part1 = ''
+                            day_part2 = ''
+                            day_part3 = ''
+
+                            if len(base_On_Order_Date1) == 8:
+                                year_part1 = base_On_Order_Date1[0:4]
+                                month_part1 = base_On_Order_Date1[4:6]
+                                day_part1 = base_On_Order_Date1[6:8]
+                            if len(base_On_Order_Date2) == 8:
+                                year_part2 = base_On_Order_Date2[0:4]
+                                month_part2 = base_On_Order_Date2[4:6]
+                                day_part2 = base_On_Order_Date2[6:8]
+                            if len(base_On_Order_Date3) == 8:
+                                year_part3 = base_On_Order_Date3[0:4]
+                                month_part3 = base_On_Order_Date3[4:6]
+                                day_part3 = base_On_Order_Date3[6:8]
+
+                        if date_format == "MM/DD/YYYY":
+                            base_On_Order_Date1 = month_part1 + '/' + day_part1 + '/' + year_part1
+                            base_On_Order_Date2 = month_part2 + '/' + day_part2 + '/' + year_part2
+                            base_On_Order_Date3 = month_part3 + '/' + day_part3 + '/' + year_part3
+
+                        if date_format == "DD/MM/YYYY":
+                            base_On_Order_Date1 = day_part1 + '/' + month_part1 + '/' + year_part1
+                            base_On_Order_Date2 = day_part2 + '/' + month_part2 + '/' + year_part2
+                            base_On_Order_Date3 = day_part3 + '/' + month_part3 + '/' + year_part3
+
+                        if date_format == "YYYY/MM/DD":
+                            base_On_Order_Date1 = year_part1 + '/' + month_part1 + '/' + day_part1
+                            base_On_Order_Date2 = year_part2 + '/' + month_part2 + '/' + day_part2
+                            base_On_Order_Date3 = year_part3 + '/' + month_part3 + '/' + day_part3
+
+                        if date_format == "DD/MM/YY":
+                            base_On_Order_Date1 = day_part1 + '/' + month_part1 + '/' + year_part1[:-2]
+                            base_On_Order_Date2 = day_part2 + '/' + month_part2 + '/' + year_part2[:-2]
+                            base_On_Order_Date3 = day_part3 + '/' + month_part3 + '/' + year_part3[:-2]
+
+                        if date_format == "MM/DD/YY":
+                            base_On_Order_Date1 = month_part1 + '/' + day_part1 + '/' + year_part1[:-2]
+                            base_On_Order_Date2 = month_part2 + '/' + day_part2 + '/' + year_part2[:-2]
+                            base_On_Order_Date3 = month_part3 + '/' + day_part3 + '/' + year_part3[:-2]
+
+                        if date_format == "MM-DD-YYYY":
+                            base_On_Order_Date1 = month_part1 + '-' + day_part1 + '-' + year_part1
+                            base_On_Order_Date2 = month_part2 + '-' + day_part2 + '-' + year_part2
+                            base_On_Order_Date3 = month_part3 + '-' + day_part3 + '-' + year_part3
+
+                        if date_format == "DD-MM-YYYY":
+                            base_On_Order_Date1 = day_part1 + '-' + month_part1 + '-' + year_part1
+                            base_On_Order_Date2 = day_part2 + '-' + month_part2 + '-' + year_part2
+                            base_On_Order_Date3 = day_part3 + '-' + month_part3 + '-' + year_part3
+
+                        if date_format == "DD-MM-YYYY":
+                            base_On_Order_Date1 = day_part1 + '-' + month_part1 + '-' + year_part1
+                            base_On_Order_Date2 = day_part2 + '-' + month_part2 + '-' + year_part2
+                            base_On_Order_Date3 = day_part3 + '-' + month_part3 + '-' + year_part3
+
+                        if date_format == "DD-MM-YY":
+                            base_On_Order_Date1 = day_part1 + '-' + month_part1 + '-' + year_part1[:-2]
+                            base_On_Order_Date2 = day_part2 + '-' + month_part2 + '-' + year_part2[:-2]
+                            base_On_Order_Date3 = day_part3 + '-' + month_part3 + '-' + year_part3[:-2]
+
+                        if date_format == "MM-DD-YY":
+                            base_On_Order_Date1 = month_part1 + '-' + day_part1 + '-' + year_part1[:-2]
+                            base_On_Order_Date2 = month_part2 + '-' + day_part2 + '-' + year_part2[:-2]
+                            base_On_Order_Date3 = month_part3 + '-' + day_part3 + '-' + year_part3[:-2]
+
+                        ######process if valid ISBN/SKU
+                        if base_ISBN is not None and base_ISBN != "":
+
+                            base_Sale_Price = ''
+
+                            if base_New_Price is None or base_New_Price != "":
+                                base_New_Price = 0
+
+                            if base_Used_Price is None or base_Used_Price != "":
+                                base_Used_Price = 0
+
+                            if base_New_Rental_Price is None or base_New_Rental_Price != "":
+                                base_New_Rental_Price = 0
+
+                            if base_Ebook_Price is None or base_Ebook_Price != "":
+                                base_Ebook_Price = 0
+
+                            if base_Used_Rental_Price is None or base_Used_Rental_Price != "":
+                                base_Used_Rental_Price = 0
+
+                            if base_Requested_Qty is None or base_Requested_Qty != "":
+                                base_Requested_Qty = 0
+
+                            if base_New_Store_Qty is None or base_New_Store_Qty != "":
+                                base_New_Store_Qty = 0
+
+                            if base_New_Warehouse_Qty is None or base_New_Warehouse_Qty != "":
+                                base_New_Warehouse_Qty = 0
+
+                            if base_Used_Store_Qty is None or base_Used_Store_Qty != "":
+                                base_Used_Store_Qty = 0
+
+                            if base_Used_Warehouse_Qty is None or base_Used_Warehouse_Qty != "":
+                                base_Used_Warehouse_Qty = 0
+
+                            if base_On_Order_Qty1 is None or base_On_Order_Qty1 != "":
+                                base_On_Order_Qty1 = 0
+
+                            if base_On_Order_Qty2 is None or base_On_Order_Qty2 != "":
+                                base_On_Order_Qty2 = 0
+
+                            if base_On_Order_Qty3 is None or base_On_Order_Qty3 != "":
+                                base_On_Order_Qty3 = 0
+
+                            if base_Total_PO_Qty is None or base_Total_PO_Qty != "":
+                                base_Total_PO_Qty = 0
+
+                            if base_Class_Capacity_Qty is None or base_Class_Capacity_Qty != "":
+                                base_Class_Capacity_Qty = 0
+
+                            if base_Actual_Enrollment_Qty is None or base_Actual_Enrollment_Qty != "":
+                                base_Actual_Enrollment_Qty = 0
+
+                            if base_Est_Sales_Qty is None or base_Est_Sales_Qty != "":
+                                base_Est_Sales_Qty = 0
+
+                            if base_Sale_Price is None or base_Sale_Price != "":
+                                base_Sale_Price = 0
+
+                            if base_New_Pending_Return_Qty is None or base_New_Pending_Return_Qty != "":
+                                base_New_Pending_Return_Qty = 0
+
+                            if base_Used_Pending_Return_Qty is None or base_Used_Pending_Return_Qty != "":
+                                base_Used_Pending_Return_Qty = 0
+
+                            if base_New_insite_Pending_Order is None or base_New_insite_Pending_Order != "":
+                                base_New_insite_Pending_Order = 0
+
+                            if base_Used_insite_Pending_Order is None or base_Used_insite_Pending_Order != "":
+                                base_Used_insite_Pending_Order = 0
+
+                            if base_On_Order_Qty1_Used is None or  base_On_Order_Qty1_Used != "":
+                                base_On_Order_Qty1_Used = 0
+
+                            if base_On_Order_Qty2_Used is None or  base_On_Order_Qty2_Used != "":
+                                base_On_Order_Qty2_Used = 0
+
+                            if base_On_Order_Qty3_Used is None or  base_On_Order_Qty3_Used != "":
+                                base_On_Order_Qty3_Used = 0
+
+
                 if new_file.lower().endswith("tx1"):
 
                     secondary_file_data_list = []
