@@ -5,7 +5,7 @@ import EventLogger
 import AlertManager
 import DirectoryCleaner
 import LicenseValidator
-from StdTime import time, file_time, s_stamp, year_stamp, simple_date, simple_hours, simple_minutes
+from StdTime import time, file_time, s_stamp, year_stamp, short_year_stamp, short_now, current_Date
 import os
 import sys
 import time
@@ -28,10 +28,10 @@ def main():
 
     try:
 
-        origin_time = time.time()
-
-        global file_name, drive_letter, log_level, log_delete_after, log_max, log_name, log_path, log_file, use_pricer_db, local_db, data_in_save, data_input_delete_after, input_data_path, wait_time, sort_order, none_100, usage_convert, IPF100, term_multi, date_format, ipf1x5_threshold, display_original, section_commas, New_On_Hand, Used_On_Hand, New_Addl, Used_Addl, New_Pend_Ret, Used_Pend_Ret, New_insite_Pend_Ord, Used_insite_Pend_Ord, New_Rental_insite_Pend_Ord, Used_Rental_insite_Pend_Ord, use_pfi, use_api, use_soap, i1_path, m1_path, r7_path, api_page_count, soap_api_ip, soap_token, soap_user, rest_api_url, rest_token
+        global file_name, drive_letter, use_pricer_level, log_level, log_delete_after, log_max, log_name, log_path, log_file, use_pricer_db, local_db, data_in_save, data_input_delete_after, input_data_path, wait_time, sort_order, none_100, usage_convert, IPF100, term_multi, date_format, ipf1x5_threshold, display_original, section_commas, New_On_Hand, Used_On_Hand, New_Addl, Used_Addl, New_Pend_Ret, Used_Pend_Ret, New_insite_Pend_Ord, Used_insite_Pend_Ord, New_Rental_insite_Pend_Ord, Used_Rental_insite_Pend_Ord, use_pfi, use_api, use_soap, i1_path, m1_path, r7_path, api_page_count, soap_api_ip, soap_token, soap_user, rest_api_url, rest_token
         global requests, db, client, config_path, license_status, pricer_api_alive, origin_time, total_api_req_counter
+
+        origin_time = time.time()
 
         key = 'yjhtlsic64,9w6H1'
 
@@ -88,7 +88,7 @@ def main():
             config_path = sys.argv[1]
         else:
             if os.name == 'nt':
-                config_path = "c:\pricer\import\configuration\\mbs_import.mms"
+                config_path = "c:\\pricer\\import\\configuration\\mbs_import.mms"
             else:
                 config_path = "/pricer/import/configuration/mbs_import.mms"
 
@@ -96,22 +96,50 @@ def main():
             with open(config_path) as config_source:
                 content = config_source.read()
             config = BeautifulSoup(content, 'html.parser')
+
             ###drive
-            drive_letter = config.mmimport.get('drive')
+            if os.name == 'nt':
+                drive_letter = config.mmimport.get('drive') + ':\\'
+            else:
+                drive_letter = '/'
+
             ###logging
+            if (config.logging.get('use_pricer_level')).lower() == "true":
+                use_pricer_level = True
+            else:
+                use_pricer_level = False
+
             log_level = config.logging.get('level').lower()
             log_delete_after = config.logging.get('delete_after')
             log_max = config.logging.get('log_max_mb')
             log_name = config.logging.get('log_name')
             log_path = config.logging.get('path')
 
-            log_file = drive_letter + log_path + config.logging.get('log_name')
+            log_file = os.path.join(drive_letter, log_path, config.logging.get('log_name'))
 
             if os.name != 'nt':
                 log_file = log_file.replace('\\', '/')
                 log_path = log_path.replace('\\', '/')
 
             ##########set up logging
+
+            if use_pricer_level:
+                if os.name == 'nt':
+                    pricer_conf_path = drive_letter + "Pricer\\R3Server\\config\\log4j2.xml"
+                else:
+                    pricer_conf_path = "/pricer/r3server/config/log4j2.xml"
+                pricer_content = open(pricer_conf_path, "r").read()
+                pricer_level = pricer_content[(pricer_content.find('Root level') + 12): (pricer_content.find('Root level') + 16)]
+
+                if pricer_level.lower() == 'info':
+                    log_level = 'info'
+                elif pricer_level.lower() == 'erro':
+                    log_level = 'error'
+                elif pricer_level.lower() == 'warn':
+                    log_level = 'warning'
+                else:
+                    log_level = 'debug'
+
             # clean up first
             try:
                 LogCleaner.log_cleaner(drive_letter, log_file, log_level, config_path, log_max)
@@ -157,7 +185,7 @@ def main():
                 data_in_save = False
 
             data_input_delete_after = config.datain.get('deleteafter')
-            input_data_path = config.datain.get('path')
+            input_data_path = os.path.join(drive_letter, config.datain.get('path'))
             wait_time = config.datain.get('filewaittime')
 
             #### Sort
@@ -594,7 +622,7 @@ def main():
 
 #################################################start subroutines###########################################################
 def file_handler(data_file):
-    file_path = data_path + data_file
+    file_path = input_data_path + data_file
 
     # check file for stability
     current_size = 0
@@ -604,7 +632,7 @@ def file_handler(data_file):
         current_size = new_size
         new_size = os.path.getsize(file_path)
 
-    file_content = open(data_path + data_file, "r", encoding='utf-8')
+    file_content = open(input_data_path + data_file, "r", encoding='utf-8')
 
     return file_content
 #################################################end subroutines#############################################################
