@@ -8,8 +8,8 @@ file_tx1_list = {}
 file_list_new = []
 sleep_count = 0
 
-# data_path = 'C:\\Users\\Wayne\\PycharmProjects\\MBS\\V11\\data'
-data_path = 'C:\\Users\\Glenn Price-Jones\\Dropbox\\MarginMate\\Systems and Development\\Python Data Integration\\MBS\\V11\\data\\'
+data_path = 'C:\\Pricer\\import\\data\\'
+# data_path = 'C:\\Users\\Glenn Price-Jones\\Dropbox\\MarginMate\\Systems and Development\\Python Data Integration\\MBS\\V11\\data\\'
 
 for ext_file_name in os.listdir(data_path):
     if ext_file_name.lower().endswith("txt"):
@@ -61,10 +61,99 @@ for data_file in sorted(file_list_new):
 
     secondary_file_data_list = []
 
-    if data_file.lower().endswith("tx1"):
+    if data_file.lower().endswith("txt"):
         with open(data_path + data_file, "r", encoding='utf-8') as file_content:
             # print(data_file)
             for file_row in file_content:
+                row_counter += 1
+                file_row = file_row.rstrip(os.linesep)
+                row_fields = file_row.split('|')
+
+                base_GenKey = row_fields[0]
+                base_FormatFlag = row_fields[1]
+                base_Author = row_fields[2]
+                base_Title = row_fields[3]
+                base_ISBN = row_fields[4]
+                base_ISBN_HR = row_fields[5]
+                base_Vendor_Style = row_fields[6]
+                base_Publisher = row_fields[7]
+                base_Imprint = row_fields[8]
+                base_Edition = row_fields[9]
+                base_Edition_Status = row_fields[10]
+                base_New_Price = row_fields[11]
+                base_New_Price_Text = row_fields[12]
+                base_Used_Price = row_fields[13]
+                base_Used_Price_Text = row_fields[14]
+                base_New_Rental_Price = row_fields[15]
+                base_New_Rental_Price_Text = row_fields[16]
+                base_Ebook_Price = row_fields[17]
+                base_Ebook_Price_Text = row_fields[18]
+                base_Used_Rental_Price = row_fields[19]
+                base_Used_Rental_Price_Text = row_fields[20]
+                base_Sale_Price1 = row_fields[21]
+                base_Sale_Start_Date1 = row_fields[22]
+                base_Sale_End_Date1 = row_fields[23]
+                base_Sale_Start_Time1 = row_fields[24]
+                base_Sale_End_Time1 = row_fields[25]
+                base_Sale_Price2 = row_fields[26]
+                base_Sale_Start_Date2 = row_fields[27]
+                base_Sale_End_Date2 = row_fields[28]
+                base_Sale_Start_Time2 = row_fields[29]
+                base_Sale_End_Time2 = row_fields[30]
+                base_Sale_Price3 = row_fields[31]
+                base_Sale_Start_Date3 = row_fields[32]
+                base_Sale_End_Date3 = row_fields[33]
+                base_Sale_Start_Time3 = row_fields[34]
+                base_Sale_End_Time3 = row_fields[35]
+                base_Sale_Price4 = row_fields[36]
+                base_Sale_Start_Date4 = row_fields[37]
+                base_Sale_End_Date4 = row_fields[38]
+                base_Sale_Start_Time4 = row_fields[39]
+                base_Sale_End_Time4 = row_fields[40]
+                base_Term = row_fields[41]
+                base_Term_Description = row_fields[42]
+                base_Requested_Qty = row_fields[43]
+                base_Class_Capacity_Qty = row_fields[44]
+                base_Actual_Enrollment_Qty = row_fields[45]
+                base_Est_Sales_Qty = row_fields[46]
+                base_Category = row_fields[47]
+                base_Division = row_fields[48]
+                base_Department = row_fields[49]
+                base_Class = row_fields[50]
+                base_New_Store_Qty = row_fields[51]
+                base_New_Warehouse_Qty = row_fields[52]
+                base_Used_Store_Qty = row_fields[53]
+                base_Used_Warehouse_Qty = row_fields[54]
+                base_New_Pending_Return_Qty = row_fields[55]
+                base_Used_Pending_Return_Qty = row_fields[56]
+                base_New_insite_Pending_Order = row_fields[57]
+                base_Used_insite_Pending_Order = row_fields[58]
+                base_New_Rental_insite_Pending_Order = row_fields[59]
+                base_Used_Rental_insite_Pending_Order = row_fields[60]
+                base_On_Order_PO1 = row_fields[61]
+                base_On_Order_PO1_Vendor = row_fields[62]
+                base_On_Order_Qty1 = row_fields[63]
+                base_On_Order_Qty1_Used = row_fields[64]
+                base_On_Order_Date1 = row_fields[65]
+                base_On_Order_PO2 = row_fields[66]
+                base_On_Order_PO2_Vendor = row_fields[67]
+                base_On_Order_Qty2 = row_fields[68]
+                base_On_Order_Qty2_Used = row_fields[69]
+                base_On_Order_Date2 = row_fields[70]
+                base_On_Order_PO3 = row_fields[71]
+                base_On_Order_PO3_Vendor = row_fields[72]
+                base_On_Order_Qty3 = row_fields[73]
+                base_On_Order_Qty3_Used = row_fields[74]
+                base_On_Order_Date3 = row_fields[75]
+                base_Total_PO_Qty = row_fields[76]
+                base_image_name = base_ISBN + ".png"
+
+                print("base_GenKey {}, base_FormatFlag {}, base_Author {}, base_Title {}, base_ISBN {}, base_ISBN_HR {}, base_Vendor_Style {}, base_Publisher {}, base_Imprint {}, base_Edition {}, base_Edition_Status {}, base_New_Price {}, base_New_Price_Text {}, base_Used_Price {}, base_Used_Price_Text {}, base_New_Rental_Price {}, base_New_Rental_Price_Text {}, base_Ebook_Price {}, base_Ebook_Price_Text {}, base_Used_Rental_Price {}, base_Used_Rental_Price_Text {}, base_Sale_Price1 {}, base_Sale_Start_Date1 {}, base_Sale_End_Date1 {}, base_Sale_Start_Time1 {}, base_Sale_End_Time1 {}, base_Sale_Price2 {}, base_Sale_Start_Date2 {}, base_Sale_End_Date2 {}, base_Sale_Start_Time2 {}, base_Sale_End_Time2 {}, base_Sale_Price3 {}, base_Sale_Start_Date3 {}, base_Sale_End_Date3 {}, base_Sale_Start_Time3 {}, base_Sale_End_Time3 {}, base_Sale_Price4 {}, base_Sale_Start_Date4 {}, base_Sale_End_Date4 {}, base_Sale_Start_Time4 {}, base_Sale_End_Time4 {}, base_Term {}, base_Term_Description {}, base_Requested_Qty {}, base_Class_Capacity_Qty {}, base_Actual_Enrollment_Qty {}, base_Est_Sales_Qty {}, base_Category {}, base_Division {}, base_Department {}, base_Class {}, base_New_Store_Qty {}, base_New_Warehouse_Qty {}, base_Used_Store_Qty {}, base_Used_Warehouse_Qty {}, base_New_Pending_Return_Qty {}, base_Used_Pending_Return_Qty {}, base_New_insite_Pending_Order {}, base_Used_insite_Pending_Order {}, base_New_Rental_insite_Pending_Order {}, base_Used_Rental_insite_Pending_Order {}, base_On_Order_PO1 {}, base_On_Order_PO1_Vendor {}, base_On_Order_Qty1 {}, base_On_Order_Qty1_Used {}, base_On_Order_Date1 {}, base_On_Order_PO2 {}, base_On_Order_PO2_Vendor {}, base_On_Order_Qty2 {}, base_On_Order_Qty2_Used {}, base_On_Order_Date2 {}, base_On_Order_PO3 {}, base_On_Order_PO3_Vendor {}, base_On_Order_Qty3 {}, base_On_Order_Qty3_Used {}, base_On_Order_Date3 {}, base_Total_PO_Qty {}, base_image_name {}".format(base_GenKey, base_FormatFlag, base_Author, base_Title, base_ISBN, base_ISBN_HR, base_Vendor_Style, base_Publisher, base_Imprint, base_Edition, base_Edition_Status, base_New_Price, base_New_Price_Text, base_Used_Price, base_Used_Price_Text, base_New_Rental_Price, base_New_Rental_Price_Text, base_Ebook_Price, base_Ebook_Price_Text, base_Used_Rental_Price, base_Used_Rental_Price_Text, base_Sale_Price1, base_Sale_Start_Date1, base_Sale_End_Date1, base_Sale_Start_Time1, base_Sale_End_Time1, base_Sale_Price2, base_Sale_Start_Date2, base_Sale_End_Date2, base_Sale_Start_Time2, base_Sale_End_Time2, base_Sale_Price3, base_Sale_Start_Date3, base_Sale_End_Date3, base_Sale_Start_Time3, base_Sale_End_Time3, base_Sale_Price4, base_Sale_Start_Date4, base_Sale_End_Date4, base_Sale_Start_Time4, base_Sale_End_Time4, base_Term, base_Term_Description, base_Requested_Qty, base_Class_Capacity_Qty, base_Actual_Enrollment_Qty, base_Est_Sales_Qty, base_Category, base_Division, base_Department, base_Class, base_New_Store_Qty, base_New_Warehouse_Qty, base_Used_Store_Qty, base_Used_Warehouse_Qty, base_New_Pending_Return_Qty, base_Used_Pending_Return_Qty, base_New_insite_Pending_Order, base_Used_insite_Pending_Order, base_New_Rental_insite_Pending_Order, base_Used_Rental_insite_Pending_Order, base_On_Order_PO1, base_On_Order_PO1_Vendor, base_On_Order_Qty1, base_On_Order_Qty1_Used, base_On_Order_Date1, base_On_Order_PO2, base_On_Order_PO2_Vendor, base_On_Order_Qty2, base_On_Order_Qty2_Used, base_On_Order_Date2, base_On_Order_PO3, base_On_Order_PO3_Vendor, base_On_Order_Qty3, base_On_Order_Qty3_Used, base_On_Order_Date3, base_Total_PO_Qty, base_image_name))
+
+    if data_file.lower().endswith("tx1"):
+        with open(data_path + data_file, "r", encoding='utf-8') as secondary_file_content:
+            # print(data_file)
+            for file_row in secondary_file_content:
                 row_counter += 1
                 file_row = file_row.rstrip(os.linesep)
                 row_fields = file_row.split('|')

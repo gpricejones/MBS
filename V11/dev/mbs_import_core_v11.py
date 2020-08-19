@@ -1,25 +1,28 @@
-import AlertManager
-import base64
-from datetime import datetime
-import DBhandler
-import DirectoryCleaner
-import EventLogger
-import hashlib
-import json
-import LicenseValidator
-import LogCleaner
 import Logger
-import os
-from pyDes import *
-import requests
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
-import shutil
+import DBhandler
+import LogCleaner
+import EventLogger
+import AlertManager
+import DirectoryCleaner
+import LicenseValidator
 from StdTime import time, file_time, s_stamp, year_stamp, simple_date, simple_hours, simple_minutes
+import os
 import sys
 import time
+import json
+import base64
+import shutil
+import hashlib
+import requests
 import traceback
+from pyDes import *
 from bs4 import BeautifulSoup
+from datetime import datetime
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
+
+
+
 
 def main():
 
@@ -27,8 +30,8 @@ def main():
 
         origin_time = time.time()
 
-        global file_name, drive_letter, log_level, log_file, log_path, log_delete_after, log_max, use_pricer_level, logger, data_path, data_delete, data_input_delete_after, input_data_path, wait_time, page_size, page_delay, use_checksum, token, item_url, promo_url, use_api, use_soap, api_page_count, rest_api_url, rest_token, soap_api_ip, soap_token, soap_user, total_api_req_counter
-        global requests, db, client, config_path, license_status, pricer_api_alive, origin_time
+        global file_name, drive_letter, log_level, log_delete_after, log_max, log_name, log_path, log_file, use_pricer_db, local_db, data_in_save, data_input_delete_after, input_data_path, wait_time, sort_order, none_100, usage_convert, IPF100, term_multi, date_format, ipf1x5_threshold, display_original, section_commas, New_On_Hand, Used_On_Hand, New_Addl, Used_Addl, New_Pend_Ret, Used_Pend_Ret, New_insite_Pend_Ord, Used_insite_Pend_Ord, New_Rental_insite_Pend_Ord, Used_Rental_insite_Pend_Ord, use_pfi, use_api, use_soap, i1_path, m1_path, r7_path, api_page_count, soap_api_ip, soap_token, soap_user, rest_api_url, rest_token
+        global requests, db, client, config_path, license_status, pricer_api_alive, origin_time, total_api_req_counter
 
         key = 'yjhtlsic64,9w6H1'
 
@@ -158,7 +161,7 @@ def main():
             wait_time = config.datain.get('filewaittime')
 
             #### Sort
-            order = config.sort.get('order')
+            sort_order = config.sort.get('order')
 
             #### Price
             if (config.price.get('none_100')).lower() == "true":
@@ -168,38 +171,48 @@ def main():
 
             ### Usage
             if (config.usage.get('convert')).lower() == "true":
-                convert = True
+                usage_convert = True
             else:
-                convert = False
+                usage_convert = False
 
             ### Zero_Zero
             if (config.zero_zero.get('ipf100')).lower() == "true":
-                ipf_100 = True
+                IPF100 = True
             else:
-                ipf_100 = False
+                IPF100 = False
 
             ### Term
             if (config.term.get('multi')).lower() == "true":
-                multi = True
+                term_multi = True
             else:
-                multi = False
+                term_multi = False
 
             ### Date formate
             date_format = config.date.get('format')
 
             ### IPF1X5
-            threshold = config.ipf1x5.get('threshold')
+            ipf1x5_threshold = config.ipf1x5.get('threshold')
 
             ### Replace
-            if (config.term.get('multi')).lower() == "true":
-                multi = True
+            if (config.replace_section_commas.get('displayoriginal')).lower() == "true":
+                display_original = True
             else:
-                multi = False
+                display_original = False
 
-            date_format = config.date.get('format')
+            section_commas = config.replace_section_commas.get('char')
 
+            #### QOH CALC
 
-
+            New_On_Hand = config.qoh_calc.get('new_on_hand')
+            Used_On_Hand = config.qoh_calc.get('used_on_hand')
+            New_Addl = config.qoh_calc.get('new_addl')
+            Used_Addl = config.qoh_calc.get('used_addl')
+            New_Pend_Ret = config.qoh_calc.get('new_pend_ret')
+            Used_Pend_Ret = config.qoh_calc.get('used_pend_ret')
+            New_insite_Pend_Ord = config.qoh_calc.get('new_insite_pend_ord')
+            Used_insite_Pend_Ord = config.qoh_calc.get('used_insite_pend_ord')
+            New_Rental_insite_Pend_Ord = config.qoh_calc.get('new_rental_insite_pend_ord')
+            Used_Rental_insite_Pend_Ord = config.qoh_calc.get('used_rental_insite_pend_ord')
 
             ####Dataout
             if (config.dataout.get('usepfi')).lower() == "true":
@@ -311,9 +324,9 @@ def main():
         file_list = {}
         file_list_new = []
 
-        for ext_file_name in os.listdir(data_path):
+        for ext_file_name in os.listdir(input_data_path):
             if ext_file_name.lower().endswith("tx1") or ext_file_name.lower().endswith("txt"):
-                file_list.update({ext_file_name: str(os.stat(data_path + ext_file_name).st_mtime)})
+                file_list.update({ext_file_name: str(os.stat(input_data_path + ext_file_name).st_mtime)})
 
         for current_file in sorted(file_list, key=file_list.get, reverse=False):
             file_list_new.append(current_file)
@@ -322,11 +335,11 @@ def main():
         file_tx1_list = {}
         file_list_new = []
 
-        for ext_file_name in os.listdir(data_path):
+        for ext_file_name in os.listdir(input_data_path):
             if ext_file_name.lower().endswith("txt"):
-                file_txt_list.update({ext_file_name: str(os.stat(data_path + ext_file_name).st_mtime)})
+                file_txt_list.update({ext_file_name: str(os.stat(input_data_path + ext_file_name).st_mtime)})
             if ext_file_name.lower().endswith("tx1"):
-                file_tx1_list.update({ext_file_name: str(os.stat(data_path + ext_file_name).st_mtime)})
+                file_tx1_list.update({ext_file_name: str(os.stat(input_data_path + ext_file_name).st_mtime)})
 
         for current_file in sorted(file_txt_list, key=file_txt_list.get, reverse=False):
             sleep_count = 0
@@ -354,6 +367,8 @@ def main():
                         logger.debug("could not find matching file for {}".format(current_file))
                         break
 
+        logger.debug(file_list_new)
+
         if len(file_list_new) > 0:
 
             api_out_page_count = 0
@@ -378,86 +393,84 @@ def main():
                         file_row = file_row.rstrip(os.linesep)
                         row_fields = file_row.split('|')
 
-                        GenKey          = row_fields[0]
-                        FormatFlag      = row_fields[1]
-                        Author          = row_fields[2]
-                        Title           = row_fields[3]
-                        ISBN            = row_fields[4]
-                        ISBN_HR         = row_fields[5]
-                        Vendor_Style    = row_fields[6]
-                        Publisher       = row_fields[7]
-                        Imprint         = row_fields[8]
-                        Edition         = row_fields[9]
-                        Edition_Status  = row_fields[10]
-                        New_Price    = row_fields[11]
-                        New_Price_Text    = row_fields[12]
-                        Used_Price    = row_fields[13]
-                        Used_Price_Text    = row_fields[14]
-                        New_Rental_Price    = row_fields[15]
-                        New_Rental_Price_Text    = row_fields[16]
-                        Ebook_Price    = row_fields[17]
-                        Ebook_Price_Text    = row_fields[18]
-                        Used_Rental_Price    = row_fields[19]
-                        Used_Rental_Price_Text    = row_fields[20]
-                        Sale_Price1    = row_fields[21]
-                        Sale_Start_Date1    = row_fields[22]
-                        Sale_End_Date1    = row_fields[23]
-                        Sale_Start_Time1    = row_fields[24]
-                        Sale_End_Time1    = row_fields[25]
-                        Sale_Price2    = row_fields[26]
-                        Sale_Start_Date2    = row_fields[27]
-                        Sale_End_Date2    = row_fields[28]
-                        Sale_Start_Time2    = row_fields[29]
-                        Sale_End_Time2    = row_fields[30]
-                        Sale_Price3    = row_fields[31]
-                        Sale_Start_Date3    = row_fields[32]
-                        Sale_End_Date3    = row_fields[33]
-                        Sale_Start_Time3    = row_fields[34]
-                        Sale_End_Time3    = row_fields[35]
-                        Sale_Price4    = row_fields[36]
-                        Sale_Start_Date4    = row_fields[37]
-                        Sale_End_Date4    = row_fields[38]
-                        Sale_Start_Time4    = row_fields[39]
-                        Sale_End_Time4    = row_fields[40]
-                        Term    = row_fields[41]
-                        Term_Description    = row_fields[42]
-                        Requested_Qty    = row_fields[43]
-                        Class_Capacity_Qty    = row_fields[44]
-                        Actual_Enrollment_Qty    = row_fields[45]
-                        Est_Sales_Qty    = row_fields[46]
-                        Category    = row_fields[47]
-                        Division    = row_fields[48]
-                        Department    = row_fields[49]
-                        Class    = row_fields[50]
-                        New_Store_Qty    = row_fields[51]
-                        New_Warehouse_Qty    = row_fields[52]
-                        Used_Store_Qty    = row_fields[53]
-                        Used_Warehouse_Qty    = row_fields[54]
-                        New_Pending_Return_Qty    = row_fields[55]
-                        Used_Pending_Return_Qty    = row_fields[56]
-                        New_insite_Pending_Order    = row_fields[57]
-                        Used_insite_Pending_Order    = row_fields[58]
-                        New_Rental_insite_Pending_Order    = row_fields[59]
-                        Used_Rental_insite_Pending_Order    = row_fields[60]
-                        On_Order_PO1    = row_fields[61]
-                        On_Order_PO1_Vendor    = row_fields[62]
-                        On_Order_Qty1    = row_fields[63]
-                        On_Order_Qty1_Used    = row_fields[64]
-                        On_Order_Date1    = row_fields[65]
-                        On_Order_PO2    = row_fields[66]
-                        On_Order_PO2_Vendor    = row_fields[67]
-                        On_Order_Qty2    = row_fields[68]
-                        On_Order_Qty2_Used    = row_fields[69]
-                        On_Order_Date2    = row_fields[70]
-                        On_Order_PO3    = row_fields[71]
-                        On_Order_PO3_Vendor    = row_fields[72]
-                        On_Order_Qty3    = row_fields[73]
-                        On_Order_Qty3_Used    = row_fields[74]
-                        On_Order_Date3    = row_fields[75]
-                        Total_PO_Qty    = row_fields[76]
-                        image_name = ISBN + ".png"
-
-                        if
+                        base_GenKey = row_fields[0]
+                        base_FormatFlag = row_fields[1]
+                        base_Author = row_fields[2]
+                        base_Title = row_fields[3]
+                        base_ISBN = row_fields[4]
+                        base_ISBN_HR = row_fields[5]
+                        base_Vendor_Style = row_fields[6]
+                        base_Publisher = row_fields[7]
+                        base_Imprint = row_fields[8]
+                        base_Edition = row_fields[9]
+                        base_Edition_Status = row_fields[10]
+                        base_New_Price = row_fields[11]
+                        base_New_Price_Text = row_fields[12]
+                        base_Used_Price = row_fields[13]
+                        base_Used_Price_Text = row_fields[14]
+                        base_New_Rental_Price = row_fields[15]
+                        base_New_Rental_Price_Text = row_fields[16]
+                        base_Ebook_Price = row_fields[17]
+                        base_Ebook_Price_Text = row_fields[18]
+                        base_Used_Rental_Price = row_fields[19]
+                        base_Used_Rental_Price_Text = row_fields[20]
+                        base_Sale_Price1 = row_fields[21]
+                        base_Sale_Start_Date1 = row_fields[22]
+                        base_Sale_End_Date1 = row_fields[23]
+                        base_Sale_Start_Time1 = row_fields[24]
+                        base_Sale_End_Time1 = row_fields[25]
+                        base_Sale_Price2 = row_fields[26]
+                        base_Sale_Start_Date2 = row_fields[27]
+                        base_Sale_End_Date2 = row_fields[28]
+                        base_Sale_Start_Time2 = row_fields[29]
+                        base_Sale_End_Time2 = row_fields[30]
+                        base_Sale_Price3 = row_fields[31]
+                        base_Sale_Start_Date3 = row_fields[32]
+                        base_Sale_End_Date3 = row_fields[33]
+                        base_Sale_Start_Time3 = row_fields[34]
+                        base_Sale_End_Time3 = row_fields[35]
+                        base_Sale_Price4 = row_fields[36]
+                        base_Sale_Start_Date4 = row_fields[37]
+                        base_Sale_End_Date4 = row_fields[38]
+                        base_Sale_Start_Time4 = row_fields[39]
+                        base_Sale_End_Time4 = row_fields[40]
+                        base_Term = row_fields[41]
+                        base_Term_Description = row_fields[42]
+                        base_Requested_Qty = row_fields[43]
+                        base_Class_Capacity_Qty = row_fields[44]
+                        base_Actual_Enrollment_Qty = row_fields[45]
+                        base_Est_Sales_Qty = row_fields[46]
+                        base_Category = row_fields[47]
+                        base_Division = row_fields[48]
+                        base_Department = row_fields[49]
+                        base_Class = row_fields[50]
+                        base_New_Store_Qty = row_fields[51]
+                        base_New_Warehouse_Qty = row_fields[52]
+                        base_Used_Store_Qty = row_fields[53]
+                        base_Used_Warehouse_Qty = row_fields[54]
+                        base_New_Pending_Return_Qty = row_fields[55]
+                        base_Used_Pending_Return_Qty = row_fields[56]
+                        base_New_insite_Pending_Order = row_fields[57]
+                        base_Used_insite_Pending_Order = row_fields[58]
+                        base_New_Rental_insite_Pending_Order = row_fields[59]
+                        base_Used_Rental_insite_Pending_Order = row_fields[60]
+                        base_On_Order_PO1 = row_fields[61]
+                        base_On_Order_PO1_Vendor = row_fields[62]
+                        base_On_Order_Qty1 = row_fields[63]
+                        base_On_Order_Qty1_Used = row_fields[64]
+                        base_On_Order_Date1 = row_fields[65]
+                        base_On_Order_PO2 = row_fields[66]
+                        base_On_Order_PO2_Vendor = row_fields[67]
+                        base_On_Order_Qty2 = row_fields[68]
+                        base_On_Order_Qty2_Used = row_fields[69]
+                        base_On_Order_Date2 = row_fields[70]
+                        base_On_Order_PO3 = row_fields[71]
+                        base_On_Order_PO3_Vendor = row_fields[72]
+                        base_On_Order_Qty3 = row_fields[73]
+                        base_On_Order_Qty3_Used = row_fields[74]
+                        base_On_Order_Date3 = row_fields[75]
+                        base_Total_PO_Qty = row_fields[76]
+                        base_image_name = base_ISBN + ".png"
 
                 if new_file.lower().endswith("tx1"):
 
