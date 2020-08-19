@@ -22,10 +22,7 @@ from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 
 
-
-
 def main():
-
     try:
 
         global file_name, drive_letter, use_pricer_level, log_level, log_delete_after, log_max, log_name, log_path, log_file, use_pricer_db, local_db, data_in_save, data_input_delete_after, input_data_path, wait_time, sort_order, none_100, usage_convert, IPF100, term_multi, date_format, ipf1x5_threshold, display_original, section_commas, New_On_Hand, Used_On_Hand, New_Addl, Used_Addl, New_Pend_Ret, Used_Pend_Ret, New_insite_Pend_Ord, Used_insite_Pend_Ord, New_Rental_insite_Pend_Ord, Used_Rental_insite_Pend_Ord, use_pfi, use_api, use_soap, i1_path, m1_path, r7_path, api_page_count, soap_api_ip, soap_token, soap_user, rest_api_url, rest_token
@@ -64,7 +61,6 @@ def main():
         command_id = 0
         api_requestid = ""
         last_page_flag = 0
-
 
         ##########get file name without extension
         file_name_raw = __file__
@@ -189,7 +185,7 @@ def main():
             wait_time = config.datain.get('filewaittime')
 
             #### Sort
-            sort_order = config.sort.get('order')
+            sort_order = str(config.sort.get('order')).lower()
 
             #### Price
             if (config.price.get('none_100')).lower() == "true":
@@ -267,6 +263,7 @@ def main():
             soap_user = str(triple_des(key).decrypt(base64.b64decode(config.dataout.get('soapuser')), padmode=2), 'utf-8')
             rest_api_url = str(triple_des(key).decrypt(base64.b64decode(config.dataout.get('soapip')), padmode=2), 'utf-8')
             rest_token = str(triple_des(key).decrypt(base64.b64decode(config.dataout.get('soaptoken')), padmode=2), 'utf-8')
+
 
 
         except IOError as e:
@@ -426,81 +423,87 @@ def main():
                         base_Author = row_fields[2]
                         base_Title = row_fields[3]
                         base_ISBN = row_fields[4]
-                        base_ISBN_HR = row_fields[5]
-                        base_Vendor_Style = row_fields[6]
-                        base_Publisher = row_fields[7]
-                        base_Imprint = row_fields[8]
-                        base_Edition = row_fields[9]
-                        base_Edition_Status = row_fields[10]
-                        base_New_Price = row_fields[11]
-                        base_New_Price_Text = row_fields[12]
-                        base_Used_Price = row_fields[13]
-                        base_Used_Price_Text = row_fields[14]
-                        base_New_Rental_Price = row_fields[15]
-                        base_New_Rental_Price_Text = row_fields[16]
-                        base_Ebook_Price = row_fields[17]
-                        base_Ebook_Price_Text = row_fields[18]
-                        base_Used_Rental_Price = row_fields[19]
-                        base_Used_Rental_Price_Text = row_fields[20]
-                        base_Sale_Price1 = row_fields[21]
-                        base_Sale_Start_Date1 = row_fields[22]
-                        base_Sale_End_Date1 = row_fields[23]
-                        base_Sale_Start_Time1 = row_fields[24]
-                        base_Sale_End_Time1 = row_fields[25]
-                        base_Sale_Price2 = row_fields[26]
-                        base_Sale_Start_Date2 = row_fields[27]
-                        base_Sale_End_Date2 = row_fields[28]
-                        base_Sale_Start_Time2 = row_fields[29]
-                        base_Sale_End_Time2 = row_fields[30]
-                        base_Sale_Price3 = row_fields[31]
-                        base_Sale_Start_Date3 = row_fields[32]
-                        base_Sale_End_Date3 = row_fields[33]
-                        base_Sale_Start_Time3 = row_fields[34]
-                        base_Sale_End_Time3 = row_fields[35]
-                        base_Sale_Price4 = row_fields[36]
-                        base_Sale_Start_Date4 = row_fields[37]
-                        base_Sale_End_Date4 = row_fields[38]
-                        base_Sale_Start_Time4 = row_fields[39]
-                        base_Sale_End_Time4 = row_fields[40]
-                        base_Term = row_fields[41]
-                        base_Term_Description = row_fields[42]
-                        base_Requested_Qty = row_fields[43]
-                        base_Class_Capacity_Qty = row_fields[44]
-                        base_Actual_Enrollment_Qty = row_fields[45]
-                        base_Est_Sales_Qty = row_fields[46]
-                        base_Category = row_fields[47]
-                        base_Division = row_fields[48]
-                        base_Department = row_fields[49]
-                        base_Class = row_fields[50]
-                        base_New_Store_Qty = row_fields[51]
-                        base_New_Warehouse_Qty = row_fields[52]
-                        base_Used_Store_Qty = row_fields[53]
-                        base_Used_Warehouse_Qty = row_fields[54]
-                        base_New_Pending_Return_Qty = row_fields[55]
-                        base_Used_Pending_Return_Qty = row_fields[56]
-                        base_New_insite_Pending_Order = row_fields[57]
-                        base_Used_insite_Pending_Order = row_fields[58]
-                        base_New_Rental_insite_Pending_Order = row_fields[59]
-                        base_Used_Rental_insite_Pending_Order = row_fields[60]
-                        base_On_Order_PO1 = row_fields[61]
-                        base_On_Order_PO1_Vendor = row_fields[62]
-                        base_On_Order_Qty1 = row_fields[63]
-                        base_On_Order_Qty1_Used = row_fields[64]
-                        base_On_Order_Date1 = row_fields[65]
-                        base_On_Order_PO2 = row_fields[66]
-                        base_On_Order_PO2_Vendor = row_fields[67]
-                        base_On_Order_Qty2 = row_fields[68]
-                        base_On_Order_Qty2_Used = row_fields[69]
-                        base_On_Order_Date2 = row_fields[70]
-                        base_On_Order_PO3 = row_fields[71]
-                        base_On_Order_PO3_Vendor = row_fields[72]
-                        base_On_Order_Qty3 = row_fields[73]
-                        base_On_Order_Qty3_Used = row_fields[74]
-                        base_On_Order_Date3 = row_fields[75]
-                        base_Total_PO_Qty = row_fields[76]
+                        base_Used_ISBN = row_fields[5]
+                        base_ISBN_HR = row_fields[6]
+                        base_Vendor_Style = row_fields[7]
+                        base_Publisher = row_fields[8]
+                        base_Imprint = row_fields[9]
+                        base_Edition = row_fields[10]
+                        base_Edition_Status = row_fields[11]
+                        base_New_Price = row_fields[12]
+                        base_New_Price_Text = row_fields[13]
+                        base_Used_Price = row_fields[14]
+                        base_Used_Price_Text = row_fields[15]
+                        base_New_Rental_Price = row_fields[16]
+                        base_New_Rental_Price_Text = row_fields[76]
+                        base_Ebook_Price = row_fields[18]
+                        base_Ebook_Price_Text = row_fields[19]
+                        base_Used_Rental_Price = row_fields[20]
+                        base_Used_Rental_Price_Text = row_fields[21]
+                        base_Sale_Price1 = row_fields[22]
+                        base_Sale_Start_Date1 = row_fields[23]
+                        base_Sale_End_Date1 = row_fields[24]
+                        base_Sale_Start_Time1 = row_fields[25]
+                        base_Sale_End_Time1 = row_fields[26]
+                        base_Sale_Price2 = row_fields[27]
+                        base_Sale_Start_Date2 = row_fields[28]
+                        base_Sale_End_Date2 = row_fields[29]
+                        base_Sale_Start_Time2 = row_fields[30]
+                        base_Sale_End_Time2 = row_fields[31]
+                        base_Sale_Price3 = row_fields[32]
+                        base_Sale_Start_Date3 = row_fields[33]
+                        base_Sale_End_Date3 = row_fields[34]
+                        base_Sale_Start_Time3 = row_fields[35]
+                        base_Sale_End_Time3 = row_fields[36]
+                        base_Sale_Price4 = row_fields[37]
+                        base_Sale_Start_Date4 = row_fields[38]
+                        base_Sale_End_Date4 = row_fields[39]
+                        base_Sale_Start_Time4 = row_fields[40]
+                        base_Sale_End_Time4 = row_fields[41]
+                        base_Term = row_fields[42]
+                        base_Term_Description = row_fields[43]
+                        base_Requested_Qty = row_fields[44]
+                        base_Class_Capacity_Qty = row_fields[45]
+                        base_Actual_Enrollment_Qty = row_fields[46]
+                        base_Est_Sales_Qty = row_fields[47]
+                        base_Category = row_fields[48]
+                        base_Division = row_fields[49]
+                        base_Department = row_fields[50]
+                        base_Class = row_fields[51]
+                        base_New_Store_Qty = row_fields[52]
+                        base_New_Warehouse_Qty = row_fields[53]
+                        base_Used_Store_Qty = row_fields[54]
+                        base_Used_Warehouse_Qty = row_fields[55]
+                        base_New_Pending_Return_Qty = row_fields[56]
+                        base_Used_Pending_Return_Qty = row_fields[57]
+                        base_New_insite_Pending_Order = row_fields[58]
+                        base_Used_insite_Pending_Order = row_fields[59]
+                        base_New_Rental_insite_Pending_Order = row_fields[60]
+                        base_Used_Rental_insite_Pending_Order = row_fields[61]
+                        base_On_Order_PO1 = row_fields[62]
+                        base_On_Order_PO1_Vendor = row_fields[63]
+                        base_On_Order_Qty1 = row_fields[64]
+                        base_On_Order_Qty1_Used = row_fields[65]
+                        base_On_Order_Date1 = row_fields[66]
+                        base_On_Order_PO2 = row_fields[67]
+                        base_On_Order_PO2_Vendor = row_fields[68]
+                        base_On_Order_Qty2 = row_fields[69]
+                        base_On_Order_Qty2_Used = row_fields[70]
+                        base_On_Order_Date2 = row_fields[71]
+                        base_On_Order_PO3 = row_fields[72]
+                        base_On_Order_PO3_Vendor = row_fields[73]
+                        base_On_Order_Qty3 = row_fields[74]
+                        base_On_Order_Qty3_Used = row_fields[75]
+                        base_On_Order_Date3 = row_fields[76]
+                        base_Total_PO_Qty = row_fields[77]
                         base_image_name = base_ISBN + ".png"
 
                         base_ISBN = base_ISBN.strip('0')
+
+                        logger.debug(
+                            "base_GenKey {}, base_FormatFlag {}, base_Author {}, base_Title {}, base_ISBN {}, base_ISBN_HR {}, base_Vendor_Style {}, base_Publisher {}, base_Imprint {}, base_Edition {}, base_Edition_Status {}, base_New_Price {}, base_New_Price_Text {}, base_Used_Price {}, base_Used_Price_Text {}, base_New_Rental_Price {}, base_New_Rental_Price_Text {}, base_Ebook_Price {}, base_Ebook_Price_Text {}, base_Used_Rental_Price {}, base_Used_Rental_Price_Text {}, base_Sale_Price1 {}, base_Sale_Start_Date1 {}, base_Sale_End_Date1 {}, base_Sale_Start_Time1 {}, base_Sale_End_Time1 {}, base_Sale_Price2 {}, base_Sale_Start_Date2 {}, base_Sale_End_Date2 {}, base_Sale_Start_Time2 {}, base_Sale_End_Time2 {}, base_Sale_Price3 {}, base_Sale_Start_Date3 {}, base_Sale_End_Date3 {}, base_Sale_Start_Time3 {}, base_Sale_End_Time3 {}, base_Sale_Price4 {}, base_Sale_Start_Date4 {}, base_Sale_End_Date4 {}, base_Sale_Start_Time4 {}, base_Sale_End_Time4 {}, base_Term {}, base_Term_Description {}, base_Requested_Qty {}, base_Class_Capacity_Qty {}, base_Actual_Enrollment_Qty {}, base_Est_Sales_Qty {}, base_Category {}, base_Division {}, base_Department {}, base_Class {}, base_New_Store_Qty {}, base_New_Warehouse_Qty {}, base_Used_Store_Qty {}, base_Used_Warehouse_Qty {}, base_New_Pending_Return_Qty {}, base_Used_Pending_Return_Qty {}, base_New_insite_Pending_Order {}, base_Used_insite_Pending_Order {}, base_New_Rental_insite_Pending_Order {}, base_Used_Rental_insite_Pending_Order {}, base_On_Order_PO1 {}, base_On_Order_PO1_Vendor {}, base_On_Order_Qty1 {}, base_On_Order_Qty1_Used {}, base_On_Order_Date1 {}, base_On_Order_PO2 {}, base_On_Order_PO2_Vendor {}, base_On_Order_Qty2 {}, base_On_Order_Qty2_Used {}, base_On_Order_Date2 {}, base_On_Order_PO3 {}, base_On_Order_PO3_Vendor {}, base_On_Order_Qty3 {}, base_On_Order_Qty3_Used {}, base_On_Order_Date3 {}, base_Total_PO_Qty {}, base_image_name {}".format(
+                                base_GenKey, base_FormatFlag, base_Author, base_Title, base_ISBN, base_ISBN_HR, base_Vendor_Style, base_Publisher, base_Imprint, base_Edition, base_Edition_Status, base_New_Price, base_New_Price_Text, base_Used_Price, base_Used_Price_Text, base_New_Rental_Price, base_New_Rental_Price_Text, base_Ebook_Price, base_Ebook_Price_Text, base_Used_Rental_Price, base_Used_Rental_Price_Text, base_Sale_Price1, base_Sale_Start_Date1, base_Sale_End_Date1, base_Sale_Start_Time1, base_Sale_End_Time1, base_Sale_Price2, base_Sale_Start_Date2, base_Sale_End_Date2, base_Sale_Start_Time2, base_Sale_End_Time2, base_Sale_Price3, base_Sale_Start_Date3, base_Sale_End_Date3, base_Sale_Start_Time3, base_Sale_End_Time3, base_Sale_Price4, base_Sale_Start_Date4, base_Sale_End_Date4, base_Sale_Start_Time4, base_Sale_End_Time4, base_Term, base_Term_Description, base_Requested_Qty, base_Class_Capacity_Qty, base_Actual_Enrollment_Qty, base_Est_Sales_Qty, base_Category, base_Division,
+                                base_Department, base_Class, base_New_Store_Qty, base_New_Warehouse_Qty, base_Used_Store_Qty, base_Used_Warehouse_Qty, base_New_Pending_Return_Qty, base_Used_Pending_Return_Qty, base_New_insite_Pending_Order, base_Used_insite_Pending_Order, base_New_Rental_insite_Pending_Order, base_Used_Rental_insite_Pending_Order, base_On_Order_PO1, base_On_Order_PO1_Vendor, base_On_Order_Qty1, base_On_Order_Qty1_Used, base_On_Order_Date1, base_On_Order_PO2, base_On_Order_PO2_Vendor, base_On_Order_Qty2, base_On_Order_Qty2_Used, base_On_Order_Date2, base_On_Order_PO3, base_On_Order_PO3_Vendor, base_On_Order_Qty3, base_On_Order_Qty3_Used, base_On_Order_Date3, base_Total_PO_Qty, base_image_name))
 
                         ###format PO Dates
 
@@ -579,85 +582,318 @@ def main():
                             base_On_Order_Date2 = month_part2 + '-' + day_part2 + '-' + year_part2[:-2]
                             base_On_Order_Date3 = month_part3 + '-' + day_part3 + '-' + year_part3[:-2]
 
+                        logger.debug("Date_format: {}, base_On_Order_Date1: {}, base_On_Order_Date2: {}, base_On_Order_Date3: {}.".format(date_format, base_On_Order_Date1, base_On_Order_Date2, base_On_Order_Date3))
+
                         ######process if valid ISBN/SKU
                         if base_ISBN is not None and base_ISBN != "":
 
                             base_Sale_Price = ''
 
-                            if base_New_Price is None or base_New_Price != "":
+                            if base_New_Price is None or base_New_Price == "":
                                 base_New_Price = 0
 
-                            if base_Used_Price is None or base_Used_Price != "":
+                            if base_Used_Price is None or base_Used_Price == "":
                                 base_Used_Price = 0
 
-                            if base_New_Rental_Price is None or base_New_Rental_Price != "":
+                            if base_New_Rental_Price is None or base_New_Rental_Price == "":
                                 base_New_Rental_Price = 0
 
-                            if base_Ebook_Price is None or base_Ebook_Price != "":
+                            if base_Ebook_Price is None or base_Ebook_Price == "":
                                 base_Ebook_Price = 0
 
-                            if base_Used_Rental_Price is None or base_Used_Rental_Price != "":
+                            if base_Used_Rental_Price is None or base_Used_Rental_Price == "":
                                 base_Used_Rental_Price = 0
 
-                            if base_Requested_Qty is None or base_Requested_Qty != "":
+                            if base_Requested_Qty is None or base_Requested_Qty == "":
                                 base_Requested_Qty = 0
 
-                            if base_New_Store_Qty is None or base_New_Store_Qty != "":
+                            if base_New_Store_Qty is None or base_New_Store_Qty == "":
                                 base_New_Store_Qty = 0
 
-                            if base_New_Warehouse_Qty is None or base_New_Warehouse_Qty != "":
+                            if base_New_Warehouse_Qty is None or base_New_Warehouse_Qty == "":
                                 base_New_Warehouse_Qty = 0
 
-                            if base_Used_Store_Qty is None or base_Used_Store_Qty != "":
+                            if base_Used_Store_Qty is None or base_Used_Store_Qty == "":
                                 base_Used_Store_Qty = 0
 
-                            if base_Used_Warehouse_Qty is None or base_Used_Warehouse_Qty != "":
+                            if base_Used_Warehouse_Qty is None or base_Used_Warehouse_Qty == "":
                                 base_Used_Warehouse_Qty = 0
 
-                            if base_On_Order_Qty1 is None or base_On_Order_Qty1 != "":
+                            if base_On_Order_Qty1 is None or base_On_Order_Qty1 == "":
                                 base_On_Order_Qty1 = 0
 
-                            if base_On_Order_Qty2 is None or base_On_Order_Qty2 != "":
+                            if base_On_Order_Qty2 is None or base_On_Order_Qty2 == "":
                                 base_On_Order_Qty2 = 0
 
-                            if base_On_Order_Qty3 is None or base_On_Order_Qty3 != "":
+                            if base_On_Order_Qty3 is None or base_On_Order_Qty3 == "":
                                 base_On_Order_Qty3 = 0
 
-                            if base_Total_PO_Qty is None or base_Total_PO_Qty != "":
+                            if base_Total_PO_Qty is None or base_Total_PO_Qty == "":
                                 base_Total_PO_Qty = 0
 
-                            if base_Class_Capacity_Qty is None or base_Class_Capacity_Qty != "":
+                            if base_Class_Capacity_Qty is None or base_Class_Capacity_Qty == "":
                                 base_Class_Capacity_Qty = 0
 
-                            if base_Actual_Enrollment_Qty is None or base_Actual_Enrollment_Qty != "":
+                            if base_Actual_Enrollment_Qty is None or base_Actual_Enrollment_Qty == "":
                                 base_Actual_Enrollment_Qty = 0
 
-                            if base_Est_Sales_Qty is None or base_Est_Sales_Qty != "":
+                            if base_Est_Sales_Qty is None or base_Est_Sales_Qty == "":
                                 base_Est_Sales_Qty = 0
 
-                            if base_Sale_Price is None or base_Sale_Price != "":
+                            if base_Sale_Price is None or base_Sale_Price == "":
                                 base_Sale_Price = 0
 
-                            if base_New_Pending_Return_Qty is None or base_New_Pending_Return_Qty != "":
+                            if base_New_Pending_Return_Qty is None or base_New_Pending_Return_Qty == "":
                                 base_New_Pending_Return_Qty = 0
 
-                            if base_Used_Pending_Return_Qty is None or base_Used_Pending_Return_Qty != "":
+                            if base_Used_Pending_Return_Qty is None or base_Used_Pending_Return_Qty == "":
                                 base_Used_Pending_Return_Qty = 0
 
-                            if base_New_insite_Pending_Order is None or base_New_insite_Pending_Order != "":
+                            if base_New_insite_Pending_Order is None or base_New_insite_Pending_Order == "":
                                 base_New_insite_Pending_Order = 0
 
-                            if base_Used_insite_Pending_Order is None or base_Used_insite_Pending_Order != "":
+                            if base_Used_insite_Pending_Order is None or base_Used_insite_Pending_Order == "":
                                 base_Used_insite_Pending_Order = 0
 
-                            if base_On_Order_Qty1_Used is None or  base_On_Order_Qty1_Used != "":
+                            if base_On_Order_Qty1_Used is None or base_On_Order_Qty1_Used == "":
                                 base_On_Order_Qty1_Used = 0
 
-                            if base_On_Order_Qty2_Used is None or  base_On_Order_Qty2_Used != "":
+                            if base_On_Order_Qty2_Used is None or base_On_Order_Qty2_Used == "":
                                 base_On_Order_Qty2_Used = 0
 
-                            if base_On_Order_Qty3_Used is None or  base_On_Order_Qty3_Used != "":
+                            if base_On_Order_Qty3_Used is None or base_On_Order_Qty3_Used == "":
                                 base_On_Order_Qty3_Used = 0
+                        logger.debug("base_ISBN: {}, base_New_Price: {}, base_Used_Price: {}, base_New_Rental_Price: {}, base_Ebook_Price: {}, base_Used_Rental_Price: {}, base_Requested_Qty: {}, base_New_Store_Qty: {}, base_New_Warehouse_Qty: {}, base_Used_Store_Qty: {}, base_Used_Warehouse_Qty: {}, base_On_Order_Qty1: {}, base_On_Order_Qty2: {}, base_On_Order_Qty3: {}, base_Total_PO_Qty: {}, base_Class_Capacity_Qty: {}, base_Actual_Enrollment_Qty: {}, base_Est_Sales_Qty: {}, base_Sale_Price: {}, base_New_Pending_Return_Qty: {}, base_Used_Pending_Return_Qty: {}, base_New_insite_Pending_Order: {}, base_Used_insite_Pending_Order: {}, base_On_Order_Qty1_Used: {}, base_On_Order_Qty2_Used: {}, base_On_Order_Qty3_Used: {}.".format(base_ISBN, base_New_Price, base_Used_Price, base_New_Rental_Price, base_Ebook_Price, base_Used_Rental_Price, base_Requested_Qty, base_New_Store_Qty, base_New_Warehouse_Qty, base_Used_Store_Qty, base_Used_Warehouse_Qty, base_On_Order_Qty1, base_On_Order_Qty2, base_On_Order_Qty3, base_Total_PO_Qty, base_Class_Capacity_Qty, base_Actual_Enrollment_Qty, base_Est_Sales_Qty, base_Sale_Price, base_New_Pending_Return_Qty, base_Used_Pending_Return_Qty, base_New_insite_Pending_Order, base_Used_insite_Pending_Order, base_On_Order_Qty1_Used, base_On_Order_Qty2_Used, base_On_Order_Qty3_Used))
+                        ##### Start book record###
+
+                        if base_Category.lower() == "t":
+                            ### Determine base item IPF
+                            ITEMIPF = 0
+                            out_text = {}
+                            out_price = {}
+
+
+                            if float(base_New_Price) > 0:
+                                ITEMIPF += 1
+                                out_text.update({(ITEMIPF*100): base_New_Price_Text})
+                                out_price.update({(ITEMIPF*100): base_New_Price})
+
+                            if float(base_Used_Price) > 0:
+                                ITEMIPF += 1
+                                out_text.update({(ITEMIPF*100): base_Used_Price_Text})
+                                out_price.update({(ITEMIPF*100): base_Used_Price})
+
+                            if float(base_New_Rental_Price) > 0:
+                                ITEMIPF += 1
+                                out_text.update({(ITEMIPF*100): base_New_Rental_Price_Text})
+                                out_price.update({(ITEMIPF*100): base_New_Rental_Price})
+
+                            if float(base_Used_Rental_Price) > 0:
+                                ITEMIPF += 1
+                                out_text.update({(ITEMIPF*100): base_Used_Rental_Price_Text})
+                                out_price.update({(ITEMIPF*100): base_Used_Rental_Price})
+
+                            if float(base_Ebook_Price) > 0:
+                                ITEMIPF += 1
+                                out_text.update({(ITEMIPF*100): base_Ebook_Price_Text})
+                                out_price.update({(ITEMIPF*100): base_Ebook_Price})
+
+                            logger.debug("base_Category : {}, ITEMIPF : {}, base_New_Price: {}, base_Used_Price: {}, base_Used_Rental_Price: {}, base_Used_Rental_Price: {}, base_Ebook_Price: {}, out_price_dict : {}, out_text_dict : {}.".format(base_Category, ITEMIPF, base_New_Price, base_Used_Price, base_New_Rental_Price, base_Used_Rental_Price, base_Ebook_Price, out_price, out_text))
+
+                            ######Ascending order output
+
+                            if sort_order == "ascending":
+                                out_price = sorted(out_price.items(), key=lambda kv: kv[0])
+                                out_text = sorted(out_text.items(), key=lambda kv: kv[0])
+
+                                logger.debug('out_price_dict : {}'.format(out_price))
+                                logger.debug('out_text_dict : {}'.format(out_text))
+
+                                ds = [out_price, out_text]
+                                item_ipf_dict = {}
+                                for k in out_price.keys():
+                                    item_ipf_dict[k] = tuple(item_ipf_dict[k] for item_ipf_dict in ds)
+
+                                logger.debug(len(item_ipf_dict))
+                                logger.debug(item_ipf_dict)
+
+                                for item_ipf_key in item_ipf_dict:
+
+                                    ITEMIPF = item_ipf_key
+                                    out_price_1 = item_ipf_dict.get(item_ipf_key)[0]
+                                    out_text_1 = item_ipf_dict.get(item_ipf_key)[1]
+                                    out_price_2 = ''
+                                    out_text_2 = ''
+                                    out_price_3 = ''
+                                    out_text_3 = ''
+                                    out_price_4 = ''
+                                    out_text_4 = ''
+                                    out_price_5 = ''
+                                    out_text_5 = ''
+                                    if len(item_ipf_dict) > 2:
+                                        out_price_2 = item_ipf_dict.get(item_ipf_key)[0]
+                                        out_text_2 = item_ipf_dict.get(item_ipf_key)[1]
+                                    if len(item_ipf_dict) > 4:
+                                        out_price_3 = item_ipf_dict.get(item_ipf_key)[0]
+                                        out_text_3 = item_ipf_dict.get(item_ipf_key)[1]
+                                    if len(item_ipf_dict) > 6:
+                                        out_price_4 = item_ipf_dict.get(item_ipf_key)[0]
+                                        out_text_4 = item_ipf_dict.get(item_ipf_key)[1]
+                                    if len(item_ipf_dict) > 8:
+                                        out_price_5 = item_ipf_dict.get(item_ipf_key)[0]
+                                        out_text_5 = item_ipf_dict.get(item_ipf_key)[1]
+                                logger.debug('out_price_dict : {}'.format(out_price))
+                                logger.debug('out_text_dict : {}'.format(out_text))
+
+                            ####### Natural order output
+
+                            if sort_order == "natural":
+
+                                ds = [out_price, out_text]
+                                item_ipf_dict = {}
+                                for k in out_price.keys():
+                                    item_ipf_dict[k] = tuple(item_ipf_dict[k] for item_ipf_dict in ds)
+
+                                logger.debug(len(item_ipf_dict))
+                                logger.debug(item_ipf_dict)
+
+                                for item_ipf_key in item_ipf_dict:
+
+                                    ITEMIPF = item_ipf_key
+                                    out_price_1 =item_ipf_dict.get(item_ipf_key)[0]
+                                    out_text_1 =item_ipf_dict.get(item_ipf_key)[1]
+                                    out_price_2 = ''
+                                    out_text_2 = ''
+                                    out_price_3 = ''
+                                    out_text_3 = ''
+                                    out_price_4 = ''
+                                    out_text_4 = ''
+                                    out_price_5 = ''
+                                    out_text_5 = ''
+                                    if len(item_ipf_dict) > 2:
+                                        out_price_2 = item_ipf_dict.get(item_ipf_key)[0]
+                                        out_text_2 = item_ipf_dict.get(item_ipf_key)[1]
+                                    if len(item_ipf_dict) > 4:
+                                        out_price_3 = item_ipf_dict.get(item_ipf_key)[0]
+                                        out_text_3 = item_ipf_dict.get(item_ipf_key)[1]
+                                    if len(item_ipf_dict) > 6:
+                                        out_price_4 = item_ipf_dict.get(item_ipf_key)[0]
+                                        out_text_4 = item_ipf_dict.get(item_ipf_key)[1]
+                                    if len(item_ipf_dict) > 8:
+                                        out_price_5 = item_ipf_dict.get(item_ipf_key)[0]
+                                        out_text_5 = item_ipf_dict.get(item_ipf_key)[1]
+
+                                logger.debug('out_price_dict : {}'.format(out_price))
+                                logger.debug('out_text_dict : {}'.format(out_text))
+
+                        ##### format all price feilds if not none
+
+                        if base_New_Price != '':
+                            base_New_Price = "%.2f" % (float(base_New_Price) / 1)
+
+                        if base_Used_Price != '':
+                            base_Used_Price = "%.2f" % (float(base_Used_Price) / 1)
+
+                        if base_New_Rental_Price != '':
+                            base_New_Rental_Price = "%.2f" % (float(base_New_Rental_Price) / 1)
+
+                        if base_Used_Rental_Price != '':
+                            base_Used_Rental_Price = "%.2f" % (float(base_Used_Rental_Price) / 1)
+
+                        if base_Ebook_Price != '':
+                            base_Ebook_Price = "%.2f" % (float(base_Ebook_Price) / 1)
+
+                        if base_Sale_Price != '':
+                            base_Sale_Price = "%.2f" % (float(base_Sale_Price) / 1)
+
+                        if out_price_1 != '':
+                            out_price_1 = "%.2f" % (float(out_price_1) / 1)
+
+                        if out_price_2 != '':
+                            out_price_2 = "%.2f" % (float(out_price_2) / 1)
+
+                        if out_price_3 != '':
+                            out_price_3 = "%.2f" % (float(out_price_3) / 1)
+
+                        if out_price_4 != '':
+                            out_price_4 = "%.2f" % (float(out_price_4) / 1)
+
+                        if out_price_5 != '':
+                            out_price_5 = "%.2f" % (float(out_price_5) / 1)
+
+                        ######## Format Quantities
+
+                        if base_New_Store_Qty != '':
+                            base_New_Store_Qty = "%d" % (float(base_New_Store_Qty) / 1)
+
+                        if base_New_Warehouse_Qty != '':
+                            base_New_Warehouse_Qty = "%.d" % (float(base_New_Warehouse_Qty) / 1)
+
+                        if base_Used_Store_Qty != '':
+                            base_Used_Store_Qty = "%.d" % (float(base_Used_Store_Qty) / 1)
+
+                        if base_Used_Warehouse_Qty != '':
+                            base_Used_Warehouse_Qty = "%.d" % (float(base_Used_Warehouse_Qty) / 1)
+
+                        if base_On_Order_Qty1 != '':
+                            base_On_Order_Qty1 = "%.d" % (float(base_On_Order_Qty1) / 1)
+
+                        if base_On_Order_Qty2 != '':
+                            base_On_Order_Qty2 = "%.d" % (float(base_On_Order_Qty2) / 1)
+
+                        if base_On_Order_Qty3 != '':
+                            base_On_Order_Qty3 = "%.d" % (float(base_On_Order_Qty3) / 1)
+
+                        if base_Total_PO_Qty != '':
+                            base_Total_PO_Qty = "%.d" % (float(base_Total_PO_Qty) / 1)
+
+                        if base_Requested_Qty != '':
+                            base_Requested_Qty = "%.d" % (float(base_Requested_Qty) / 1)
+
+                        if base_Class_Capacity_Qty != '':
+                            base_Class_Capacity_Qty = "%.d" % (float(base_Class_Capacity_Qty) / 1)
+
+                        if base_Actual_Enrollment_Qty != '':
+                            base_Actual_Enrollment_Qty = "%.d" % (float(base_Actual_Enrollment_Qty) / 1)
+
+                        if base_Est_Sales_Qty != '':
+                            base_Est_Sales_Qty = "%.d" % (float(base_Est_Sales_Qty) / 1)
+
+                        if base_On_Order_Qty1_Used != '':
+                            base_On_Order_Qty1_Used = "%.d" % (float(base_On_Order_Qty1_Used) / 1)
+
+                        if base_On_Order_Qty2_Used != '':
+                            base_On_Order_Qty2_Used = "%.d" % (float(base_On_Order_Qty2_Used) / 1)
+
+                        if base_On_Order_Qty3_Used != '':
+                            base_On_Order_Qty3_Used = "%.d" % (float(base_On_Order_Qty3_Used) / 1)
+
+                        if base_New_Pending_Return_Qty != '':
+                            base_New_Pending_Return_Qty = "%.d" % (float(base_New_Pending_Return_Qty) / 1)
+
+                        if base_Used_Pending_Return_Qty != '':
+                            base_Used_Pending_Return_Qty = "%.d" % (float(base_Used_Pending_Return_Qty) / 1)
+
+                        if base_New_insite_Pending_Order != '':
+                            base_New_insite_Pending_Order = "%.d" % (float(base_New_insite_Pending_Order) / 1)
+
+                        if base_Used_insite_Pending_Order != '':
+                            base_Used_insite_Pending_Order = "%.d" % (float(base_Used_insite_Pending_Order) / 1)
+
+                        if base_New_Rental_insite_Pending_Order != '':
+                            base_New_Rental_insite_Pending_Order = "%.d" % (float(base_New_Rental_insite_Pending_Order) / 1)
+
+                        if base_Used_insite_Pending_Order != '':
+                            base_Used_insite_Pending_Order = "%.d" % (float(base_Used_insite_Pending_Order) / 1)
+
+                        ##### Calculate Total QOH
+
+                        Total_QOH = 0
+
+                        if New_On_Hand.lower() == "add":
+                            Total_QOH = Total_QOH + base_New_Store_Qty
+                        elif New_On_Hand.lower() == "subtract":
+                            Total_QOH = Total_QOH - base_New_Store_Qty
 
 
                 if new_file.lower().endswith("tx1"):
@@ -778,6 +1014,7 @@ def main():
         logger.info("Execution time: " + str("%.2f" % (float(total_time) / 60)) + " minutes.")
     logger.info("---")
 
+
 ###end main
 
 #################################################start subroutines###########################################################
@@ -795,6 +1032,8 @@ def file_handler(data_file):
     file_content = open(input_data_path + data_file, "r", encoding='utf-8')
 
     return file_content
+
+
 #################################################end subroutines#############################################################
 
 if __name__ == '__main__':
