@@ -422,7 +422,7 @@ def main():
 
                         secondary_file_dict = {}
 
-                        if len(row_fields) >= 19:
+                        if len(row_fields) == 19:
                             secondary_file_dict.update({"GenKey": row_fields[0]})
                             secondary_file_dict.update({"csn": row_fields[1]})
                             secondary_file_dict.update({"seq_no": row_fields[2]})
@@ -509,7 +509,9 @@ def main():
                         if len(row_fields) == 41:
                             secondary_file_dict.update({"ebook2_price_5": row_fields[40]})
 
-                        secondary_file_data_list.append(json.dumps(secondary_file_dict))
+                        secondary_file_data_list.append(secondary_file_dict)
+                        logger.debug("Row: {}, with a length of {}.".format(row_counter, len(row_fields)))
+                        logger.debug(secondary_file_dict)
                     logger.debug("secondary file data list {}.".format(secondary_file_data_list))
 
                 if new_file.lower().endswith("txt"):
@@ -1101,7 +1103,55 @@ def main():
                             itemid = base_ISBN
                             logger.debug("{} This ISBN {}, has an ITEMIPF of {}.".format(row_counter, base_ISBN, ITEMIPF))
 
+                            ##### get secondary info from secondary_data_file_list
 
+                            sec_data_dict_list = ""
+                            sec_Term = ""
+
+                            sec_data_dict_list = list(filter(lambda person: person["ISBN"] == base_ISBN, secondary_file_data_list))
+
+                            logger.debug(sec_data_dict_list)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            if str(base_ISBN_HR).lower() != "dgt":
+                                v_ebook1_vendor = ""
+                                v_ebook1_period_1 = ""
+                                v_ebook1_price_1 = ""
+                                v_ebook1_period_2 = ""
+                                v_ebook1_price_2 = ""
+                                v_ebook1_period_3 = ""
+                                v_ebook1_price_3 = ""
+                                v_ebook1_period_4 = ""
+                                v_ebook1_price_4 = ""
+                                v_ebook1_period_5 = ""
+                                v_ebook1_price_5 = ""
+                                v_ebook2_vendor = ""
+                                v_ebook2_period_1 = ""
+                                v_ebook2_price_1 = ""
+                                v_ebook2_period_2 = ""
+                                v_ebook2_price_2 = ""
+                                v_ebook2_period_3 = ""
+                                v_ebook2_price_3 = ""
+                                v_ebook2_period_4 = ""
+                                v_ebook2_price_4 = ""
+                                v_ebook2_period_5 = ""
+                                v_ebook2_price_5 = ""
+
+                            else:
+                                pass
 
 
 
