@@ -505,6 +505,11 @@ def main():
                                 base_GenKey, base_FormatFlag, base_Author, base_Title, base_ISBN, base_ISBN_HR, base_Vendor_Style, base_Publisher, base_Imprint, base_Edition, base_Edition_Status, base_New_Price, base_New_Price_Text, base_Used_Price, base_Used_Price_Text, base_New_Rental_Price, base_New_Rental_Price_Text, base_Ebook_Price, base_Ebook_Price_Text, base_Used_Rental_Price, base_Used_Rental_Price_Text, base_Sale_Price1, base_Sale_Start_Date1, base_Sale_End_Date1, base_Sale_Start_Time1, base_Sale_End_Time1, base_Sale_Price2, base_Sale_Start_Date2, base_Sale_End_Date2, base_Sale_Start_Time2, base_Sale_End_Time2, base_Sale_Price3, base_Sale_Start_Date3, base_Sale_End_Date3, base_Sale_Start_Time3, base_Sale_End_Time3, base_Sale_Price4, base_Sale_Start_Date4, base_Sale_End_Date4, base_Sale_Start_Time4, base_Sale_End_Time4, base_Term, base_Term_Description, base_Requested_Qty, base_Class_Capacity_Qty, base_Actual_Enrollment_Qty, base_Est_Sales_Qty, base_Category, base_Division,
                                 base_Department, base_Class, base_New_Store_Qty, base_New_Warehouse_Qty, base_Used_Store_Qty, base_Used_Warehouse_Qty, base_New_Pending_Return_Qty, base_Used_Pending_Return_Qty, base_New_insite_Pending_Order, base_Used_insite_Pending_Order, base_New_Rental_insite_Pending_Order, base_Used_Rental_insite_Pending_Order, base_On_Order_PO1, base_On_Order_PO1_Vendor, base_On_Order_Qty1, base_On_Order_Qty1_Used, base_On_Order_Date1, base_On_Order_PO2, base_On_Order_PO2_Vendor, base_On_Order_Qty2, base_On_Order_Qty2_Used, base_On_Order_Date2, base_On_Order_PO3, base_On_Order_PO3_Vendor, base_On_Order_Qty3, base_On_Order_Qty3_Used, base_On_Order_Date3, base_Total_PO_Qty, base_image_name))
 
+                        ###### Trim author and title to correct lenghts
+
+                        base_Author = base_Author[0:254]
+                        base_Title = base_Title[0:254]
+
                         ###format PO Dates
 
                         if date_format != "YYYYMMDD":
@@ -675,61 +680,64 @@ def main():
 
                             if float(base_New_Price) > 0:
                                 ITEMIPF += 1
-                                out_text.update({(ITEMIPF*100): base_New_Price_Text})
-                                out_price.update({(ITEMIPF*100): base_New_Price})
+                                out_text.update({(ITEMIPF*100): (base_New_Price, base_New_Price_Text)})
+                                # out_price.update({(ITEMIPF*100): base_New_Price})
 
                             if float(base_Used_Price) > 0:
                                 ITEMIPF += 1
-                                out_text.update({(ITEMIPF*100): base_Used_Price_Text})
-                                out_price.update({(ITEMIPF*100): base_Used_Price})
+                                out_text.update({(ITEMIPF*100): (base_Used_Price, base_Used_Price_Text)})
+                                # out_price.update({(ITEMIPF*100): base_Used_Price})
 
                             if float(base_New_Rental_Price) > 0:
                                 ITEMIPF += 1
-                                out_text.update({(ITEMIPF*100): base_New_Rental_Price_Text})
-                                out_price.update({(ITEMIPF*100): base_New_Rental_Price})
+                                out_text.update({(ITEMIPF*100): (base_New_Rental_Price, base_New_Rental_Price_Text)})
+                                # out_price.update({(ITEMIPF*100): base_New_Rental_Price})
 
                             if float(base_Used_Rental_Price) > 0:
                                 ITEMIPF += 1
-                                out_text.update({(ITEMIPF*100): base_Used_Rental_Price_Text})
-                                out_price.update({(ITEMIPF*100): base_Used_Rental_Price})
+                                out_text.update({(ITEMIPF*100): (base_Used_Rental_Price, base_Used_Rental_Price_Text)})
+                                # out_price.update({(ITEMIPF*100): base_Used_Rental_Price})
 
                             if float(base_Ebook_Price) > 0:
                                 ITEMIPF += 1
-                                out_text.update({(ITEMIPF*100): base_Ebook_Price_Text})
-                                out_price.update({(ITEMIPF*100): base_Ebook_Price})
+                                out_text.update({(ITEMIPF*100): (base_Ebook_Price, base_Ebook_Price_Text)})
+                                # out_price.update({(ITEMIPF*100): base_Ebook_Price})
 
                             logger.debug("base_Category : {}, ITEMIPF : {}, base_New_Price: {}, base_Used_Price: {}, base_Used_Rental_Price: {}, base_Used_Rental_Price: {}, base_Ebook_Price: {}, out_price_dict : {}, out_text_dict : {}.".format(base_Category, ITEMIPF, base_New_Price, base_Used_Price, base_New_Rental_Price, base_Used_Rental_Price, base_Ebook_Price, out_price, out_text))
+
+                            out_price_1 = 0
+                            out_text_1 = ''
+                            out_price_2 = 0
+                            out_text_2 = ''
+                            out_price_3 = 0
+                            out_text_3 = ''
+                            out_price_4 = 0
+                            out_text_4 = ''
+                            out_price_5 = 0
+                            out_text_5 = ''
 
                             ######Ascending order output
 
                             if sort_order == "ascending":
-                                out_price = sorted(out_price.items(), key=lambda kv: kv[0])
-                                out_text = sorted(out_text.items(), key=lambda kv: kv[0])
+                                # out_price = sorted(out_price.items(), key=lambda kv: kv[0])
+                                item_ipf_dict = sorted(out_text.items(), key=lambda kv: kv[0])
 
-                                logger.debug('out_price_dict : {}'.format(out_price))
+                                # logger.debug('out_price_dict : {}'.format(out_price))
                                 logger.debug('out_text_dict : {}'.format(out_text))
 
-                                ds = [out_price, out_text]
-                                item_ipf_dict = {}
-                                for k in out_price.keys():
-                                    item_ipf_dict[k] = tuple(item_ipf_dict[k] for item_ipf_dict in ds)
-
-                                logger.debug(len(item_ipf_dict))
-                                logger.debug(item_ipf_dict)
+                                # ds = [out_price, out_text]
+                                # item_ipf_dict = {}
+                                # for k in out_price.keys():
+                                #     item_ipf_dict[k] = tuple(item_ipf_dict[k] for item_ipf_dict in ds)
+                                #
+                                # logger.debug(len(item_ipf_dict))
+                                # logger.debug(item_ipf_dict)
 
                                 for item_ipf_key in item_ipf_dict:
 
                                     ITEMIPF = item_ipf_key
                                     out_price_1 = item_ipf_dict.get(item_ipf_key)[0]
                                     out_text_1 = item_ipf_dict.get(item_ipf_key)[1]
-                                    out_price_2 = ''
-                                    out_text_2 = ''
-                                    out_price_3 = ''
-                                    out_text_3 = ''
-                                    out_price_4 = ''
-                                    out_text_4 = ''
-                                    out_price_5 = ''
-                                    out_text_5 = ''
                                     if len(item_ipf_dict) > 2:
                                         out_price_2 = item_ipf_dict.get(item_ipf_key)[0]
                                         out_text_2 = item_ipf_dict.get(item_ipf_key)[1]
@@ -749,27 +757,21 @@ def main():
 
                             if sort_order == "natural":
 
-                                ds = [out_price, out_text]
-                                item_ipf_dict = {}
-                                for k in out_price.keys():
-                                    item_ipf_dict[k] = tuple(item_ipf_dict[k] for item_ipf_dict in ds)
+                                # ds = [out_price, out_text]
+                                # item_ipf_dict = {}
+                                # for k in out_price.keys():
+                                #     item_ipf_dict[k] = tuple(item_ipf_dict[k] for item_ipf_dict in ds)
+                                #
+                                # logger.debug("Length of item_ipf_dict: {}".format(len(item_ipf_dict)))
+                                # logger.debug("item_ipf_dict: {}".format(item_ipf_dict))
 
-                                logger.debug(len(item_ipf_dict))
-                                logger.debug(item_ipf_dict)
+                                item_ipf_dict = out_text
 
                                 for item_ipf_key in item_ipf_dict:
 
                                     ITEMIPF = item_ipf_key
                                     out_price_1 =item_ipf_dict.get(item_ipf_key)[0]
                                     out_text_1 =item_ipf_dict.get(item_ipf_key)[1]
-                                    out_price_2 = ''
-                                    out_text_2 = ''
-                                    out_price_3 = ''
-                                    out_text_3 = ''
-                                    out_price_4 = ''
-                                    out_text_4 = ''
-                                    out_price_5 = ''
-                                    out_text_5 = ''
                                     if len(item_ipf_dict) > 2:
                                         out_price_2 = item_ipf_dict.get(item_ipf_key)[0]
                                         out_text_2 = item_ipf_dict.get(item_ipf_key)[1]
@@ -783,117 +785,222 @@ def main():
                                         out_price_5 = item_ipf_dict.get(item_ipf_key)[0]
                                         out_text_5 = item_ipf_dict.get(item_ipf_key)[1]
 
-                                logger.debug('out_price_dict : {}'.format(out_price))
-                                logger.debug('out_text_dict : {}'.format(out_text))
 
-                        ##### format all price feilds if not none
+                                    ##### format all price feilds if not none
 
-                        if base_New_Price != '':
-                            base_New_Price = "%.2f" % (float(base_New_Price) / 1)
+                                    if base_New_Price != '':
+                                        base_New_Price = "%.2f" % (float(base_New_Price) / 1)
 
-                        if base_Used_Price != '':
-                            base_Used_Price = "%.2f" % (float(base_Used_Price) / 1)
+                                    if base_Used_Price != '':
+                                        base_Used_Price = "%.2f" % (float(base_Used_Price) / 1)
 
-                        if base_New_Rental_Price != '':
-                            base_New_Rental_Price = "%.2f" % (float(base_New_Rental_Price) / 1)
+                                    if base_New_Rental_Price != '':
+                                        base_New_Rental_Price = "%.2f" % (float(base_New_Rental_Price) / 1)
 
-                        if base_Used_Rental_Price != '':
-                            base_Used_Rental_Price = "%.2f" % (float(base_Used_Rental_Price) / 1)
+                                    if base_Used_Rental_Price != '':
+                                        base_Used_Rental_Price = "%.2f" % (float(base_Used_Rental_Price) / 1)
 
-                        if base_Ebook_Price != '':
-                            base_Ebook_Price = "%.2f" % (float(base_Ebook_Price) / 1)
+                                    if base_Ebook_Price != '':
+                                        base_Ebook_Price = "%.2f" % (float(base_Ebook_Price) / 1)
 
-                        if base_Sale_Price != '':
-                            base_Sale_Price = "%.2f" % (float(base_Sale_Price) / 1)
+                                    if base_Sale_Price != '':
+                                        base_Sale_Price = "%.2f" % (float(base_Sale_Price) / 1)
 
-                        if out_price_1 != '':
-                            out_price_1 = "%.2f" % (float(out_price_1) / 1)
+                                    if isinstance(out_price_1, float):
+                                        out_price_1 = "%.2f" % (float(out_price_1) / 1)
 
-                        if out_price_2 != '':
-                            out_price_2 = "%.2f" % (float(out_price_2) / 1)
+                                    if isinstance(out_price_2, float):
+                                        out_price_2 = "%.2f" % (float(out_price_2) / 1)
 
-                        if out_price_3 != '':
-                            out_price_3 = "%.2f" % (float(out_price_3) / 1)
+                                    if isinstance(out_price_3, float):
+                                        out_price_3 = "%.2f" % (float(out_price_3) / 1)
 
-                        if out_price_4 != '':
-                            out_price_4 = "%.2f" % (float(out_price_4) / 1)
+                                    if isinstance(out_price_4, float):
+                                        out_price_4 = "%.2f" % (float(out_price_4) / 1)
 
-                        if out_price_5 != '':
-                            out_price_5 = "%.2f" % (float(out_price_5) / 1)
+                                    if isinstance(out_price_5, float):
+                                        out_price_5 = "%.2f" % (float(out_price_5) / 1)
 
-                        ######## Format Quantities
+                                    ######## Format Quantities
 
-                        if base_New_Store_Qty != '':
-                            base_New_Store_Qty = "%d" % (float(base_New_Store_Qty) / 1)
+                                    if base_New_Store_Qty != '':
+                                        base_New_Store_Qty = "%d" % (float(base_New_Store_Qty) / 1)
 
-                        if base_New_Warehouse_Qty != '':
-                            base_New_Warehouse_Qty = "%.d" % (float(base_New_Warehouse_Qty) / 1)
+                                    if base_New_Warehouse_Qty != '':
+                                        base_New_Warehouse_Qty = "%.d" % (float(base_New_Warehouse_Qty) / 1)
 
-                        if base_Used_Store_Qty != '':
-                            base_Used_Store_Qty = "%.d" % (float(base_Used_Store_Qty) / 1)
+                                    if base_Used_Store_Qty != '':
+                                        base_Used_Store_Qty = "%.d" % (float(base_Used_Store_Qty) / 1)
 
-                        if base_Used_Warehouse_Qty != '':
-                            base_Used_Warehouse_Qty = "%.d" % (float(base_Used_Warehouse_Qty) / 1)
+                                    if base_Used_Warehouse_Qty != '':
+                                        base_Used_Warehouse_Qty = "%.d" % (float(base_Used_Warehouse_Qty) / 1)
 
-                        if base_On_Order_Qty1 != '':
-                            base_On_Order_Qty1 = "%.d" % (float(base_On_Order_Qty1) / 1)
+                                    if base_On_Order_Qty1 != '':
+                                        base_On_Order_Qty1 = "%.d" % (float(base_On_Order_Qty1) / 1)
 
-                        if base_On_Order_Qty2 != '':
-                            base_On_Order_Qty2 = "%.d" % (float(base_On_Order_Qty2) / 1)
+                                    if base_On_Order_Qty2 != '':
+                                        base_On_Order_Qty2 = "%.d" % (float(base_On_Order_Qty2) / 1)
 
-                        if base_On_Order_Qty3 != '':
-                            base_On_Order_Qty3 = "%.d" % (float(base_On_Order_Qty3) / 1)
+                                    if base_On_Order_Qty3 != '':
+                                        base_On_Order_Qty3 = "%.d" % (float(base_On_Order_Qty3) / 1)
 
-                        if base_Total_PO_Qty != '':
-                            base_Total_PO_Qty = "%.d" % (float(base_Total_PO_Qty) / 1)
+                                    if base_Total_PO_Qty != '':
+                                        base_Total_PO_Qty = "%.d" % (float(base_Total_PO_Qty) / 1)
 
-                        if base_Requested_Qty != '':
-                            base_Requested_Qty = "%.d" % (float(base_Requested_Qty) / 1)
+                                    if base_Requested_Qty != '':
+                                        base_Requested_Qty = "%.d" % (float(base_Requested_Qty) / 1)
 
-                        if base_Class_Capacity_Qty != '':
-                            base_Class_Capacity_Qty = "%.d" % (float(base_Class_Capacity_Qty) / 1)
+                                    if base_Class_Capacity_Qty != '':
+                                        base_Class_Capacity_Qty = "%.d" % (float(base_Class_Capacity_Qty) / 1)
 
-                        if base_Actual_Enrollment_Qty != '':
-                            base_Actual_Enrollment_Qty = "%.d" % (float(base_Actual_Enrollment_Qty) / 1)
+                                    if base_Actual_Enrollment_Qty != '':
+                                        base_Actual_Enrollment_Qty = "%.d" % (float(base_Actual_Enrollment_Qty) / 1)
 
-                        if base_Est_Sales_Qty != '':
-                            base_Est_Sales_Qty = "%.d" % (float(base_Est_Sales_Qty) / 1)
+                                    if base_Est_Sales_Qty != '':
+                                        base_Est_Sales_Qty = "%.d" % (float(base_Est_Sales_Qty) / 1)
 
-                        if base_On_Order_Qty1_Used != '':
-                            base_On_Order_Qty1_Used = "%.d" % (float(base_On_Order_Qty1_Used) / 1)
+                                    if base_On_Order_Qty1_Used != '':
+                                        base_On_Order_Qty1_Used = "%.d" % (float(base_On_Order_Qty1_Used) / 1)
 
-                        if base_On_Order_Qty2_Used != '':
-                            base_On_Order_Qty2_Used = "%.d" % (float(base_On_Order_Qty2_Used) / 1)
+                                    if base_On_Order_Qty2_Used != '':
+                                        base_On_Order_Qty2_Used = "%.d" % (float(base_On_Order_Qty2_Used) / 1)
 
-                        if base_On_Order_Qty3_Used != '':
-                            base_On_Order_Qty3_Used = "%.d" % (float(base_On_Order_Qty3_Used) / 1)
+                                    if base_On_Order_Qty3_Used != '':
+                                        base_On_Order_Qty3_Used = "%.d" % (float(base_On_Order_Qty3_Used) / 1)
 
-                        if base_New_Pending_Return_Qty != '':
-                            base_New_Pending_Return_Qty = "%.d" % (float(base_New_Pending_Return_Qty) / 1)
+                                    if base_New_Pending_Return_Qty != '':
+                                        base_New_Pending_Return_Qty = "%.d" % (float(base_New_Pending_Return_Qty) / 1)
 
-                        if base_Used_Pending_Return_Qty != '':
-                            base_Used_Pending_Return_Qty = "%.d" % (float(base_Used_Pending_Return_Qty) / 1)
+                                    if base_Used_Pending_Return_Qty != '':
+                                        base_Used_Pending_Return_Qty = "%.d" % (float(base_Used_Pending_Return_Qty) / 1)
 
-                        if base_New_insite_Pending_Order != '':
-                            base_New_insite_Pending_Order = "%.d" % (float(base_New_insite_Pending_Order) / 1)
+                                    if base_New_insite_Pending_Order != '':
+                                        base_New_insite_Pending_Order = "%.d" % (float(base_New_insite_Pending_Order) / 1)
 
-                        if base_Used_insite_Pending_Order != '':
-                            base_Used_insite_Pending_Order = "%.d" % (float(base_Used_insite_Pending_Order) / 1)
+                                    if base_Used_insite_Pending_Order != '':
+                                        base_Used_insite_Pending_Order = "%.d" % (float(base_Used_insite_Pending_Order) / 1)
 
-                        if base_New_Rental_insite_Pending_Order != '':
-                            base_New_Rental_insite_Pending_Order = "%.d" % (float(base_New_Rental_insite_Pending_Order) / 1)
+                                    if base_New_Rental_insite_Pending_Order != '':
+                                        base_New_Rental_insite_Pending_Order = "%.d" % (float(base_New_Rental_insite_Pending_Order) / 1)
 
-                        if base_Used_insite_Pending_Order != '':
-                            base_Used_insite_Pending_Order = "%.d" % (float(base_Used_insite_Pending_Order) / 1)
+                                    if base_Used_insite_Pending_Order != '':
+                                        base_Used_insite_Pending_Order = "%.d" % (float(base_Used_insite_Pending_Order) / 1)
 
-                        ##### Calculate Total QOH
+                                    ##### Calculate Total QOH
 
-                        Total_QOH = 0
+                                    Total_QOH = 0
 
-                        if New_On_Hand.lower() == "add":
-                            Total_QOH = Total_QOH + base_New_Store_Qty
-                        elif New_On_Hand.lower() == "subtract":
-                            Total_QOH = Total_QOH - base_New_Store_Qty
+                                    if New_On_Hand.lower() == "add":
+                                        Total_QOH = Total_QOH + int(base_New_Store_Qty)
+                                    elif New_On_Hand.lower() == "subtract":
+                                        Total_QOH = Total_QOH - int(base_New_Store_Qty)
+
+                                    if Used_On_Hand.lower() == "add":
+                                        Total_QOH = Total_QOH + int(base_Used_Store_Qty)
+                                    elif Used_On_Hand.lower() == "subtract":
+                                        Total_QOH = Total_QOH - int(base_Used_Store_Qty)
+
+                                    if New_Addl.lower() == "add":
+                                        Total_QOH = Total_QOH + int(base_New_Warehouse_Qty)
+                                    elif New_Addl.lower() == "subtract":
+                                        Total_QOH = Total_QOH - int(base_New_Warehouse_Qty)
+
+                                    if Used_Addl.lower() == "add":
+                                        Total_QOH = Total_QOH + int(base_Used_Warehouse_Qty)
+                                    elif Used_Addl.lower() == "subtract":
+                                        Total_QOH = Total_QOH - int(base_Used_Warehouse_Qty)
+
+                                    if New_Pend_Ret.lower() == "add":
+                                        Total_QOH = Total_QOH + int(base_New_Pending_Return_Qty)
+                                    elif New_Pend_Ret.lower() == "subtract":
+                                        Total_QOH = Total_QOH - int(base_New_Pending_Return_Qty)
+
+                                    if Used_Pend_Ret.lower() == "add":
+                                        Total_QOH = Total_QOH + int(base_Used_Pending_Return_Qty)
+                                    elif Used_Pend_Ret.lower() == "subtract":
+                                        Total_QOH = Total_QOH - int(base_Used_Pending_Return_Qty)
+
+                                    if New_insite_Pend_Ord.lower() == "add":
+                                        Total_QOH = Total_QOH + int(base_New_insite_Pending_Order)
+                                    elif New_insite_Pend_Ord.lower() == "subtract":
+                                        Total_QOH = Total_QOH - int(base_New_insite_Pending_Order)
+
+                                    if Used_insite_Pend_Ord.lower() == "add":
+                                        Total_QOH = Total_QOH + int(base_Used_insite_Pending_Order)
+                                    elif Used_insite_Pend_Ord.lower() == "subtract":
+                                        Total_QOH = Total_QOH - int(base_Used_insite_Pending_Order)
+
+                                    if New_Rental_insite_Pend_Ord.lower() == "add":
+                                        Total_QOH = Total_QOH + int(base_New_Rental_insite_Pending_Order)
+                                    elif New_Rental_insite_Pend_Ord.lower() == "subtract":
+                                        Total_QOH = Total_QOH - int(base_New_Rental_insite_Pending_Order)
+
+                                    if Used_Rental_insite_Pend_Ord.lower() == "add":
+                                        Total_QOH = Total_QOH + int(base_Used_Rental_insite_Pending_Order)
+                                    elif Used_Rental_insite_Pend_Ord.lower() == "subtract":
+                                        Total_QOH = Total_QOH - int(base_Used_Rental_insite_Pending_Order)
+
+                                    ####### handler for missing all prices
+
+                                    if ITEMIPF == 0 and str(none_100).lower() == "true":
+                                        ITEMIPF = 100
+                                    elif ITEMIPF == 0 and str(none_100).lower() == "false" and str(base_ISBN).lower() == "ntr":
+                                        ITEMIPF = 104
+
+                                        logger.info("record {}, {}, in {} did not generate valid IPF, default IPF{} assigned".format(row_counter, base_ISBN, new_file, ITEMIPF))
+
+                                    ##### Check ipf1x5 threshold exceeded, if so assign IPF1X5
+                                    logger.debug("Out Prices 1-5, {}, {}, {}, {}, {}. IPF1X5 Threshold {}.".format(out_price_1, out_price_2, out_price_3, out_price_4, out_price_4, out_price_5, ipf1x5_threshold))
+                                    if float(out_price_1) or float(out_price_2) or float(out_price_3) or float(out_price_4) or float(out_price_5) > float(ipf1x5_threshold) > 0:
+                                        ITEMIPF = 105
+                                        logger.debug("This ISBN {}, has Prices {} greater than IPF threshold {}, setting ITEMIPF to {}.".format(base_ISBN, [out_price_1, out_price_2, out_price_3, out_price_4, out_price_5], ipf1x5_threshold, ITEMIPF))
+
+                                    ##### ipf for none on hand but some on order
+
+                                    if Total_QOH <= 0 and int(base_Total_PO_Qty) > 0 and ITEMIPF != 104:
+                                       ITEMIPF = 101
+                                       logger.debug("This ISBN {}, has {} quantity in stock and {} on order, setting ITEMIPF to {}.".format(base_ISBN, Total_QOH, base_Total_PO_Qty, ITEMIPF))
+
+                                    ##### ipf for none on hand and none on order
+
+                                    if Total_QOH <= 0 and int(base_Total_PO_Qty) <= 0 and ITEMIPF != 104:
+                                        ITEMIPF = 102
+                                        logger.debug("This ISBN {}, has {} quantity in stock and {} on order, setting ITEMIPF to {}.".format(base_ISBN, Total_QOH, base_Total_PO_Qty, ITEMIPF))
+
+                                    ##### ipf for none on hand and none on order, but prefix 281 selected via IPF100 parameter
+
+                                    if Total_QOH <= 0 and int(base_Total_PO_Qty) <= 0 and str(IPF100).lower() == "true" and base_ISBN[0:3] == 281:
+                                        ITEMIPF = 100
+                                        logger.debug("This ISBN {}, has {} quantity in stock and {} on order, setting ITEMIPF to {}.".format(base_ISBN, Total_QOH, base_Total_PO_Qty, ITEMIPF))
+
+                                    ##### ipf for ISBN = "NTR"
+
+                                    if str(base_ISBN).lower() == "ntr":
+                                        ITEMIPF = 106
+                                        logger.debug("This ISBN {}, is flagged as NTR setting ITEMIPF to {}.".format(base_ISBN, ITEMIPF))
+
+                                    ##### go to IPF x5x series for store format "D" (organized by Dept/Course/Section) vs "A", which is alpha by author/title
+
+                                    if str(base_FormatFlag).lower() == "d":
+                                        ITEMIPF = ITEMIPF + 50
+                                    logger.debug("This ISBN {}, is flagged for formating with {}. Incrementing ITEMIPF by 50".format(base_ISBN, base_FormatFlag))
+                                    ##### check for digital edition, set base IPF at 700
+
+                                    if str(base_ISBN_HR).lower() == "dgt":
+                                        ITEMIPF = 700
+                                        logger.debug("This ISBN {}, is only digital setting ITEMIPF to {}.".format(base_ISBN, ITEMIPF))
+                                    ##### Always create base ISBN record
+                                    for item_ipf_key in item_ipf_dict:
+
+                                        itemid = base_ISBN
+                                        out_text = item_ipf_dict.get(item_ipf_key)[1]
+
+
+                                        logger.debug("Item IPF {} for itemid_type {}, for itemID {}".format(ITEMIPF, out_text, itemid))
+
+
+
+
 
 
                 if new_file.lower().endswith("tx1"):
