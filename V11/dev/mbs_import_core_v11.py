@@ -26,7 +26,7 @@ def main():
     try:
 
         global file_name, drive_letter, use_pricer_level, log_level, log_delete_after, log_max, log_name, log_path, log_file, use_pricer_db, local_db, data_in_save, data_input_delete_after, input_data_path, wait_time, sort_order, none_100, usage_convert, IPF100, term_multi, date_format, ipf1x5_threshold, display_original, section_commas, New_On_Hand, Used_On_Hand, New_Addl, Used_Addl, New_Pend_Ret, Used_Pend_Ret, New_insite_Pend_Ord, Used_insite_Pend_Ord, New_Rental_insite_Pend_Ord, Used_Rental_insite_Pend_Ord, use_pfi, use_api, use_soap, i1_path, m1_path, r7_path, api_page_count, soap_api_ip, soap_token, soap_user, rest_api_url, rest_token
-        global requests, db, client, config_path, license_status, pricer_api_alive, origin_time, total_api_req_counter
+        global requests, db, client, config_path, license_status, pricer_api_alive, logger, origin_time, total_api_req_counter
 
         origin_time = time.time()
 
@@ -271,6 +271,7 @@ def main():
             sys.exit(99)
 
             # start soap client if used
+
         if (use_api and use_soap):
             from requests import Session
             from zeep import Client
@@ -413,6 +414,8 @@ def main():
 
                 if new_file.lower().endswith("tx1"):
 
+                    row_counter = 0
+
                     secondary_file_data_list = []
 
                     for file_row in file_content:
@@ -422,7 +425,7 @@ def main():
 
                         secondary_file_dict = {}
 
-                        if len(row_fields) == 19:
+                        if len(row_fields) >= 19:
                             secondary_file_dict.update({"GenKey": row_fields[0]})
                             secondary_file_dict.update({"csn": row_fields[1]})
                             secondary_file_dict.update({"seq_no": row_fields[2]})
@@ -442,72 +445,178 @@ def main():
                             secondary_file_dict.update({"class_cap": row_fields[16]})
                             secondary_file_dict.update({"prof_requested": row_fields[17]})
                             secondary_file_dict.update({"estimated_sales": row_fields[18]})
-                            secondary_file_dict.update({"ebook1_vendor": "0"})
-                            secondary_file_dict.update({"ebook1_period_1": "0"})
-                            secondary_file_dict.update({"ebook1_price_1": "0"})
-                            secondary_file_dict.update({"ebook1_period_2": "0"})
-                            secondary_file_dict.update({"ebook1_price_2": "0"})
-                            secondary_file_dict.update({"ebook1_period_3": "0"})
-                            secondary_file_dict.update({"ebook1_price_3": "0"})
-                            secondary_file_dict.update({"ebook1_period_4": "0"})
-                            secondary_file_dict.update({"ebook1_price_4": "0"})
-                            secondary_file_dict.update({"ebook1_period_5": "0"})
-                            secondary_file_dict.update({"ebook1_price_5": "0"})
-                            secondary_file_dict.update({"ebook2_vendor": "0"})
-                            secondary_file_dict.update({"ebook2_period_1": "0"})
-                            secondary_file_dict.update({"ebook2_price_1": "0"})
-                            secondary_file_dict.update({"ebook2_period_2": "0"})
-                            secondary_file_dict.update({"ebook2_price_2": "0"})
-                            secondary_file_dict.update({"ebook2_period_3": "0"})
-                            secondary_file_dict.update({"ebook2_price_3": "0"})
-                            secondary_file_dict.update({"ebook2_period_4": "0"})
-                            secondary_file_dict.update({"ebook2_price_4": "0"})
-                            secondary_file_dict.update({"ebook2_period_5": "0"})
-                            secondary_file_dict.update({"ebook2_price_5": "0"})
+                            secondary_file_dict.update({"ebook1_vendor": "0.00"})
+                            secondary_file_dict.update({"ebook1_period_1": "0.00"})
+                            secondary_file_dict.update({"ebook1_price_1": "0.00"})
+                            secondary_file_dict.update({"ebook1_period_2": "0.00"})
+                            secondary_file_dict.update({"ebook1_price_2": "0.00"})
+                            secondary_file_dict.update({"ebook1_period_3": "0.00"})
+                            secondary_file_dict.update({"ebook1_price_3": "0.00"})
+                            secondary_file_dict.update({"ebook1_period_4": "0.00"})
+                            secondary_file_dict.update({"ebook1_price_4": "0.00"})
+                            secondary_file_dict.update({"ebook1_period_5": "0.00"})
+                            secondary_file_dict.update({"ebook1_price_5": "0.00"})
+                            secondary_file_dict.update({"ebook2_vendor": "0.00"})
+                            secondary_file_dict.update({"ebook2_period_1": "0.00"})
+                            secondary_file_dict.update({"ebook2_price_1": "0.00"})
+                            secondary_file_dict.update({"ebook2_period_2": "0.00"})
+                            secondary_file_dict.update({"ebook2_price_2": "0.00"})
+                            secondary_file_dict.update({"ebook2_period_3": "0.00"})
+                            secondary_file_dict.update({"ebook2_price_3": "0.00"})
+                            secondary_file_dict.update({"ebook2_period_4": "0.00"})
+                            secondary_file_dict.update({"ebook2_price_4": "0.00"})
+                            secondary_file_dict.update({"ebook2_period_5": "0.00"})
+                            secondary_file_dict.update({"ebook2_price_5": "0.00"})
                         if len(row_fields) >= 20:
-                            secondary_file_dict.update({"ebook1_vendor": row_fields[19]})
+                            if row_fields[19] != "":
+                                secondary_file_dict.update({"ebook1_vendor": row_fields[19]})
+                            else:
+                                secondary_file_dict.update({"ebook1_vendor": "0.00"})
                         if len(row_fields) >= 21:
-                            secondary_file_dict.update({"ebook1_period_1": row_fields[20]})
+                            if row_fields[20] != "":
+                                secondary_file_dict.update({"ebook1_period_1": row_fields[20]})
+                            else:
+                                secondary_file_dict.update({"ebook1_period_1": "0.00"})
+
                         if len(row_fields) >= 22:
-                            secondary_file_dict.update({"ebook1_price_1": row_fields[21]})
+                            ebook1_price_1 = row_fields[21]
+                            ebook1_price_1 = "%.2f" % (float(ebook1_price_1) / 1)
+                            if row_fields[21] != "":
+                                secondary_file_dict.update({"ebook1_price_1": row_fields[21]})
+                            else:
+                                secondary_file_dict.update({"ebook1_period_1": "0.00"})
+
                         if len(row_fields) >= 23:
-                            secondary_file_dict.update({"ebook1_period_2": row_fields[22]})
+                            if row_fields[22] != "":
+                                secondary_file_dict.update({"ebook1_period_2": row_fields[22]})
+                            else:
+                                secondary_file_dict.update({"ebook1_period_2": "0.00"})
+
                         if len(row_fields) >= 24:
-                            secondary_file_dict.update({"ebook1_price_2": row_fields[23]})
+                            ebook1_price_2 = row_fields[23]
+                            ebook1_price_2 = "%.2f" % (float(ebook1_price_2) / 1)
+                            if row_fields[23] != "":
+                                secondary_file_dict.update({"ebook1_price_2": ebook1_price_2})
+                            else:
+                                secondary_file_dict.update({"ebook1_price_2": "0.00"})
+
                         if len(row_fields) >= 25:
-                            secondary_file_dict.update({"ebook1_period_3": row_fields[24]})
+                            if row_fields[24] != "":
+                                secondary_file_dict.update({"ebook1_period_3": row_fields[24]})
+                            else:
+                                secondary_file_dict.update({"ebook1_period_3": "0.00"})
+
                         if len(row_fields) >= 26:
-                            secondary_file_dict.update({"ebook1_price_3": row_fields[25]})
+                            ebook1_price_3 = row_fields[25]
+                            ebook1_price_3 = "%.2f" % (float(ebook1_price_3) / 1)
+                            if row_fields[25] != "":
+                                secondary_file_dict.update({"ebook1_price_3": ebook1_price_3})
+                            else:
+                                secondary_file_dict.update({"ebook1_price_3": "0.00"})
+
                         if len(row_fields) >= 27:
-                            secondary_file_dict.update({"ebook1_period_4": row_fields[26]})
+                            if row_fields[26] != "":
+                                secondary_file_dict.update({"ebook1_period_4": row_fields[26]})
+                            else:
+                                secondary_file_dict.update({"ebook1_period_4": "0.00"})
+
                         if len(row_fields) >= 28:
-                            secondary_file_dict.update({"ebook1_price_4": row_fields[27]})
+                            ebook1_price_4 = row_fields[27]
+                            ebook1_price_4 = "%.2f" % (float(ebook1_price_4) / 1)
+                            if row_fields[27] != "":
+                                secondary_file_dict.update({"ebook1_price_4": row_fields[27]})
+                            else:
+                                secondary_file_dict.update({"ebook1_price_4": "0.00"})
+
                         if len(row_fields) >= 29:
-                            secondary_file_dict.update({"ebook1_period_5": row_fields[28]})
+                            if row_fields[28] != "":
+                                secondary_file_dict.update({"ebook1_period_5": row_fields[28]})
+                            else:
+                                secondary_file_dict.update({"ebook1_period_5": "0.00"})
+
                         if len(row_fields) >= 30:
-                            secondary_file_dict.update({"ebook1_price_5": row_fields[29]})
+                            ebook1_price_5 = row_fields[29]
+                            ebook1_price_5 = "%.2f" % (float(ebook1_price_5) / 1)
+                            if row_fields[29] != "":
+                                secondary_file_dict.update({"ebook1_price_5": ebook1_price_5})
+                            else:
+                                secondary_file_dict.update({"ebook1_price_5": "0.00"})
+
                         if len(row_fields) >= 31:
-                            secondary_file_dict.update({"ebook2_vendor": row_fields[30]})
+                            if row_fields[30] != "":
+                                secondary_file_dict.update({"ebook2_vendor": row_fields[30]})
+                            else:
+                                secondary_file_dict.update({"ebook2_vendor": "0.00"})
+
                         if len(row_fields) >= 32:
-                            secondary_file_dict.update({"ebook2_period_1": row_fields[31]})
+                            if row_fields[31] != "":
+                                secondary_file_dict.update({"ebook2_period_1": row_fields[31]})
+                            else:
+                                secondary_file_dict.update({"ebook2_period_1": "0.00"})
+
                         if len(row_fields) >= 33:
-                            secondary_file_dict.update({"ebook2_price_1": row_fields[32]})
+                            ebook2_price_1 = row_fields[32]
+                            ebook2_price_1 = "%.2f" % (float(ebook2_price_1) / 1)
+                            if row_fields[32] != "":
+                                secondary_file_dict.update({"ebook2_price_1": ebook2_price_1})
+                            else:
+                                secondary_file_dict.update({"ebook2_price_1": "0.00"})
+
                         if len(row_fields) >= 34:
-                            secondary_file_dict.update({"ebook2_period_2": row_fields[33]})
+                            if row_fields[33] != "":
+                                secondary_file_dict.update({"ebook2_period_2": row_fields[33]})
+                            else:
+                                secondary_file_dict.update({"ebook2_period_2": "0.00"})
+
                         if len(row_fields) >= 35:
-                            secondary_file_dict.update({"ebook2_price_2": row_fields[34]})
+                            ebook2_price_2 = row_fields[34]
+                            ebook2_price_2 = "%.2f" % (float(ebook2_price_2) / 1)
+                            if row_fields[34] != "":
+                                secondary_file_dict.update({"ebook2_price_2": ebook2_price_2})
+                            else:
+                                secondary_file_dict.update({"ebook2_price_2": "0.00"})
+
                         if len(row_fields) >= 36:
-                            secondary_file_dict.update({"ebook2_period_3": row_fields[35]})
+                            if row_fields[35] != "":
+                                secondary_file_dict.update({"ebook2_period_3": row_fields[35]})
+                            else:
+                                secondary_file_dict.update({"ebook2_period_3": "0.00"})
+
                         if len(row_fields) >= 37:
-                            secondary_file_dict.update({"ebook2_price_3": row_fields[36]})
+                            ebook2_price_3 = row_fields[36]
+                            ebook2_price_3 = "%.2f" % (float(ebook2_price_3) / 1)
+                            if row_fields[36] != "":
+                                secondary_file_dict.update({"ebook2_price_3": ebook2_price_3})
+                            else:
+                                secondary_file_dict.update({"ebook2_price_3": "0.00"})
+
                         if len(row_fields) >= 38:
-                            secondary_file_dict.update({"ebook2_period_4": row_fields[37]})
+                            if row_fields[37] != "":
+                                secondary_file_dict.update({"ebook2_period_4": row_fields[37]})
+                            else:
+                                secondary_file_dict.update({"ebook2_period_4": "0.00"})
+
                         if len(row_fields) >= 39:
-                            secondary_file_dict.update({"ebook2_price_4": row_fields[38]})
+                            ebook2_price_4 = row_fields[38]
+                            ebook2_price_4 = "%.2f" % (float(ebook2_price_4) / 1)
+                            if row_fields[38] != "":
+                                secondary_file_dict.update({"ebook2_price_4": ebook2_price_4})
+                            else:
+                                secondary_file_dict.update({"ebook2_price_4": "0.00"})
+
                         if len(row_fields) >= 40:
-                            secondary_file_dict.update({"ebook2_period_5": row_fields[39]})
+                            if row_fields[39] != "":
+                                secondary_file_dict.update({"ebook2_period_5": row_fields[39]})
+                            else:
+                                secondary_file_dict.update({"ebook2_period_5": "0.00"})
+
                         if len(row_fields) == 41:
-                            secondary_file_dict.update({"ebook2_price_5": row_fields[40]})
+                            ebook2_price_5 = row_fields[40]
+                            ebook2_price_5 = "%.2f" % (float(ebook2_price_5) / 1)
+                            if row_fields[40] != "":
+                                secondary_file_dict.update({"ebook2_price_5": ebook2_price_5})
+                            else:
+                                secondary_file_dict.update({"ebook2_price_5": "0.00"})
 
                         secondary_file_data_list.append(secondary_file_dict)
                         logger.debug("Row: {}, with a length of {}.".format(row_counter, len(row_fields)))
@@ -515,6 +624,8 @@ def main():
                     logger.debug("secondary file data list {}.".format(secondary_file_data_list))
 
                 if new_file.lower().endswith("txt"):
+
+                    row_counter = 0
 
                     for file_row in file_content:
                         row_counter += 1
@@ -891,6 +1002,7 @@ def main():
                                         out_text.append(item_ipf_dict.get(item_ipf_key)[1])
 
                             logger.debug('Using sort order {}, item_ipf_dict : {}'.format(sort_order, item_ipf_dict))
+                            logger.debug('Current IPF {}, set for ISBN {}.'.format(ITEMIPF, base_ISBN))
                             logger.debug("out Price list: {}".format(out_price))
                             logger.debug("out Text list: {}".format(out_text))
 
@@ -1103,57 +1215,125 @@ def main():
                             itemid = base_ISBN
                             logger.debug("{} This ISBN {}, has an ITEMIPF of {}.".format(row_counter, base_ISBN, ITEMIPF))
 
-                            ##### get secondary info from secondary_data_file_list
+                        ##### get secondary info from secondary_data_file_list
 
-                            sec_data_dict_list = ""
-                            sec_Term = ""
+                        sec_data_dict_list = list(filter(lambda kv: (kv["ISBN"] == base_ISBN and kv["Term"] == base_Term), secondary_file_data_list))
+                        logger.debug(sec_data_dict_list)
 
-                            sec_data_dict_list = list(filter(lambda person: person["ISBN"] == base_ISBN, secondary_file_data_list))
+                        for sec_data_dict in sec_data_dict_list:
+                            sec_GenKey = sec_data_dict.get("GenKey")
+                            sec_csn = sec_data_dict.get("csn")
+                            sec_seq_no = sec_data_dict.get("seq_no")
+                            sec_ISBN = sec_data_dict.get("ISBN")
+                            sec_Term = sec_data_dict.get("Term")
+                            sec_Term_Description = sec_data_dict.get("Term_Description")
+                            sec_dept = sec_data_dict.get("dept")
+                            sec_course = sec_data_dict.get("course")
+                            sec_section = sec_data_dict.get("section")
+                            sec_loc_code = sec_data_dict.get("loc_code")
+                            sec_bookxofy = sec_data_dict.get("bookxofy")
+                            sec_course_id = sec_data_dict.get("course_id")
+                            sec_instructor = sec_data_dict.get("instructor")
+                            sec_course_code = sec_data_dict.get("course_code")
+                            sec_delete_flag = sec_data_dict.get("delete_flag")
+                            sec_ebook_adopted = sec_data_dict.get("ebook_adopted")
+                            sec_class_cap = sec_data_dict.get("class_cap")
+                            sec_prof_requested = sec_data_dict.get("prof_requested")
+                            sec_estimated_sales = sec_data_dict.get("estimated_sales")
+                            sec_ebook1_vendor = sec_data_dict.get("ebook1_vendor")
+                            sec_ebook1_period_1 = sec_data_dict.get("ebook1_period_1")
+                            sec_ebook1_price_1 = sec_data_dict.get("ebook1_price_1")
+                            sec_ebook1_period_2 = sec_data_dict.get("ebook1_period_2")
+                            sec_ebook1_price_2 = sec_data_dict.get("ebook1_price_2")
+                            sec_ebook1_period_3 = sec_data_dict.get("ebook1_period_3")
+                            sec_ebook1_price_3 = sec_data_dict.get("ebook1_price_3")
+                            sec_ebook1_period_4 = sec_data_dict.get("ebook1_period_4")
+                            sec_ebook1_price_4 = sec_data_dict.get("ebook1_price_4")
+                            sec_ebook1_period_5 = sec_data_dict.get("ebook1_period_5")
+                            sec_ebook1_price_5 = sec_data_dict.get("ebook1_price_5")
+                            sec_ebook2_vendor = sec_data_dict.get("ebook2_vendor")
+                            sec_ebook2_period_1 = sec_data_dict.get("ebook2_period_1")
+                            sec_ebook2_price_1 = sec_data_dict.get("ebook2_price_1")
+                            sec_ebook2_period_2 = sec_data_dict.get("ebook2_period_2")
+                            sec_ebook2_price_2 = sec_data_dict.get("ebook2_price_2")
+                            sec_ebook2_period_3 = sec_data_dict.get("ebook2_period_3")
+                            sec_ebook2_price_3 = sec_data_dict.get("ebook2_price_3")
+                            sec_ebook2_period_4 = sec_data_dict.get("ebook2_period_4")
+                            sec_ebook2_price_4 = sec_data_dict.get("ebook2_price_4")
+                            sec_ebook2_period_5 = sec_data_dict.get("ebook2_period_5")
+                            sec_ebook2_price_5 = sec_data_dict.get("ebook2_price_5")
 
-                            logger.debug(sec_data_dict_list)
+                            logger.debug("sec_GenKey {}, sec_csn {}, sec_seq_no {}, sec_ISBN {}, sec_Term {}, sec_Term_Description {}, sec_dept {}, sec_course {}, sec_section {}, sec_loc_code {}, sec_bookxofy {}, sec_course_id {}, sec_instructor {}, sec_course_code {}, sec_delete_flag {}, sec_ebook_adopted {}, sec_class_cap {}, sec_prof_requested {}, sec_estimated_sales {}, sec_ebook1_vendor {}, sec_ebook1_period_1 {}, sec_ebook1_price_1 {}, sec_ebook1_period_2 {}, sec_ebook1_price_2 {}, sec_ebook1_period_3 {}, sec_ebook1_price_3 {}, sec_ebook1_period_4 {}, sec_ebook1_price_4 {}, sec_ebook1_period_5 {}, sec_ebook1_price_5 {}, sec_ebook2_vendor {}, sec_ebook2_period_1 {}, sec_ebook2_price_1 {}, sec_ebook2_period_2 {}, sec_ebook2_price_2 {}, sec_ebook2_period_3 {}, sec_ebook2_price_3 {}, sec_ebook2_period_4 {}, sec_ebook2_price_4 {}, sec_ebook2_period_5 {}, sec_ebook2_price_5 {}.".format(sec_GenKey, sec_csn, sec_seq_no, sec_ISBN, sec_Term, sec_Term_Description, sec_dept, sec_course, sec_section, sec_loc_code, sec_bookxofy, sec_course_id, sec_instructor, sec_course_code, sec_delete_flag, sec_ebook_adopted, sec_class_cap, sec_prof_requested, sec_estimated_sales, sec_ebook1_vendor, sec_ebook1_period_1, sec_ebook1_price_1, sec_ebook1_period_2, sec_ebook1_price_2, sec_ebook1_period_3, sec_ebook1_price_3, sec_ebook1_period_4, sec_ebook1_price_4, sec_ebook1_period_5, sec_ebook1_price_5, sec_ebook2_vendor, sec_ebook2_period_1, sec_ebook2_price_1, sec_ebook2_period_2, sec_ebook2_price_2, sec_ebook2_period_3, sec_ebook2_price_3, sec_ebook2_period_4, sec_ebook2_price_4, sec_ebook2_period_5, sec_ebook2_price_5))
 
+                            ### if DisplayOriginal False
+                            if not display_original:
+                                sec_section = sec_section.replace(",", section_commas)
+                                sec_section = sec_section.replace("'", section_commas)
+                                sec_section = sec_section.replace(" ", section_commas)
 
+                                logger.debug("Cleaning up section field.")
 
+                            ####### Clean up Usages
+                            usage = ""
 
+                            if usage_convert:
+                                if str(sec_course_code).lower() == "required":
+                                    usage = "RQ"
 
+                                if str(sec_course_code).lower() == "recommended":
+                                    usage = "RC"
 
+                                if str(sec_course_code).lower() == "optional":
+                                    usage = "OP"
 
-
-
-
-
-
-
-
-
-                            if str(base_ISBN_HR).lower() != "dgt":
-                                v_ebook1_vendor = ""
-                                v_ebook1_period_1 = ""
-                                v_ebook1_price_1 = ""
-                                v_ebook1_period_2 = ""
-                                v_ebook1_price_2 = ""
-                                v_ebook1_period_3 = ""
-                                v_ebook1_price_3 = ""
-                                v_ebook1_period_4 = ""
-                                v_ebook1_price_4 = ""
-                                v_ebook1_period_5 = ""
-                                v_ebook1_price_5 = ""
-                                v_ebook2_vendor = ""
-                                v_ebook2_period_1 = ""
-                                v_ebook2_price_1 = ""
-                                v_ebook2_period_2 = ""
-                                v_ebook2_price_2 = ""
-                                v_ebook2_period_3 = ""
-                                v_ebook2_price_3 = ""
-                                v_ebook2_period_4 = ""
-                                v_ebook2_price_4 = ""
-                                v_ebook2_period_5 = ""
-                                v_ebook2_price_5 = ""
+                                logger.debug("usage_convert is set to {}, sec_course_code {} has been read and usage has been assigned as {}.".format(usage_convert, sec_course_code, usage))
 
                             else:
-                                pass
+                                usage = sec_course_code
+
+                                logger.debug("usage_convert is set to {}, sec_course_code {} has been read and usage has been assigned as {}.".format(usage_convert, sec_course_code, usage))
 
 
+
+                        if str(base_ISBN_HR).lower() != "dgt":
+                            sec_ebook1_vendor = ""
+                            sec_ebook1_period_1 = ""
+                            sec_ebook1_price_1 = ""
+                            sec_ebook1_period_2 = ""
+                            sec_ebook1_price_2 = ""
+                            sec_ebook1_period_3 = ""
+                            sec_ebook1_price_3 = ""
+                            sec_ebook1_period_4 = ""
+                            sec_ebook1_price_4 = ""
+                            sec_ebook1_period_5 = ""
+                            sec_ebook1_price_5 = ""
+                            sec_ebook2_vendor = ""
+                            sec_ebook2_period_1 = ""
+                            sec_ebook2_price_1 = ""
+                            sec_ebook2_period_2 = ""
+                            sec_ebook2_price_2 = ""
+                            sec_ebook2_period_3 = ""
+                            sec_ebook2_price_3 = ""
+                            sec_ebook2_period_4 = ""
+                            sec_ebook2_price_4 = ""
+                            sec_ebook2_period_5 = ""
+                            sec_ebook2_price_5 = ""
+
+                        else:
+                            if sec_ebook1_price_2 > 0 or sec_ebook2_price_2 > 0:
+                                ITEMIPF = ITEMIPF + 1
+                            if sec_ebook1_price_3 > 0 or sec_ebook2_price_3 > 0:
+                                ITEMIPF = ITEMIPF + 1
+                            if sec_ebook1_price_4 > 0 or sec_ebook2_price_4 > 0:
+                                ITEMIPF = ITEMIPF + 1
+                            if sec_ebook1_price_5 > 0 or sec_ebook2_price_5 > 0:
+                                ITEMIPF = ITEMIPF + 1
+
+                            if sec_ebook2_vendor != "":
+                                ITEMIPF = ITEMIPF + 10
+
+                        if use_pfi:
+                            send_pfi(itemid, base_FormatFlag, base_Author, base_Title, base_ISBN, base_ISBN_HR, base_Vendor_Style, base_Publisher, base_Imprint, base_Edition, base_Edition_Status, base_New_Price, base_New_Price_Text, base_Used_Price, base_Used_Price_Text, base_New_Rental_Price, base_New_Rental_Price_Text, base_Ebook_Price, base_Ebook_Price_Text, base_Used_Rental_Price, base_Used_Rental_Price_Text, base_Sale_Price1, base_Sale_Start_Date1, base_Sale_End_Date1, base_Sale_Start_Time1, base_Sale_End_Time1, base_Sale_Price2, base_Sale_Start_Date2, base_Sale_End_Date2, base_Sale_Start_Time2, base_Sale_End_Time2, base_Sale_Price3, base_Sale_Start_Date3, base_Sale_End_Date3, base_Sale_Start_Time3, base_Sale_End_Time3, base_Sale_Price4, base_Sale_Start_Date4, base_Sale_End_Date4, base_Sale_Start_Time4, base_Sale_End_Time4, base_Term, base_Term_Description, base_Requested_Qty, base_Class_Capacity_Qty, base_Actual_Enrollment_Qty, base_Est_Sales_Qty, base_Category, base_Division, base_Department, base_Class, base_New_Store_Qty, base_New_Warehouse_Qty, base_Used_Store_Qty, base_Used_Warehouse_Qty, base_New_Pending_Return_Qty, base_Used_Pending_Return_Qty, base_New_insite_Pending_Order, base_Used_insite_Pending_Order, base_New_Rental_insite_Pending_Order, base_Used_Rental_insite_Pending_Order, base_On_Order_PO1, base_On_Order_PO1_Vendor, base_On_Order_Qty1, base_On_Order_Qty1_Used, base_On_Order_Date1, base_On_Order_PO2, base_On_Order_PO2_Vendor, base_On_Order_Qty2, base_On_Order_Qty2_Used, base_On_Order_Date2, base_On_Order_PO3, base_On_Order_PO3_Vendor, base_On_Order_Qty3, base_On_Order_Qty3_Used, base_On_Order_Date3, base_Total_PO_Qty, base_image_name,  sec_csn, sec_seq_no, sec_ISBN, sec_Term, sec_Term_Description, sec_dept, sec_course, sec_section, sec_loc_code, sec_bookxofy, sec_course_id, sec_instructor, sec_course_code, sec_delete_flag, sec_ebook_adopted, sec_class_cap, sec_prof_requested, sec_estimated_sales, sec_ebook1_vendor, sec_ebook1_period_1, sec_ebook1_price_1, sec_ebook1_period_2, sec_ebook1_price_2, sec_ebook1_period_3, sec_ebook1_price_3, sec_ebook1_period_4, sec_ebook1_price_4, sec_ebook1_period_5, sec_ebook1_price_5, sec_ebook2_vendor, sec_ebook2_period_1, sec_ebook2_price_1, sec_ebook2_period_2, sec_ebook2_price_2, sec_ebook2_period_3, sec_ebook2_price_3, sec_ebook2_period_4, sec_ebook2_price_4, sec_ebook2_period_5, sec_ebook2_price_5)
 
 
 
@@ -1191,6 +1371,234 @@ def file_handler(data_file):
 
     return file_content
 
+def send_pfi(OUTFILE, itemid, base_FormatFlag, base_Author, base_Title, base_ISBN, base_ISBN_HR, base_Vendor_Style, base_Publisher, base_Imprint, base_Edition, base_Edition_Status, base_New_Price, base_New_Price_Text, base_Used_Price, base_Used_Price_Text, base_New_Rental_Price, base_New_Rental_Price_Text, base_Ebook_Price, base_Ebook_Price_Text, base_Used_Rental_Price, base_Used_Rental_Price_Text, base_Sale_Price1, base_Sale_Start_Date1, base_Sale_End_Date1, base_Sale_Start_Time1, base_Sale_End_Time1, base_Sale_Price2, base_Sale_Start_Date2, base_Sale_End_Date2, base_Sale_Start_Time2, base_Sale_End_Time2, base_Sale_Price3, base_Sale_Start_Date3, base_Sale_End_Date3, base_Sale_Start_Time3, base_Sale_End_Time3, base_Sale_Price4, base_Sale_Start_Date4, base_Sale_End_Date4, base_Sale_Start_Time4, base_Sale_End_Time4, base_Term, base_Term_Description, base_Requested_Qty, base_Class_Capacity_Qty, base_Actual_Enrollment_Qty, base_Est_Sales_Qty, base_Category, base_Division, base_Department, base_Class, base_New_Store_Qty, base_New_Warehouse_Qty, base_Used_Store_Qty, base_Used_Warehouse_Qty, base_New_Pending_Return_Qty, base_Used_Pending_Return_Qty, base_New_insite_Pending_Order, base_Used_insite_Pending_Order, base_New_Rental_insite_Pending_Order, base_Used_Rental_insite_Pending_Order, base_On_Order_PO1, base_On_Order_PO1_Vendor, base_On_Order_Qty1, base_On_Order_Qty1_Used, base_On_Order_Date1, base_On_Order_PO2, base_On_Order_PO2_Vendor, base_On_Order_Qty2, base_On_Order_Qty2_Used, base_On_Order_Date2, base_On_Order_PO3, base_On_Order_PO3_Vendor, base_On_Order_Qty3, base_On_Order_Qty3_Used, base_On_Order_Date3, base_Total_PO_Qty, base_image_name,  sec_csn, sec_seq_no, sec_ISBN, sec_Term, sec_Term_Description, sec_dept, sec_course, sec_section, sec_loc_code, sec_bookxofy, sec_course_id, sec_instructor, sec_course_code, sec_delete_flag, sec_ebook_adopted, sec_class_cap, sec_prof_requested, sec_estimated_sales, sec_ebook1_vendor, sec_ebook1_period_1, sec_ebook1_price_1, sec_ebook1_period_2, sec_ebook1_price_2, sec_ebook1_period_3, sec_ebook1_price_3, sec_ebook1_period_4, sec_ebook1_price_4, sec_ebook1_period_5, sec_ebook1_price_5, sec_ebook2_vendor, sec_ebook2_period_1, sec_ebook2_price_1, sec_ebook2_period_2, sec_ebook2_price_2, sec_ebook2_period_3, sec_ebook2_price_3, sec_ebook2_period_4, sec_ebook2_price_4, sec_ebook2_period_5, sec_ebook2_price_5):
+
+    #determine where to send output
+    new_line = "0001 " + str(itemid) + \
+               " 7 0 |" + str(base_Author) + " " + str(base_Title) + \
+               "| 23 0 |" + "%.2f" % (float() / 1) + \
+               "| 121 0 |" + str(ipf) + \
+               "| 9800 0 |" + str(item_desc) + \
+               "| 9801 0 |" + str(notes) + \
+               "| 9802 0 |" + str(size) + \
+               "| 9803 0 |" + "%.0f" % (float(case_quantity) / 1) + \
+               "| 9804 0 |" + str(upc) + \
+               "| 9805 0 |" + str(vin) + \
+               "| 9806 0 |" + str(vintage) + \
+               "| 9807 0 |" + str(container) + \
+               "| 9808 0 |" + str(status) + \
+               "| 9809 0 |" + str(alcohol_content) + \
+               "| 9810 0 |" + str(department) + \
+               "| 9811 0 |" + str(category) + \
+               "| 9812 0 |" + str(sub_category) + \
+               "| 9813 0 |" + str(producer) + \
+               "| 9814 0 |" + str(supplier) + \
+               "| 9815 0 |" + str(country) + \
+               "| 9816 0 |" + str(region) + \
+               "| 9817 0 |" + str(appellation) + \
+               "| 9818 0 |" + str(varietal) + \
+               "| 9819 0 |" + str(vendor) + \
+               "| 9820 0 |" + str(vendor_code) + \
+               "| 9821 0 |" + str(locationid) + \
+               "| 9822 0 |" + "%.2f" % (float(case_price) / 1) + \
+               "| 9823 0 |" + "%.0f" % (float(qtyonhand) / 1) + \
+               "| 9824 0 |" + "%.0f" % (float(qtyonorder) / 1) + \
+               "| 9825 0 |" + "%.0f" % (float(qtyavailable) / 1) + \
+               "| 9826 0 |" + str(deleted) + \
+               "| 9827 0 |" + "%.2f" % (float(pdiscountamount) / 1) + \
+               "| 9828 0 |" + "%.1f" % (float(pdiscountpercent) / 1) + \
+               "| 9829 0 |" + "%.0f" % (float(pminimumquantity) / 1) + \
+               "| 9830 0 |" + "%.2f" % (float(sale_price) / 1) + \
+               "| 9831 0 |" + str(penddate) + \
+               "| 9832 0 |" + str(pstartdate) + \
+               "| 9833 0 |" + "%.0f" % (float(pack_quantity) / 1) + \
+               "| 9834 0 |" + str(sale_end) + \
+               "| 9835 0 |" + str(aisle) + \
+               "| 9836 0 |" + str(bin) + \
+               "| 9837 0 |" + "%.0f" % (float(soldllast_30) / 1) + \
+               "| 9838 0 |" + "%.0f" % (float(sold_last_60) / 1) + \
+               "| 9839 0 |" + "%.0f" % (float(sold_last_90) / 1) + \
+               "| 9840 0 |" + str(pdescription) + \
+               "| 9841 0 |" + str(promotionid) + \
+               "| 9842 0 |" + str(lastupdated)
+
+    new_line = new_line + "|,\n"
+
+    OUTFILE.write(new_line)
+
+    return OUTFILE
+
+def send_api(use_soap, json_outstring, rest_responses, page_line_count, api_out_page_count, patch_header, rest_api_url, soap_update_str, api_req_counter, soap_command_id, command_id, api_out_line_count):
+
+    if not use_soap:
+        #REST API
+        item_out_json = {}
+        api_out_line_count +=1
+
+        item_out_json.update({"AISLE": str(aisle),
+            "ALCOHOL_CONTENT": str(alcohol_content),
+            "APPELLATION": str(appellation),
+            "BIN": str(bin),
+            "CASEQUANTITY": "%.0f" % (float(case_quantity) / 1),
+            "CASE_PRICE": "%.2f" % (float(case_price) / 1),
+            "CASE_QUANTITY": "%.0f" % (float(pack_quantity) / 1),
+            "CATEGORY": str(category),
+            "CONTAINER": str(container),
+            "COUNTRY": str(country),
+            "DELETED": str(deleted),
+            "DESCRIPTION": str(item_desc),
+            "ENDDATE": str(penddate),
+            "LAST_UPDATED": str(lastupdated),
+            "LOCATIONID": str(locationid),
+            "MINIMUMQTY": "%.0f" % (float(pminimumquantity) / 1),
+            "NOTES": str(notes),
+            "PDESCRIPTION": str(pdescription),
+            "PDISCOUNTAMOUNT": "%.2f" % (float(pdiscountamount) / 1),
+            "PDISCOUNTPERCENT": "%.1f" % (float(pdiscountpercent) / 1),
+            "PRODUCER": str(producer),
+            "PROMOTION_ID": str(promotionid),
+            "QTYAVAILABLE": "%.0f" % (float(qtyavailable) / 1),
+            "QTYONHAND": "%.0f" % (float(qtyonhand) / 1),
+            "QTYONORDER": "%.0f" % (float(qtyonorder) / 1),
+            "REGION": str(region),
+            "SALE_END": str(sale_end),
+            "SALE_PRICE": "%.2f" % (float(sale_price) / 1),
+            "SIZE": str(size),
+            "SOLDLAST_30": "%.0f" % (float(soldllast_30) / 1),
+            "SOLDLAST_60": "%.0f" % (float(sold_last_60) / 1),
+            "SOLDLAST_90": "%.0f" % (float(sold_last_90) / 1),
+            "STARTDATE": str(pstartdate),
+            "STATUS": str(status),
+            "SUB_CATEGORY": str(sub_category),
+            "SUPPLIER": str(supplier),
+            "UPC": str(upc),
+            "VARIETAL": str(varietal),
+            "VENDOR": str(vendor),
+            "VENDOR_CODE": str(vendor_code),
+            "VIN": str(vin),
+            "VINTAGE": str(vintage),
+            "API_ORIGIN": str(loop_page_count)})
+
+
+        json_outstring.append({"department": str(department),
+            "itemId": str(skunumber),
+            "itemName": str(item_name),
+            "presentation": str(ipf),
+            "price": "%.2f" % (float(price) / 1),
+            "properties": item_out_json})
+
+        page_line_count += 1
+
+        if page_line_count == api_page_count:
+            if len(json_outstring) > 0:
+
+                # execute rest request and store responseid in list
+                logger.info('Sending data page ' + str(api_out_page_count) + ' with ' + str(api_page_count) + ' item rows to Pricer REST API.')
+                response_id = (json.loads(requests.patch(rest_api_url, json=json_outstring, headers=patch_header).content).get('requestId'))
+                rest_responses.append(response_id)
+                logger.debug("ResponseId for last REST API resuest sent: " + str(response_id) + ".")
+
+            else:
+                logger.info('REST API had no data to send.')
+
+            if float(api_out_line_count) != float(api_page_count):
+                logger.critical("REST API failed to send expected " + str(api_page_count) + " records, " + str(api_out_line_count) + " sent.")
+
+            api_out_page_count += 1
+            page_line_count = 0
+            json_outstring = []
+            api_out_line_count = 0
+
+    else:
+        #SOAP API
+
+        itemproperties_str = [{ 'id': {'number':  23 }, 'value':  "%.2f" % (float(price) / 1) }
+                , {'id': {'number': 7}, 'value': str(item_name)}
+                , {'id': {'number': 121}, 'value': str(ipf)}
+                , {'id': {'number': 9800}, 'value': str(item_desc)}
+                , {'id': {'number': 9801}, 'value': str(notes)}
+                , {'id': {'number': 9802}, 'value': str(size)}
+                , {'id': {'number': 9803}, 'value': "%.0f" % (float(case_quantity) / 1)}
+                , {'id': {'number': 9804}, 'value': str(upc)}
+                , {'id': {'number': 9805}, 'value': str(vin)}
+                , {'id': {'number': 9806}, 'value': str(vintage)}
+                , {'id': {'number': 9807}, 'value': str(container)}
+                , {'id': {'number': 9808}, 'value': str(status)}
+                , {'id': {'number': 9809}, 'value': str(alcohol_content)}
+                , {'id': {'number': 9810}, 'value': str(department)}
+                , {'id': {'number': 9811}, 'value': str(category)}
+                , {'id': {'number': 9812}, 'value': str(sub_category)}
+                , {'id': {'number': 9813}, 'value': str(producer)}
+                , {'id': {'number': 9814}, 'value': str(supplier)}
+                , {'id': {'number': 9815}, 'value': str(country)}
+                , {'id': {'number': 9816}, 'value': str(region)}
+                , {'id': {'number': 9817}, 'value': str(appellation)}
+                , {'id': {'number': 9818}, 'value': str(varietal)}
+                , {'id': {'number': 9819}, 'value': str(vendor)}
+                , {'id': {'number': 9820}, 'value': str(vendor_code)}
+                , {'id': {'number': 9821}, 'value': str(locationid)}
+                , {'id': {'number': 9822}, 'value': "%.2f" % (float(case_price) / 1)}
+                , {'id': {'number': 9823}, 'value': "%.0f" % (float(qtyonhand) / 1)}
+                , {'id': {'number': 9824}, 'value': "%.0f" % (float(qtyonorder) / 1)}
+                , {'id': {'number': 9825}, 'value': "%.0f" % (float(qtyavailable) / 1)}
+                , {'id': {'number': 9826}, 'value': str(deleted)}
+                , {'id': {'number': 9827}, 'value': "%.2f" % (float(pdiscountamount) / 1)}
+                , {'id': {'number': 9828}, 'value': "%.1f" % (float(pdiscountpercent) / 1)}
+                , {'id': {'number': 9829}, 'value': "%.0f" % (float(pminimumquantity) / 1)}
+                , {'id': {'number': 9830}, 'value': "%.2f" % (float(sale_price) / 1)}
+                , {'id': {'number': 9831}, 'value': str(penddate)}
+                , {'id': {'number': 9832}, 'value': str(pstartdate)}
+                , {'id': {'number': 9833}, 'value': "%.0f" % (float(pack_quantity) / 1)}
+                , {'id': {'number': 9834}, 'value': str(sale_end)}
+                , {'id': {'number': 9835}, 'value': str(aisle)}
+                , {'id': {'number': 9836}, 'value': str(bin)}
+                , {'id': {'number': 9837}, 'value': "%.0f" % (float(soldllast_30) / 1)}
+                , {'id': {'number': 9838}, 'value': "%.0f" % (float(sold_last_60) / 1)}
+                , {'id': {'number': 9839}, 'value': "%.0f" % (float(sold_last_90) / 1)}
+                , {'id': {'number': 9840}, 'value': str(pdescription)}
+                , {'id': {'number': 9841}, 'value': str(promotionid)}
+                , {'id': {'number': 9842}, 'value': str(lastupdated)}
+                , {'id': {'number': 9843}, 'value': str(loop_page_count)}]
+
+        soap_update_str.append({'itemId': skunumber, 'itemProperties': itemproperties_str})
+
+        page_line_count += 1
+        api_out_line_count += 1
+
+        if page_line_count == api_page_count:
+
+            api_req_counter, soap_command_id, command_id, api_out_line_count = soap_api_updateitem(soap_update_str, soap_command_id, api_req_counter, api_out_line_count)
+
+            logger.info('Command ID for last SOAP API request sent: ' + str(command_id))
+
+            if float(api_out_line_count) != float(api_page_count):
+                logger.critical("SOAP API failed to send expected " + str(api_page_count) + " records, " + str(api_out_line_count) + " sent.")
+
+            api_out_page_count += 1
+            page_line_count = 0
+            soap_update_str = []
+            api_out_line_count = 0
+
+    return rest_responses, json_outstring, soap_update_str, api_req_counter, api_out_page_count, soap_command_id, command_id, page_line_count, api_out_line_count
+
+def soap_api_updateitem(soap_update_str, soap_command_id, api_req_counter, api_out_line_count):
+
+    good_content = 0
+
+    if len(soap_update_str) > 0:
+        command_id = client.service.updateItems(soap_update_str)
+        api_req_counter += 1
+        good_content = 1
+
+        if command_id != None and command_id.isnumeric():
+            soap_command_id.append(command_id)
+        else:
+            logger.critical("Last Update failed to return valid command id.")
+
+    if good_content == 0:
+        logger.info("No data to write to SOAP API.")
+
+    return api_req_counter, soap_command_id, command_id, api_out_line_count
 
 #################################################end subroutines#############################################################
 
