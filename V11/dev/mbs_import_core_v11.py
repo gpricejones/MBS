@@ -20,6 +20,8 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
+from collections import OrderedDict
+from operator import getitem
 
 
 def main():
@@ -61,6 +63,13 @@ def main():
         command_id = 0
         api_requestid = ""
         last_page_flag = 0
+
+        regular_price = 0
+        save_amount = 0
+
+        target_delay = ""
+        target_date_start = ""
+        target_date_end = ""
 
         ##########get file name without extension
         file_name_raw = __file__
@@ -270,7 +279,20 @@ def main():
             EventLogger.event_log_writer(file_name + " failed to find configuration file " + config_path + " I/O error({0}): {1}".format(e.errno, e.strerror), "error", "Pricer", 101, log_path)
             sys.exit(99)
 
-            # start soap client if used
+        ##### setup outfiles for pfi use
+
+        if use_pfi:
+            data_file = 'MBS_' + file_time
+            i1_file = os.path.join(drive_letter, i1_path, data_file + ".i1")
+            m1_file = os.path.join(drive_letter, m1_path, data_file + ".m1")
+            r7_file = os.path.join(drive_letter, r7_path, data_file + ".r7")
+            temp_m1_file = os.path.join(drive_letter, i1_path, data_file + ".m1")
+
+            logger.debug("i1 file: " + i1_file)
+
+            OUTFILE = open(i1_file, "w")
+
+        # start soap client if used
 
         if (use_api and use_soap):
             from requests import Session
@@ -807,105 +829,105 @@ def main():
                         if base_ISBN is not None and base_ISBN != "":
                             logger.debug("Base ISBN: {}".format(base_ISBN))
 
-                            base_Sale_Price = ""
+                            base_Sale_Price = 0
 
-                            if base_New_Price is None or base_New_Price == "":
-                                base_New_Price = 0
+                            if not isinstance(float(base_New_Price), (int, float)):
+                                base_New_Price = 0.00
                                 logger.debug("Base ISBN: {}, has a invalid NEW Price, price field setting to {}".format(base_ISBN, base_New_Price))
 
-                            if base_Used_Price is None or base_Used_Price == "":
-                                base_Used_Price = 0
+                            if not isinstance(float(base_Used_Price), (int, float)):
+                                base_Used_Price = 0.00
                                 logger.debug("Base ISBN: {}, has a invalid USED Price, price field setting to {}".format(base_ISBN, base_Used_Price))
 
-                            if base_New_Rental_Price is None or base_New_Rental_Price == "":
-                                base_New_Rental_Price = 0
+                            if not isinstance(float(base_New_Rental_Price), (int, float)):
+                                base_New_Rental_Price = 0.00
                                 logger.debug("Base ISBN: {}, has a invalid NEW RENTAL, price field setting to {}".format(base_ISBN, base_New_Rental_Price))
 
-                            if base_Used_Rental_Price is None or base_Used_Rental_Price == "":
-                                base_Used_Rental_Price = 0
+                            if not isinstance(float(base_Used_Rental_Price), (int, float)):
+                                base_Used_Rental_Price = 0.00
                                 logger.debug("Base ISBN: {}, has a invalid USED RENTAL, field setting to {}".format(base_ISBN, base_Used_Rental_Price))
 
-                            if base_Ebook_Price is None or base_Ebook_Price == "":
-                                base_Ebook_Price = 0
+                            if not isinstance(float(base_Ebook_Price), (int, float)):
+                                base_Ebook_Price = 0.00
                                 logger.debug("Base ISBN: {}, has a invalid EBOOK, price field setting to {}".format(base_ISBN, base_Ebook_Price))
 
-                            if base_Sale_Price is None or base_Sale_Price == "":
-                                base_Sale_Price = 0
+                            if not isinstance(float(base_Sale_Price), (int, float)):
+                                base_Sale_Price = 0.00
                                 logger.debug("Base ISBN: {}, has a invalid Sale Price, price field setting to {}".format(base_ISBN, base_Sale_Price))
                             
-                            if base_Requested_Qty is None or base_Requested_Qty == "":
+                            if not isinstance(int(base_Requested_Qty), int):
                                 base_Requested_Qty = 0
                                 logger.debug("Base ISBN: {}, has a invalid Quantity field setting to {}".format(base_ISBN, base_Ebook_Price))
 
-                            if base_New_Store_Qty is None or base_New_Store_Qty == "":
+                            if not isinstance(int(base_New_Store_Qty), int):
                                 base_New_Store_Qty = 0
                                 logger.debug("Base ISBN: {}, has a invalid Requested Quantity, field setting to {}".format(base_ISBN, base_New_Store_Qty))
 
-                            if base_New_Warehouse_Qty is None or base_New_Warehouse_Qty == "":
+                            if not isinstance(int(base_New_Warehouse_Qty), int):
                                 base_New_Warehouse_Qty = 0
                                 logger.debug("Base ISBN: {}, has a invalid New Warehouse Quantity, field setting to {}".format(base_ISBN, base_New_Warehouse_Qty))
 
-                            if base_Used_Store_Qty is None or base_Used_Store_Qty == "":
+                            if not isinstance(int(base_Used_Store_Qty), int):
                                 base_Used_Store_Qty = 0
                                 logger.debug("Base ISBN: {}, has a invalid Used Store Quantity, field setting to {}".format(base_ISBN, base_Used_Store_Qty))
 
-                            if base_Used_Warehouse_Qty is None or base_Used_Warehouse_Qty == "":
+                            if not isinstance(int(base_Used_Warehouse_Qty), int):
                                 base_Used_Warehouse_Qty = 0
                                 logger.debug("Base ISBN: {}, has a invalid Used Warehouse Quantity, field setting to {}".format(base_ISBN, base_Used_Warehouse_Qty))
 
-                            if base_On_Order_Qty1 is None or base_On_Order_Qty1 == "":
+                            if not isinstance(int(base_On_Order_Qty1), int):
                                 base_On_Order_Qty1 = 0
                                 logger.debug("Base ISBN: {}, has a invalid On Order 1 Quantity, field setting to {}".format(base_ISBN, base_On_Order_Qty1))
 
-                            if base_On_Order_Qty2 is None or base_On_Order_Qty2 == "":
+                            if not isinstance(int(base_On_Order_Qty2), int):
                                 base_On_Order_Qty2 = 0
                                 logger.debug("Base ISBN: {}, has a invalid On Order 2 Quantity, field setting to {}".format(base_ISBN, base_On_Order_Qty2))
 
-                            if base_On_Order_Qty3 is None or base_On_Order_Qty3 == "":
+                            if not isinstance(int(base_On_Order_Qty3), int):
                                 base_On_Order_Qty3 = 0
                                 logger.debug("Base ISBN: {}, has a invalid On Order 3 Quantity, field setting to {}".format(base_ISBN, base_On_Order_Qty3))
 
-                            if base_Total_PO_Qty is None or base_Total_PO_Qty == "":
+                            if not isinstance(int(base_Total_PO_Qty), int):
                                 base_Total_PO_Qty = 0
                                 logger.debug("Base ISBN: {}, has a invalid Total PO Quantity, field setting to {}".format(base_ISBN, base_Total_PO_Qty))
 
-                            if base_Class_Capacity_Qty is None or base_Class_Capacity_Qty == "":
+                            if not isinstance(int(base_Class_Capacity_Qty), int):
                                 base_Class_Capacity_Qty = 0
                                 logger.debug("Base ISBN: {}, has a invalid Class Capacity Quantity, field setting to {}".format(base_ISBN, base_Class_Capacity_Qty))
 
-                            if base_Actual_Enrollment_Qty is None or base_Actual_Enrollment_Qty == "":
+                            if not isinstance(int(base_Actual_Enrollment_Qty), int):
                                 base_Actual_Enrollment_Qty = 0
                                 logger.debug("Base ISBN: {}, has a invalid Actual Enrollment Quantity, field setting to {}".format(base_ISBN, base_Actual_Enrollment_Qty))
 
-                            if base_Est_Sales_Qty is None or base_Est_Sales_Qty == "":
+                            if not isinstance(int(base_Est_Sales_Qty), int):
                                 base_Est_Sales_Qty = 0
                                 logger.debug("Base ISBN: {}, has a invalid Est Sales Quantity, field setting to {}".format(base_ISBN, base_Est_Sales_Qty))
 
-                            if base_New_Pending_Return_Qty is None or base_New_Pending_Return_Qty == "":
+                            if not isinstance(int(base_New_Pending_Return_Qty), int):
                                 base_New_Pending_Return_Qty = 0
                                 logger.debug("Base ISBN: {}, has a invalid New Pending Return Quantity, field setting to {}".format(base_ISBN, base_New_Pending_Return_Qty))
 
-                            if base_Used_Pending_Return_Qty is None or base_Used_Pending_Return_Qty == "":
+                            if not isinstance(int(base_Used_Pending_Return_Qty), int):
                                 base_Used_Pending_Return_Qty = 0
                                 logger.debug("Base ISBN: {}, has a invalid Used Pending Return Quantity, field setting to {}".format(base_ISBN, base_Used_Pending_Return_Qty))
 
-                            if base_New_insite_Pending_Order is None or base_New_insite_Pending_Order == "":
+                            if not isinstance(int(base_New_insite_Pending_Order), int):
                                 base_New_insite_Pending_Order = 0
                                 logger.debug("Base ISBN: {}, has a invalid New insite Pending Order Quantity, field setting to {}".format(base_ISBN, base_New_insite_Pending_Order))
 
-                            if base_Used_insite_Pending_Order is None or base_Used_insite_Pending_Order == "":
+                            if not isinstance(int(base_Used_insite_Pending_Order), int):
                                 base_Used_insite_Pending_Order = 0
                                 logger.debug("Base ISBN: {}, has a invalid Used insite Pending Order Quantity, field setting to {}".format(base_ISBN, base_Used_insite_Pending_Order))
 
-                            if base_On_Order_Qty1_Used is None or base_On_Order_Qty1_Used == "":
+                            if not isinstance(int(base_On_Order_Qty1_Used), int):
                                 base_On_Order_Qty1_Used = 0
                                 logger.debug("Base ISBN: {}, has a invalid On Order Used 1 Quantity, field setting to {}".format(base_ISBN, base_On_Order_Qty1_Used))
 
-                            if base_On_Order_Qty2_Used is None or base_On_Order_Qty2_Used == "":
+                            if not isinstance(int(base_On_Order_Qty2_Used), int):
                                 base_On_Order_Qty2_Used = 0
                                 logger.debug("Base ISBN: {}, has a invalid On Order Used 2 Quantity, field setting to {}".format(base_ISBN, base_On_Order_Qty2_Used))
 
-                            if base_On_Order_Qty3_Used is None or base_On_Order_Qty3_Used == "":
+                            if not isinstance(int(base_On_Order_Qty3_Used), int):
                                 base_On_Order_Qty3_Used = 0
                                 logger.debug("Base ISBN: {}, has a invalid On Order Used 3 Quantity, field setting to {}".format(base_ISBN, base_On_Order_Qty3_Used))
                                 
@@ -920,23 +942,23 @@ def main():
 
                             if float(base_New_Price) > 0:
                                 ITEMIPF += 1
-                                item_ipf_dict.update({(ITEMIPF): (base_New_Price, base_New_Price_Text)})
+                                item_ipf_dict.update({(ITEMIPF): (base_New_Price, "New")})
 
                             if float(base_Used_Price) > 0:
                                 ITEMIPF += 1
-                                item_ipf_dict.update({(ITEMIPF): (base_Used_Price, base_Used_Price_Text)})
+                                item_ipf_dict.update({(ITEMIPF): (base_Used_Price, 'Used')})
 
                             if float(base_New_Rental_Price) > 0:
                                 ITEMIPF += 1
-                                item_ipf_dict.update({(ITEMIPF): (base_New_Rental_Price, base_New_Rental_Price_Text)})
+                                item_ipf_dict.update({(ITEMIPF): (base_New_Rental_Price, "New Rental Price")})
 
                             if float(base_Used_Rental_Price) > 0:
                                 ITEMIPF += 1
-                                item_ipf_dict.update({(ITEMIPF): (base_Used_Rental_Price, base_Used_Rental_Price_Text)})
+                                item_ipf_dict.update({(ITEMIPF): (base_Used_Rental_Price, "Used Rental Price")})
 
                             if float(base_Ebook_Price) > 0:
                                 ITEMIPF += 1
-                                item_ipf_dict.update({(ITEMIPF): (base_Ebook_Price, base_Ebook_Price_Text)})
+                                item_ipf_dict.update({(ITEMIPF): (base_Ebook_Price, "Ebook Price")})
 
                             logger.debug("base_Category : {}, ITEMIPF : {}, base_New_Price: {}, base_Used_Price: {}, base_Used_Rental_Price: {}, base_Used_Rental_Price: {}, base_Ebook_Price: {}, item_ipf_dict : {}.".format(base_Category, ITEMIPF, base_New_Price, base_Used_Price, base_New_Rental_Price, base_Used_Rental_Price, base_Ebook_Price, item_ipf_dict))
 
@@ -946,48 +968,52 @@ def main():
                             ######Ascending order output
 
                             if sort_order == "ascending":
-                                item_ipf_dict = sorted(item_ipf_dict.items(), key=lambda kv: kv[0])
+                                if len(item_ipf_dict) > 0:
+                                    ITEMIPF = max(item_ipf_dict) * 100
 
-                                for item_ipf_key in item_ipf_dict:
+                                    sorted_item_ipf = OrderedDict(sorted(item_ipf_dict.items(), key=lambda kv: kv[2]))
 
-                                    ITEMIPF = list(item_ipf_dict.keys())[-1] * 100
-                                    out_price.append(item_ipf_dict.get(item_ipf_key)[0])
-                                    out_text.append(item_ipf_dict.get(item_ipf_key)[1])
-                                    if len(item_ipf_dict) > 2:
-                                        out_price.append(item_ipf_dict.get(item_ipf_key)[0])
-                                        out_text.append(item_ipf_dict.get(item_ipf_key)[1])
-                                    if len(item_ipf_dict) > 4:
-                                        out_price.append(item_ipf_dict.get(item_ipf_key)[0])
-                                        out_text.append(item_ipf_dict.get(item_ipf_key)[1])
-                                    if len(item_ipf_dict) > 6:
-                                        out_price.append(item_ipf_dict.get(item_ipf_key)[0])
-                                        out_text.append(item_ipf_dict.get(item_ipf_key)[1])
-                                    if len(item_ipf_dict) > 8:
-                                        out_price.append(item_ipf_dict.get(item_ipf_key)[0])
-                                        out_text.append(item_ipf_dict.get(item_ipf_key)[1])
+                                    for item_ipf_key in sorted_item_ipf:
 
+                                        out_price.append(sorted_item_ipf[item_ipf_key][0])
+                                        out_text.append(sorted_item_ipf[item_ipf_key][1])
+                                        if len(sorted_item_ipf) > 2:
+                                            out_price.append(sorted_item_ipf[item_ipf_key][0])
+                                            out_text.append(sorted_item_ipf[item_ipf_key][1])
+                                        if len(sorted_item_ipf) > 4:
+                                            out_price.append(sorted_item_ipf[item_ipf_key][0])
+                                            out_text.append(sorted_item_ipf[item_ipf_key][1])
+                                        if len(sorted_item_ipf) > 6:
+                                            out_price.append(sorted_item_ipf[item_ipf_key][0])
+                                            out_text.append(sorted_item_ipf[item_ipf_key][1])
+                                        if len(sorted_item_ipf) > 8:
+                                            out_price.append(sorted_item_ipf[item_ipf_key][0])
+                                            out_text.append(sorted_item_ipf[item_ipf_key][1])
+
+                                    logger.debug("Sorted IPF List: {}.".format(sorted_item_ipf))
 
                             ####### Natural order output
 
                             if sort_order == "natural":
+                                if len(item_ipf_dict) > 0:
+                                    ITEMIPF = max(item_ipf_dict) * 100
 
-                                for item_ipf_key in item_ipf_dict:
+                                    for item_ipf_key in item_ipf_dict:
 
-                                    ITEMIPF = list(item_ipf_dict.keys())[-1] * 100
-                                    out_price.append(item_ipf_dict.get(item_ipf_key)[0])
-                                    out_text.append(item_ipf_dict.get(item_ipf_key)[1])
-                                    if len(item_ipf_dict) > 2:
                                         out_price.append(item_ipf_dict.get(item_ipf_key)[0])
                                         out_text.append(item_ipf_dict.get(item_ipf_key)[1])
-                                    if len(item_ipf_dict) > 4:
-                                        out_price.append(item_ipf_dict.get(item_ipf_key)[0])
-                                        out_text.append(item_ipf_dict.get(item_ipf_key)[1])
-                                    if len(item_ipf_dict) > 6:
-                                        out_price.append(item_ipf_dict.get(item_ipf_key)[0])
-                                        out_text.append(item_ipf_dict.get(item_ipf_key)[1])
-                                    if len(item_ipf_dict) > 8:
-                                        out_price.append(item_ipf_dict.get(item_ipf_key)[0])
-                                        out_text.append(item_ipf_dict.get(item_ipf_key)[1])
+                                        if len(item_ipf_dict) > 2:
+                                            out_price.append(item_ipf_dict.get(item_ipf_key)[0])
+                                            out_text.append(item_ipf_dict.get(item_ipf_key)[1])
+                                        if len(item_ipf_dict) > 4:
+                                            out_price.append(item_ipf_dict.get(item_ipf_key)[0])
+                                            out_text.append(item_ipf_dict.get(item_ipf_key)[1])
+                                        if len(item_ipf_dict) > 6:
+                                            out_price.append(item_ipf_dict.get(item_ipf_key)[0])
+                                            out_text.append(item_ipf_dict.get(item_ipf_key)[1])
+                                        if len(item_ipf_dict) > 8:
+                                            out_price.append(item_ipf_dict.get(item_ipf_key)[0])
+                                            out_text.append(item_ipf_dict.get(item_ipf_key)[1])
 
                             logger.debug('Using sort order {}, item_ipf_dict : {}'.format(sort_order, item_ipf_dict))
                             logger.debug('Current IPF {}, set for ISBN {}.'.format(ITEMIPF, base_ISBN))
@@ -1210,11 +1236,11 @@ def main():
 
                             if ITEMIPF == 0 and none_100:
                                 ITEMIPF = 100
-                                logger.info("record {}, {}, in {} did not generate valid IPF, default IPF{} assigned".format(row_counter, base_ISBN, new_file, ITEMIPF))
+                                logger.info("record on line {},with ISBN of {}, in {} did not generate valid IPF, default IPF{} assigned".format(row_counter, base_ISBN, new_file, ITEMIPF))
 
                             elif ITEMIPF == 0 and not none_100 and str(base_ISBN).lower() == "ntr":
                                 ITEMIPF = 104
-                                logger.info("record {}, {}, in {} did not generate valid IPF, default IPF{} assigned".format(row_counter, base_ISBN, new_file, ITEMIPF))
+                                logger.info("record on line {},with ISBN of {}, in {} did not generate valid IPF, default IPF{} assigned".format(row_counter, base_ISBN, new_file, ITEMIPF))
 
                             ##### Check ipf1x5 threshold exceeded, if so assign IPF1X5
                             logger.debug("Out Prices 1-5, {}. IPF1X5 Threshold {}.".format(out_price, ipf1x5_threshold))
@@ -1265,6 +1291,8 @@ def main():
 
                         sec_data_dict_list = list(filter(lambda kv: (kv["ISBN"] == base_ISBN and kv["Term"] == base_Term), secondary_file_data_list))
                         logger.debug(sec_data_dict_list)
+
+
 
                         for sec_data_dict in sec_data_dict_list:
                             sec_GenKey = sec_data_dict.get("GenKey")
@@ -1339,7 +1367,18 @@ def main():
 
                                 logger.debug("usage_convert is set to {}, sec_course_code {} has been read and usage has been assigned as {}.".format(usage_convert, sec_course_code, usage))
 
+                            ##### set course list and dept course selection
+                            sec_course_list = []
+                            sec_dept_course_section = []
 
+                            sec_dept_course_section.append(sec_dept + ', ' + sec_course + ', ' + usage)
+                            sec_course_list.append(sec_dept + ', ' + sec_course + ', ' + sec_section + ', ' + usage)
+
+                            sec_dept_course_section = sec_dept_course_section[0:1024]
+                            sec_course_list = sec_course_list[0:1024]
+
+                            logger.debug("sec_dept_course_section: {}.".format(sec_dept_course_section))
+                            logger.debug("sec_course_list: {}.".format(sec_course_list))
 
                         if str(base_ISBN_HR).lower() != "dgt":
                             sec_ebook1_vendor = ""
@@ -1378,13 +1417,17 @@ def main():
                             if sec_ebook2_vendor != "":
                                 ITEMIPF = ITEMIPF + 10
 
-                        if base_Used_ISBN != "" and base_Used_ISBN != " " and base_ISBN != " " and str(base_Used_ISBN[0:3]).lower() != "ntr" and base_ISBN != "":
-                            itemid = base_Used_ISBN
 
                         if use_pfi:
-                            send_pfi(itemid, base_FormatFlag, regular_price, ITEMIPF, base_Author, base_Title, base_ISBN, base_ISBN_HR, base_Vendor_Style, base_Publisher, base_Imprint, base_Edition, base_Edition_Status, base_New_Price, base_New_Price_Text, base_Used_Price, base_Used_Price_Text, base_New_Rental_Price, base_New_Rental_Price_Text, base_Ebook_Price, base_Ebook_Price_Text, base_Used_Rental_Price, base_Used_Rental_Price_Text, base_Sale_Price, base_Sale_Price1, base_Sale_Start_Date1, base_Sale_End_Date1, base_Sale_Start_Time1, base_Sale_End_Time1, base_Sale_Price2, base_Sale_Start_Date2, base_Sale_End_Date2, base_Sale_Start_Time2, base_Sale_End_Time2, base_Sale_Price3, base_Sale_Start_Date3, base_Sale_End_Date3, base_Sale_Start_Time3, base_Sale_End_Time3, base_Sale_Price4, base_Sale_Start_Date4, base_Sale_End_Date4, base_Sale_Start_Time4, base_Sale_End_Time4, base_Term, base_Term_Description, base_Requested_Qty, base_Class_Capacity_Qty, base_Actual_Enrollment_Qty, base_Est_Sales_Qty, base_Category, base_Division, base_Department, base_Class, base_New_Store_Qty, base_New_Warehouse_Qty, base_Used_Store_Qty, base_Used_Warehouse_Qty, base_New_Pending_Return_Qty, base_Used_Pending_Return_Qty, base_New_insite_Pending_Order, base_Used_insite_Pending_Order, base_New_Rental_insite_Pending_Order, base_Used_Rental_insite_Pending_Order, base_On_Order_PO1, base_On_Order_PO1_Vendor, base_On_Order_Qty1, base_On_Order_Qty1_Used, base_On_Order_Date1, base_On_Order_PO2, base_On_Order_PO2_Vendor, base_On_Order_Qty2, base_On_Order_Qty2_Used, base_On_Order_Date2, base_On_Order_PO3, base_On_Order_PO3_Vendor, base_On_Order_Qty3, base_On_Order_Qty3_Used, base_On_Order_Date3, base_Total_PO_Qty, base_image_name,  sec_csn, sec_seq_no, sec_ISBN, sec_Term, sec_Term_Description, sec_dept, sec_course, sec_section, sec_loc_code, sec_bookxofy, sec_course_id, sec_instructor, sec_course_code, sec_delete_flag, sec_ebook_adopted, sec_class_cap, sec_prof_requested, sec_estimated_sales, sec_ebook1_vendor, sec_ebook1_period_1, sec_ebook1_price_1, sec_ebook1_period_2, sec_ebook1_price_2, sec_ebook1_period_3, sec_ebook1_price_3, sec_ebook1_period_4, sec_ebook1_price_4, sec_ebook1_period_5, sec_ebook1_price_5, sec_ebook2_vendor, sec_ebook2_period_1, sec_ebook2_price_1, sec_ebook2_period_2, sec_ebook2_price_2, sec_ebook2_period_3, sec_ebook2_price_3, sec_ebook2_period_4, sec_ebook2_price_4, sec_ebook2_period_5, sec_ebook2_price_5)
+                           OUTFILE = send_pfi(OUTFILE, itemid, regular_price, ITEMIPF, target_delay, base_FormatFlag, base_Author, base_Title, base_ISBN, base_Used_ISBN, base_ISBN_HR, base_Vendor_Style, base_Imprint, base_Edition, base_Edition_Status, base_New_Price, base_New_Price_Text, base_Used_Price, base_Used_Price_Text, base_New_Rental_Price, base_New_Rental_Price_Text, base_Ebook_Price, base_Ebook_Price_Text, base_Used_Rental_Price, base_Used_Rental_Price_Text, base_Sale_Price, target_date_start, target_date_end, base_Sale_Price1, base_Sale_Start_Date1, base_Sale_End_Date1, base_Sale_Start_Time1, base_Sale_End_Time1, base_Sale_Price2, base_Sale_Start_Date2, base_Sale_End_Date2, base_Sale_Start_Time2, base_Sale_End_Time2, base_Sale_Price3, base_Sale_Start_Date3, base_Sale_End_Date3, base_Sale_Start_Time3, base_Sale_End_Time3, base_Sale_Price4, base_Sale_Start_Date4, base_Sale_End_Date4, base_Sale_Start_Time4, base_Sale_End_Time4, base_Term, base_Term_Description, base_Requested_Qty, base_Class_Capacity_Qty, base_Actual_Enrollment_Qty, base_Est_Sales_Qty, base_Category, base_Division, base_Department, base_Class, base_New_Store_Qty, base_New_Warehouse_Qty, base_Used_Store_Qty, base_Used_Warehouse_Qty, base_New_Pending_Return_Qty, base_Used_Pending_Return_Qty, base_New_insite_Pending_Order, base_Used_insite_Pending_Order, base_New_Rental_insite_Pending_Order, base_Used_Rental_insite_Pending_Order, base_On_Order_PO1, base_On_Order_PO1_Vendor, base_On_Order_Qty1, base_On_Order_Qty1_Used, base_On_Order_Date1, base_On_Order_PO2, base_On_Order_PO2_Vendor, base_On_Order_Qty2, base_On_Order_Qty2_Used, base_On_Order_Date2, base_On_Order_PO3, base_On_Order_PO3_Vendor, base_On_Order_Qty3, base_On_Order_Qty3_Used, base_On_Order_Date3, base_Total_PO_Qty, base_image_name, out_price_1, out_price_2, out_price_3, out_price_4, out_price_5, out_text_1, out_text_2, out_text_3, out_text_4, out_text_5, usage, sec_dept, sec_course, sec_section, sec_loc_code, sec_bookxofy, sec_course_id, sec_course_list, sec_instructor, save_amount, sec_delete_flag, sec_dept_course_section, sec_ebook_adopted, sec_class_cap, sec_prof_requested, sec_estimated_sales, sec_ebook1_vendor, sec_ebook1_period_1, sec_ebook1_price_1, sec_ebook1_period_2, sec_ebook1_price_2, sec_ebook1_period_3, sec_ebook1_price_3, sec_ebook1_period_4, sec_ebook1_price_4, sec_ebook1_period_5, sec_ebook1_price_5, sec_ebook2_vendor, sec_ebook2_period_1, sec_ebook2_price_1, sec_ebook2_period_2, sec_ebook2_price_2, sec_ebook2_period_3, sec_ebook2_price_3, sec_ebook2_period_4, sec_ebook2_price_4, sec_ebook2_period_5, sec_ebook2_price_5)
 
+                        if base_Used_ISBN != "" and base_Used_ISBN != " " and base_ISBN != " " and str(base_Used_ISBN[0:3]).lower() != "ntr" and base_ISBN != "" and base_Used_ISBN != base_ISBN:
+                            itemid = base_Used_ISBN
 
+                            if use_pfi:
+                                OUTFILE = send_pfi(OUTFILE, itemid, regular_price, ITEMIPF, target_delay, base_FormatFlag, base_Author, base_Title, base_ISBN, base_Used_ISBN, base_ISBN_HR, base_Vendor_Style, base_Imprint, base_Edition, base_Edition_Status, base_New_Price, base_New_Price_Text, base_Used_Price, base_Used_Price_Text, base_New_Rental_Price, base_New_Rental_Price_Text, base_Ebook_Price, base_Ebook_Price_Text, base_Used_Rental_Price, base_Used_Rental_Price_Text, base_Sale_Price, target_date_start, target_date_end, base_Sale_Price1, base_Sale_Start_Date1, base_Sale_End_Date1, base_Sale_Start_Time1, base_Sale_End_Time1, base_Sale_Price2, base_Sale_Start_Date2, base_Sale_End_Date2, base_Sale_Start_Time2, base_Sale_End_Time2, base_Sale_Price3, base_Sale_Start_Date3, base_Sale_End_Date3, base_Sale_Start_Time3, base_Sale_End_Time3, base_Sale_Price4, base_Sale_Start_Date4, base_Sale_End_Date4, base_Sale_Start_Time4, base_Sale_End_Time4, base_Term, base_Term_Description,
+                                                   base_Requested_Qty, base_Class_Capacity_Qty, base_Actual_Enrollment_Qty, base_Est_Sales_Qty, base_Category, base_Division, base_Department, base_Class, base_New_Store_Qty, base_New_Warehouse_Qty, base_Used_Store_Qty, base_Used_Warehouse_Qty, base_New_Pending_Return_Qty, base_Used_Pending_Return_Qty, base_New_insite_Pending_Order, base_Used_insite_Pending_Order, base_New_Rental_insite_Pending_Order, base_Used_Rental_insite_Pending_Order, base_On_Order_PO1, base_On_Order_PO1_Vendor, base_On_Order_Qty1, base_On_Order_Qty1_Used, base_On_Order_Date1, base_On_Order_PO2, base_On_Order_PO2_Vendor, base_On_Order_Qty2, base_On_Order_Qty2_Used, base_On_Order_Date2, base_On_Order_PO3, base_On_Order_PO3_Vendor, base_On_Order_Qty3, base_On_Order_Qty3_Used, base_On_Order_Date3, base_Total_PO_Qty, base_image_name, out_price_1, out_price_2, out_price_3, out_price_4, out_price_5, out_text_1, out_text_2, out_text_3, out_text_4, out_text_5, usage,
+                                                   sec_dept, sec_course, sec_section, sec_loc_code, sec_bookxofy, sec_course_id, sec_course_list, sec_instructor, save_amount, sec_delete_flag, sec_dept_course_section, sec_ebook_adopted, sec_class_cap, sec_prof_requested, sec_estimated_sales, sec_ebook1_vendor, sec_ebook1_period_1, sec_ebook1_price_1, sec_ebook1_period_2, sec_ebook1_price_2, sec_ebook1_period_3, sec_ebook1_price_3, sec_ebook1_period_4, sec_ebook1_price_4, sec_ebook1_period_5, sec_ebook1_price_5, sec_ebook2_vendor, sec_ebook2_period_1, sec_ebook2_price_1, sec_ebook2_period_2, sec_ebook2_price_2, sec_ebook2_period_3, sec_ebook2_price_3, sec_ebook2_period_4, sec_ebook2_price_4, sec_ebook2_period_5, sec_ebook2_price_5)
 
 
     except:
@@ -1420,14 +1463,13 @@ def file_handler(data_file):
 
     return file_content
 
-def send_pfi(OUTFILE, itemid, regular_price, ITEMIPF, base_FormatFlag, base_Author, base_Title, base_ISBN, base_ISBN_HR, base_Vendor_Style, base_Publisher, base_Imprint, base_Edition, base_Edition_Status, base_New_Price, base_New_Price_Text, base_Used_Price, base_Used_Price_Text, base_New_Rental_Price, base_New_Rental_Price_Text, base_Ebook_Price, base_Ebook_Price_Text, base_Used_Rental_Price, base_Used_Rental_Price_Text, base_Sale_Price, base_Sale_Price1, base_Sale_Start_Date1, base_Sale_End_Date1, base_Sale_Start_Time1, base_Sale_End_Time1, base_Sale_Price2, base_Sale_Start_Date2, base_Sale_End_Date2, base_Sale_Start_Time2, base_Sale_End_Time2, base_Sale_Price3, base_Sale_Start_Date3, base_Sale_End_Date3, base_Sale_Start_Time3, base_Sale_End_Time3, base_Sale_Price4, base_Sale_Start_Date4, base_Sale_End_Date4, base_Sale_Start_Time4, base_Sale_End_Time4, base_Term, base_Term_Description, base_Requested_Qty, base_Class_Capacity_Qty, base_Actual_Enrollment_Qty, base_Est_Sales_Qty, base_Category, base_Division, base_Department, base_Class, base_New_Store_Qty, base_New_Warehouse_Qty, base_Used_Store_Qty, base_Used_Warehouse_Qty, base_New_Pending_Return_Qty, base_Used_Pending_Return_Qty, base_New_insite_Pending_Order, base_Used_insite_Pending_Order, base_New_Rental_insite_Pending_Order, base_Used_Rental_insite_Pending_Order, base_On_Order_PO1, base_On_Order_PO1_Vendor, base_On_Order_Qty1, base_On_Order_Qty1_Used, base_On_Order_Date1, base_On_Order_PO2, base_On_Order_PO2_Vendor, base_On_Order_Qty2, base_On_Order_Qty2_Used, base_On_Order_Date2, base_On_Order_PO3, base_On_Order_PO3_Vendor, base_On_Order_Qty3, base_On_Order_Qty3_Used, base_On_Order_Date3, base_Total_PO_Qty, base_image_name,  sec_csn, sec_seq_no, sec_ISBN, sec_Term, sec_Term_Description, sec_dept, sec_course, sec_section, sec_loc_code, sec_bookxofy, sec_course_id, sec_instructor, sec_course_code, sec_delete_flag, sec_ebook_adopted, sec_class_cap, sec_prof_requested, sec_estimated_sales, sec_ebook1_vendor, sec_ebook1_period_1, sec_ebook1_price_1, sec_ebook1_period_2, sec_ebook1_price_2, sec_ebook1_period_3, sec_ebook1_price_3, sec_ebook1_period_4, sec_ebook1_price_4, sec_ebook1_period_5, sec_ebook1_price_5, sec_ebook2_vendor, sec_ebook2_period_1, sec_ebook2_price_1, sec_ebook2_period_2, sec_ebook2_price_2, sec_ebook2_period_3, sec_ebook2_price_3, sec_ebook2_period_4, sec_ebook2_price_4, sec_ebook2_period_5, sec_ebook2_price_5):
+def send_pfi(OUTFILE, itemid, regular_price, ITEMIPF, target_delay, base_FormatFlag, base_Author, base_Title, base_ISBN, base_Used_ISBN, base_ISBN_HR, base_Vendor_Style, base_Imprint, base_Edition, base_Edition_Status, base_New_Price, base_New_Price_Text, base_Used_Price, base_Used_Price_Text, base_New_Rental_Price, base_New_Rental_Price_Text, base_Ebook_Price, base_Ebook_Price_Text, base_Used_Rental_Price, base_Used_Rental_Price_Text, base_Sale_Price, target_date_start, target_date_end, base_Sale_Price1, base_Sale_Start_Date1, base_Sale_End_Date1, base_Sale_Start_Time1, base_Sale_End_Time1, base_Sale_Price2, base_Sale_Start_Date2, base_Sale_End_Date2, base_Sale_Start_Time2, base_Sale_End_Time2, base_Sale_Price3, base_Sale_Start_Date3, base_Sale_End_Date3, base_Sale_Start_Time3, base_Sale_End_Time3, base_Sale_Price4, base_Sale_Start_Date4, base_Sale_End_Date4, base_Sale_Start_Time4, base_Sale_End_Time4, base_Term, base_Term_Description, base_Requested_Qty, base_Class_Capacity_Qty, base_Actual_Enrollment_Qty, base_Est_Sales_Qty, base_Category, base_Division, base_Department, base_Class, base_New_Store_Qty, base_New_Warehouse_Qty, base_Used_Store_Qty, base_Used_Warehouse_Qty, base_New_Pending_Return_Qty, base_Used_Pending_Return_Qty, base_New_insite_Pending_Order, base_Used_insite_Pending_Order, base_New_Rental_insite_Pending_Order, base_Used_Rental_insite_Pending_Order, base_On_Order_PO1, base_On_Order_PO1_Vendor, base_On_Order_Qty1, base_On_Order_Qty1_Used, base_On_Order_Date1, base_On_Order_PO2, base_On_Order_PO2_Vendor, base_On_Order_Qty2, base_On_Order_Qty2_Used, base_On_Order_Date2, base_On_Order_PO3, base_On_Order_PO3_Vendor, base_On_Order_Qty3, base_On_Order_Qty3_Used, base_On_Order_Date3, base_Total_PO_Qty, base_image_name, out_price_1, out_price_2, out_price_3, out_price_4, out_price_5, out_text_1, out_text_2, out_text_3, out_text_4, out_text_5, usage, sec_dept, sec_course, sec_section, sec_loc_code, sec_bookxofy, sec_course_id, sec_course_list, sec_instructor, save_amount, sec_delete_flag, sec_dept_course_section, sec_ebook_adopted, sec_class_cap, sec_prof_requested, sec_estimated_sales, sec_ebook1_vendor, sec_ebook1_period_1, sec_ebook1_price_1, sec_ebook1_period_2, sec_ebook1_price_2, sec_ebook1_period_3, sec_ebook1_price_3, sec_ebook1_period_4, sec_ebook1_price_4, sec_ebook1_period_5, sec_ebook1_price_5, sec_ebook2_vendor, sec_ebook2_period_1, sec_ebook2_price_1, sec_ebook2_period_2, sec_ebook2_price_2, sec_ebook2_period_3, sec_ebook2_price_3, sec_ebook2_period_4, sec_ebook2_price_4, sec_ebook2_period_5, sec_ebook2_price_5):
 
     #determine where to send output
     new_line = "0001 " + str(itemid) + \
                " 7 0 |" + str(base_Author) + " " + str(base_Title) + \
                "| 23 0 |" + str(regular_price) + \
                "| 121 0 |" + str(ITEMIPF) + \
-               "| 9500 0 |" + str(target_delay) + \
                "| 9800 0 |" + str(base_Author) + \
                "| 9801 0 |" + str(base_Title) + \
                "| 9802 0 |" + str(base_ISBN) + \
@@ -1475,7 +1517,7 @@ def send_pfi(OUTFILE, itemid, regular_price, ITEMIPF, base_FormatFlag, base_Auth
                "| 9844 0 |" + str(base_Total_PO_Qty) + \
                "| 9845 0 |" + str(sec_loc_code) + \
                "| 9846 0 |" + str(sec_bookxofy) + \
-               "| 9847 0 |" + str(sec_courseid) + \
+               "| 9847 0 |" + str(sec_course_id) + \
                "| 9848 0 |" + str(sec_course_list) + \
                "| 9849 0 |" + str(sec_ebook_adopted) + \
                "| 9850 0 |" + str(sec_class_cap) + \
@@ -1510,10 +1552,10 @@ def send_pfi(OUTFILE, itemid, regular_price, ITEMIPF, base_FormatFlag, base_Auth
                "| 9898 0 |" + str(sec_dept) + \
                "| 9899 0 |" + str(sec_section) + \
                "| 9900 0 |" + str(sec_instructor) + \
-               "| 9902 0 |" + str(sec_delete) + \
+               "| 9902 0 |" + str(sec_delete_flag) + \
                "| 9903 0 |" + str(base_FormatFlag) + \
                "| 9914 0 |" + str(usage) + \
-               "| 9915 0 |" + str(base_dept_course_section) + \
+               "| 9915 0 |" + str(sec_dept_course_section) + \
                "| 9916 0 |" + str(base_Sale_Price1) + \
                "| 9917 0 |" + str(base_Sale_Start_Date1) + \
                "| 9918 0 |" + str(base_Sale_End_Date1) + \
@@ -1558,9 +1600,14 @@ def send_pfi(OUTFILE, itemid, regular_price, ITEMIPF, base_FormatFlag, base_Auth
                "| 9957 0 |" + str(sec_ebook2_period_5) + \
                "| 9958 0 |" + str(sec_ebook2_price_5)
 
+    if target_delay != "":
+        new_line = new_line + "| 9500 0 |" + str(target_delay)
+
     new_line = new_line + "|,\n"
 
     OUTFILE.write(new_line)
+
+    logger.debug("PFI file {} created.".format(OUTFILE))
 
     return OUTFILE
 
