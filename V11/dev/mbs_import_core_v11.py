@@ -29,6 +29,7 @@ def main():
 
         global file_name, drive_letter, use_pricer_level, log_level, log_delete_after, log_max, log_name, log_path, log_file, use_pricer_db, local_db, data_in_save, data_input_delete_after, input_data_path, wait_time, sort_order, none_100, usage_convert, IPF100, term_multi, date_format, ipf1x5_threshold, display_original, section_commas, New_On_Hand, Used_On_Hand, New_Addl, Used_Addl, New_Pend_Ret, Used_Pend_Ret, New_insite_Pend_Ord, Used_insite_Pend_Ord, New_Rental_insite_Pend_Ord, Used_Rental_insite_Pend_Ord, use_pfi, use_api, use_soap, i1_path, m1_path, r7_path, api_page_count, soap_api_ip, soap_token, soap_user, rest_api_url, rest_token
         global requests, db, client, config_path, license_status, pricer_api_alive, logger, origin_time, total_api_req_counter
+        global out_price, out_text
 
         origin_time = time.time()
 
@@ -937,58 +938,56 @@ def main():
                         if base_Category.lower() == "t":
                             ### Determine base item IPF
                             ITEMIPF = 0
-                            item_ipf_dict = {}
+                            item_ipf_dict = []
 
 
                             if float(base_New_Price) > 0:
                                 ITEMIPF += 1
-                                item_ipf_dict.update({(ITEMIPF): (base_New_Price, "New")})
+                                item_ipf_dict.append(Book(ITEMIPF, base_New_Price, "New"))
 
                             if float(base_Used_Price) > 0:
                                 ITEMIPF += 1
-                                item_ipf_dict.update({(ITEMIPF): (base_Used_Price, 'Used')})
+                                item_ipf_dict.append(Book(ITEMIPF, base_Used_Price, 'Used'))
 
                             if float(base_New_Rental_Price) > 0:
                                 ITEMIPF += 1
-                                item_ipf_dict.update({(ITEMIPF): (base_New_Rental_Price, "New Rental Price")})
+                                item_ipf_dict.append(Book(ITEMIPF, base_New_Rental_Price, "New Rental Price"))
 
                             if float(base_Used_Rental_Price) > 0:
                                 ITEMIPF += 1
-                                item_ipf_dict.update({(ITEMIPF): (base_Used_Rental_Price, "Used Rental Price")})
+                                item_ipf_dict.append(Book(ITEMIPF, base_Used_Rental_Price, "Used Rental Price"))
 
                             if float(base_Ebook_Price) > 0:
                                 ITEMIPF += 1
-                                item_ipf_dict.update({(ITEMIPF): (base_Ebook_Price, "Ebook Price")})
+                                item_ipf_dict.append(Book(ITEMIPF, base_Ebook_Price, "Ebook Price"))
 
                             logger.debug("base_Category : {}, ITEMIPF : {}, base_New_Price: {}, base_Used_Price: {}, base_Used_Rental_Price: {}, base_Used_Rental_Price: {}, base_Ebook_Price: {}, item_ipf_dict : {}.".format(base_Category, ITEMIPF, base_New_Price, base_Used_Price, base_New_Rental_Price, base_Used_Rental_Price, base_Ebook_Price, item_ipf_dict))
 
                             out_price = []
                             out_text = []
 
+                            class Book:
+                                def __init__(self, ipf, price, condition):
+                                    self.ipf = ipf
+                                    self.price = price
+                                    self.condition = condition
+                                    out_price.append(self.price)
+                                    out_text.append(self.condition)
+
+                                def __repr__(self):
+                                    return repr((self.ipf, self.price, self.condition))
+
                             ######Ascending order output
 
                             if sort_order == "ascending":
                                 if len(item_ipf_dict) > 0:
-                                    ITEMIPF = max(item_ipf_dict) * 100
+                                    ITEMIPF = len(item_ipf_dict) * 100
 
-                                    sorted_item_ipf = OrderedDict(sorted(item_ipf_dict.items(), key=lambda kv: kv[2]))
+                                    sorted_item_ipf = sorted(item_ipf_dict, key=lambda book: book.condition)
 
                                     for item_ipf_key in sorted_item_ipf:
-
-                                        out_price.append(sorted_item_ipf[item_ipf_key][0])
-                                        out_text.append(sorted_item_ipf[item_ipf_key][1])
-                                        if len(sorted_item_ipf) > 2:
-                                            out_price.append(sorted_item_ipf[item_ipf_key][0])
-                                            out_text.append(sorted_item_ipf[item_ipf_key][1])
-                                        if len(sorted_item_ipf) > 4:
-                                            out_price.append(sorted_item_ipf[item_ipf_key][0])
-                                            out_text.append(sorted_item_ipf[item_ipf_key][1])
-                                        if len(sorted_item_ipf) > 6:
-                                            out_price.append(sorted_item_ipf[item_ipf_key][0])
-                                            out_text.append(sorted_item_ipf[item_ipf_key][1])
-                                        if len(sorted_item_ipf) > 8:
-                                            out_price.append(sorted_item_ipf[item_ipf_key][0])
-                                            out_text.append(sorted_item_ipf[item_ipf_key][1])
+                                        out_price.append(item_ipf_key.price)
+                                        out_text.append(item_ipf_key.condition)
 
                                     logger.debug("Sorted IPF List: {}.".format(sorted_item_ipf))
 
@@ -996,24 +995,29 @@ def main():
 
                             if sort_order == "natural":
                                 if len(item_ipf_dict) > 0:
-                                    ITEMIPF = max(item_ipf_dict) * 100
+                                    ITEMIPF = len(item_ipf_dict) * 100
 
-                                    for item_ipf_key in item_ipf_dict:
+                                    sorted_item_ipf = sorted(item_ipf_dict, key=lambda book: book.ipf)
 
-                                        out_price.append(item_ipf_dict.get(item_ipf_key)[0])
-                                        out_text.append(item_ipf_dict.get(item_ipf_key)[1])
-                                        if len(item_ipf_dict) > 2:
-                                            out_price.append(item_ipf_dict.get(item_ipf_key)[0])
-                                            out_text.append(item_ipf_dict.get(item_ipf_key)[1])
-                                        if len(item_ipf_dict) > 4:
-                                            out_price.append(item_ipf_dict.get(item_ipf_key)[0])
-                                            out_text.append(item_ipf_dict.get(item_ipf_key)[1])
-                                        if len(item_ipf_dict) > 6:
-                                            out_price.append(item_ipf_dict.get(item_ipf_key)[0])
-                                            out_text.append(item_ipf_dict.get(item_ipf_key)[1])
-                                        if len(item_ipf_dict) > 8:
-                                            out_price.append(item_ipf_dict.get(item_ipf_key)[0])
-                                            out_text.append(item_ipf_dict.get(item_ipf_key)[1])
+                                    for item_ipf_key in sorted_item_ipf:
+                                        out_price.append(item_ipf_key.price)
+                                        out_text.append(item_ipf_key.condition)
+
+                                    logger.debug("Sorted IPF List: {}.".format(sorted_item_ipf))
+
+                            ####### Price order output
+
+                            if sort_order == "price":
+                                if len(item_ipf_dict) > 0:
+                                    ITEMIPF = len(item_ipf_dict) * 100
+
+                                    sorted_item_ipf = sorted(item_ipf_dict, key=lambda book: book.price)
+
+                                    for item_ipf_key in sorted_item_ipf:
+                                        out_price.append(item_ipf_key.price)
+                                        out_text.append(item_ipf_key.condition)
+
+                                    logger.debug("Sorted IPF List: {}.".format(sorted_item_ipf))
 
                             logger.debug('Using sort order {}, item_ipf_dict : {}'.format(sort_order, item_ipf_dict))
                             logger.debug('Current IPF {}, set for ISBN {}.'.format(ITEMIPF, base_ISBN))
@@ -1782,6 +1786,7 @@ def soap_api_updateitem(soap_update_str, soap_command_id, api_req_counter, api_o
         logger.info("No data to write to SOAP API.")
 
     return api_req_counter, soap_command_id, command_id, api_out_line_count
+
 
 #################################################end subroutines#############################################################
 

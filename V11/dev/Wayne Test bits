@@ -1,15 +1,77 @@
 import os
 import time
-x = None
-
-if not isinstance(x, (int, float)):
-    x = 0
-    print("x was invalid set to 0")
-else:
-    print("x is {}".format(x))
-
-
+from collections import OrderedDict
+from operator import getitem
 #
+# student_tuples = [('john', 'A', 15), ('jane', 'B', 12), ('dave', 'B', 10)]
+# print(sorted(student_tuples, key=lambda student: student[0]))
+#
+#
+# class Student:
+#     def __init__(self, name, grade, age):
+#         self.name = name
+#         self.grade = grade
+#         self.age = age
+#     def __repr__(self):
+#         return repr((self.name, self.grade, self.age))
+#
+# student_objects = [Student('john', 'A', 15), Student('jane', 'B', 12), Student('dave', 'B', 10)]
+#
+# print(sorted(student_objects, key=lambda student: student.age))
+
+
+
+
+
+
+
+
+
+
+
+
+sort_order = "ascending"
+out_price = []
+out_text = []
+class Book:
+    def __init__(self, ipf, price, condition):
+        self.ipf = ipf
+        self.price = price
+        self.condition = condition
+    def __repr__(self):
+        return repr((self.ipf, self.price, self.condition))
+#
+item_ipf_dict = [Book(1, '6.95', 'New'), Book(2, '5.20', 'Used'), Book(3, '3.45', 'New Rental Price'), Book(4, '2.55', 'Used Rental Price'), Book(5, '6.95', 'Ebook')]
+
+
+if len(item_ipf_dict) > 0:
+
+    sorted_item_ipf = sorted(item_ipf_dict, key=lambda book: book.condition)
+    print('item_ipf_dict : {}'.format(sorted_item_ipf))
+    print(len(sorted_item_ipf))
+
+    ITEMIPF = len(sorted_item_ipf) *100
+    print(ITEMIPF)
+
+    for item_ipf_key in sorted_item_ipf:
+        print("item_ipf_key: {}.".format(item_ipf_key))
+        # print(item_ipf_key.price)
+        out_price.append(item_ipf_key.price)
+        out_text.append(item_ipf_key.condition)
+
+print('Using sort order {}, item_ipf_dict : {}'.format(sort_order, item_ipf_dict))
+print('Current IPF {}.'.format(ITEMIPF))
+print("out Price list: {}".format(out_price))
+print("out Text list: {}".format(out_text))
+
+# if not isinstance(x, (int, float)):
+#     x = 0
+#     print("x was invalid set to 0")
+# else:
+#     print("x is {}".format(x))
+
+
+# #
 # base_ISBN = "978007058041"
 #
 # secondary_file_data_list = [{"GenKey": "1", "csn": "12879", "seq_no": "0", "ISBN": "NTR", "Term": "T14", "Term_Description": "Test 2014", "dept": "ART", "course": "300", "section": "1", "loc_code": " ", "bookxofy": " ", "course_id": " ", "instructor": "ANDREWS", "course_code": " ", "delete_flag": "N", "ebook_adopted": "N", "class_cap": "30", "prof_requested": "0", "estimated_sales": "0", "ebook1_vendor": "0", "ebook1_period_1": "0", "ebook1_price_1": "0", "ebook1_period_2": "0", "ebook1_price_2": "0", "ebook1_period_3": "0", "ebook1_price_3": "0", "ebook1_period_4": "0", "ebook1_price_4": "0", "ebook1_period_5": "0", "ebook1_price_5": "0", "ebook2_vendor": "0", "ebook2_period_1": "0", "ebook2_price_1": "0", "ebook2_period_2": "0", "ebook2_price_2": "0", "ebook2_period_3": "0", "ebook2_price_3": "0", "ebook2_period_4": "0", "ebook2_price_4": "0", "ebook2_period_5": "0", "ebook2_price_5": "0"}, {"GenKey": "1", "csn": "12880", "seq_no": "0", "ISBN": "NTR", "Term": "T14", "Term_Description": "Test 2014", "dept": "BIOL", "course": "425", "section": "1234567", "loc_code": " ", "bookxofy": " ", "course_id": " ", "instructor": "MILLER JOHNSON", "course_code": " ", "delete_flag": "N", "ebook_adopted": "N", "class_cap": "50", "prof_requested": "0", "estimated_sales": "0", "ebook1_vendor": "0", "ebook1_period_1": "0", "ebook1_price_1": "0", "ebook1_period_2": "0", "ebook1_price_2": "0", "ebook1_period_3": "0", "ebook1_price_3": "0", "ebook1_period_4": "0", "ebook1_price_4": "0", "ebook1_period_5": "0", "ebook1_price_5": "0", "ebook2_vendor": "0", "ebook2_period_1": "0", "ebook2_price_1": "0", "ebook2_period_2": "0", "ebook2_price_2": "0", "ebook2_period_3": "0", "ebook2_price_3": "0", "ebook2_period_4": "0", "ebook2_price_4": "0", "ebook2_period_5": "0", "ebook2_price_5": "0"}, {"GenKey": "1", "csn": "12881", "seq_no": "0", "ISBN": "NTR", "Term": "T14", "Term_Description": "Test 2014", "dept": "BUS", "course": "275", "section": "3", "loc_code": " ", "bookxofy": " ", "course_id": " ", "instructor": "SHEEHAN", "course_code": " ", "delete_flag": "N", "ebook_adopted": "N", "class_cap": "10", "prof_requested": "0", "estimated_sales": "0", "ebook1_vendor": "0", "ebook1_period_1": "0", "ebook1_price_1": "0", "ebook1_period_2": "0", "ebook1_price_2": "0", "ebook1_period_3": "0", "ebook1_price_3": "0", "ebook1_period_4": "0", "ebook1_price_4": "0", "ebook1_period_5": "0", "ebook1_price_5": "0", "ebook2_vendor": "0", "ebook2_period_1": "0", "ebook2_price_1": "0", "ebook2_period_2": "0", "ebook2_price_2": "0", "ebook2_period_3": "0", "ebook2_price_3": "0", "ebook2_period_4": "0", "ebook2_price_4": "0", "ebook2_period_5": "0", "ebook2_price_5": "0"}, {"GenKey": "1", "csn": "12882", "seq_no": "0", "ISBN": "NTR", "Term": "T14", "Term_Description": "Test 2014", "dept": "CHEM", "course": "1650", "section": "275", "loc_code": " ", "bookxofy": " ", "course_id": " ", "instructor": "STAFF", "course_code": " ", "delete_flag": "N", "ebook_adopted": "N", "class_cap": "200", "prof_requested": "0", "estimated_sales": "0", "ebook1_vendor": "0", "ebook1_period_1": "0", "ebook1_price_1": "0", "ebook1_period_2": "0", "ebook1_price_2": "0", "ebook1_period_3": "0", "ebook1_price_3": "0", "ebook1_period_4": "0", "ebook1_price_4": "0", "ebook1_period_5": "0", "ebook1_price_5": "0", "ebook2_vendor": "0", "ebook2_period_1": "0", "ebook2_price_1": "0", "ebook2_period_2": "0", "ebook2_price_2": "0", "ebook2_period_3": "0", "ebook2_price_3": "0", "ebook2_period_4": "0", "ebook2_price_4": "0", "ebook2_period_5": "0", "ebook2_price_5": "0"}, {"GenKey": "2", "csn": "8945", "seq_no": "1", "ISBN": "978007058041", "Term": "T14", "Term_Description": "Test 2014", "dept": "ACCT", "course": "250", "section": "1", "loc_code": " ", "bookxofy": "Book 1 of 2", "course_id": " ", "instructor": "JOHNSON", "course_code": "REQUIRED", "delete_flag": "N", "ebook_adopted": "N", "class_cap": "0", "prof_requested": "0", "estimated_sales": "20", "ebook1_vendor": "0", "ebook1_period_1": "0", "ebook1_price_1": "0", "ebook1_period_2": "0", "ebook1_price_2": "0", "ebook1_period_3": "0", "ebook1_price_3": "0", "ebook1_period_4": "0", "ebook1_price_4": "0", "ebook1_period_5": "0", "ebook1_price_5": "0", "ebook2_vendor": "0", "ebook2_period_1": "0", "ebook2_price_1": "0", "ebook2_period_2": "0", "ebook2_price_2": "0", "ebook2_period_3": "0", "ebook2_price_3": "0", "ebook2_period_4": "0", "ebook2_price_4": "0", "ebook2_period_5": "0", "ebook2_price_5": "0"}, {"GenKey": "3", "csn": "8969", "seq_no": "5", "ISBN": "978031214110", "Term": "T14", "Term_Description": "Test 2014", "dept": "PSY", "course": "100", "section": "1", "loc_code": " ", "bookxofy": "Book 4 of 5", "course_id": " ", "instructor": " ", "course_code": "REQUIRED", "delete_flag": "N", "ebook_adopted": "N", "class_cap": "0", "prof_requested": "0", "estimated_sales": "10", "ebook1_vendor": "0", "ebook1_period_1": "0", "ebook1_price_1": "0", "ebook1_period_2": "0", "ebook1_price_2": "0", "ebook1_period_3": "0", "ebook1_price_3": "0", "ebook1_period_4": "0", "ebook1_price_4": "0", "ebook1_period_5": "0", "ebook1_price_5": "0", "ebook2_vendor": "0", "ebook2_period_1": "0", "ebook2_price_1": "0", "ebook2_period_2": "0", "ebook2_price_2": "0", "ebook2_period_3": "0", "ebook2_price_3": "0", "ebook2_period_4": "0", "ebook2_price_4": "0", "ebook2_period_5": "0", "ebook2_price_5": "0"}, {"GenKey": "4", "csn": "8944", "seq_no": "9", "ISBN": "978032102435", "Term": "T14", "Term_Description": "Test 2014", "dept": "ACCT", "course": "100", "section": "1,2,3", "loc_code": " ", "bookxofy": "Book 9 of 26", "course_id": " ", "instructor": "PELLOCK", "course_code": "REQUIRED", "delete_flag": "N", "ebook_adopted": "N", "class_cap": "0", "prof_requested": "0", "estimated_sales": "10", "ebook1_vendor": "0", "ebook1_period_1": "0", "ebook1_price_1": "0", "ebook1_period_2": "0", "ebook1_price_2": "0", "ebook1_period_3": "0", "ebook1_price_3": "0", "ebook1_period_4": "0", "ebook1_price_4": "0", "ebook1_period_5": "0", "ebook1_price_5": "0", "ebook2_vendor": "0", "ebook2_period_1": "0", "ebook2_price_1": "0", "ebook2_period_2": "0", "ebook2_price_2": "0", "ebook2_period_3": "0", "ebook2_price_3": "0", "ebook2_period_4": "0", "ebook2_price_4": "0", "ebook2_period_5": "0", "ebook2_price_5": "0"}]
