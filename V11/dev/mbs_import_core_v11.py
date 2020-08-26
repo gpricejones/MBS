@@ -294,7 +294,7 @@ def main():
 
             logger.debug("i1 file: {}".format(i1_file))
 
-            OUTFILE = open(i1_file, "w")
+            OUTFILE = open(i1_file, "w", encoding="utf-8")
 
         # start soap client if used
 
@@ -1262,9 +1262,9 @@ def main():
                                     ITEMIPF = 100
                                     logger.info("record on line {},with ISBN of {}, in {} did not generate valid IPF, default IPF{} assigned".format(row_counter, base_ISBN, new_file, ITEMIPF))
 
-                                elif ITEMIPF == 0 and not none_100 and str(base_ISBN).lower() == "ntr":
+                                elif ITEMIPF == 0 and not none_100 and str(base_ISBN).lower() != "ntr":
                                     ITEMIPF = 104
-                                    logger.info("record on line {},with ISBN of {}, in {} did not generate valid IPF, default IPF{} assigned".format(row_counter, base_ISBN, new_file, ITEMIPF))
+                                    logger.info("record on line {}, with ISBN of {}, in {} did not generate valid IPF, default IPF{} assigned".format(row_counter, base_ISBN, new_file, ITEMIPF))
 
                                 ##### Check ipf1x5 threshold exceeded, if so assign IPF1X5
                                 logger.debug("Out Prices 1-5, {}. IPF1X5 Threshold {}.".format(out_price, ipf1x5_threshold))
@@ -1718,7 +1718,7 @@ def main():
 
                             if itemid not in all_itemids and itemid[0:2] != " -":
                                 db_sel = db.cursor()
-                                db_sel.callproc("sp_insert_mbs_itemid", [str(itemid), str(base_ISBN), str(base_Department), str(sec_course), str(sec_section), str(base_Term)])
+                                db_sel.callproc("sp_insert_mbs_itemid", [str(itemid), str(base_ISBN), str(sec_dept), str(sec_course), str(sec_section), str(base_Term)])
                                 db.commit()
                                 db_sel.close()
                                 logger.debug("Item ID not found in t_links, updating t_links with, ItemID: {}, ISBN: {}, Department: {}, Course: {} and Term: {}.".format(itemid, base_ISBN, base_Department, sec_course, sec_section, base_Term))
@@ -1731,7 +1731,7 @@ def main():
 
                                 if itemid not in all_itemids and itemid[0:2] != " -":
                                     db_sel = db.cursor()
-                                    db_sel.callproc("sp_insert_mbs_itemid", [str(itemid), str(base_ISBN), str(base_Department), str(sec_course), str(sec_section), str(base_Term)])
+                                    db_sel.callproc("sp_insert_mbs_itemid", [str(itemid), str(base_ISBN), str(sec_dept), str(sec_course), str(sec_section), str(base_Term)])
                                     db.commit()
                                     db_sel.close()
                                     logger.debug("Item ID not found in t_links, updating t_links with, ItemID: {}, ISBN: {}, Department: {}, Course: {} and Term: {}.".format(itemid, base_ISBN, base_Department, sec_course, sec_section, base_Term))
@@ -1832,7 +1832,7 @@ def main():
 
                             if itemid not in all_itemids and itemid[0:2] != " -":
                                 db_sel = db.cursor()
-                                db_sel.callproc("sp_insert_mbs_itemid", [str(itemid), str(base_ISBN), str(base_Department), str(sec_course), str(sec_section), str(base_Term)])
+                                db_sel.callproc("sp_insert_mbs_itemid", [str(itemid), str(base_ISBN), str(sec_dept), str(sec_course), str(sec_section), str(base_Term)])
                                 db.commit()
                                 db_sel.close()
                                 logger.debug("Item ID not found in t_links, updating t_links with, ItemID: {}, ISBN: {}, Department: {}, Course: {} and Term: {}.".format(itemid, base_ISBN, base_Department, sec_course, sec_section, base_Term))
@@ -1848,7 +1848,7 @@ def main():
 
                                 if itemid not in all_itemids and itemid[0:2] != " -":
                                     db_sel = db.cursor()
-                                    db_sel.callproc("sp_insert_mbs_itemid", [str(itemid), str(base_ISBN), str(base_Department), str(sec_course), str(sec_section), str(base_Term)])
+                                    db_sel.callproc("sp_insert_mbs_itemid", [str(itemid), str(base_ISBN), str(sec_dept), str(sec_course), str(sec_section), str(base_Term)])
                                     db.commit()
                                     db_sel.close()
                                     logger.debug("Item ID not found in t_links, updating t_links with, ItemID: {}, ISBN: {}, Department: {}, Course: {} and Term: {}.".format(itemid, base_ISBN, base_Department, sec_course, sec_section, base_Term))
