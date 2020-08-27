@@ -3,9 +3,9 @@ import time
 from collections import OrderedDict
 from operator import getitem
 
-ITEMIPF = 100
-
-print(str(ITEMIPF)[2:3])
+# ITEMIPF = 100
+#
+# print(str(ITEMIPF)[2:3])
 
 
 #
@@ -37,7 +37,25 @@ print(str(ITEMIPF)[2:3])
 #         return repr((self.ipf, self.price, self.condition))
 # #
 # item_ipf_dict = [Book(1, '6.95', 'New'), Book(2, '5.20', 'Used'), Book(3, '3.45', 'New Rental Price'), Book(4, '2.55', 'Used Rental Price'), Book(5, '6.95', 'Ebook')]
-#
+out_price = ['12.00', '6.48', '9.00', '3.48', '10.25']
+out_text = ['New', 'New Rental Price', 'Used', 'Used Rental Price', 'eBook']
+price_loc = 0
+price_count = len(out_price) -1
+print(price_count)
+base_Ebook_Price_Text = "ebook"
+
+for i, elem in enumerate(out_text):
+    if elem.lower() == base_Ebook_Price_Text.lower():
+        price_loc = i
+        print(price_loc)
+    if price_count == price_loc:
+        print("price count: {}, price loc: {}.".format(price_count, price_loc))
+        out_text.pop(i)
+        out_price.pop(i)
+
+print(out_text)
+print(out_price)
+
 #
 # if len(item_ipf_dict) > 0:
 #

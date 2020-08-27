@@ -1260,11 +1260,11 @@ def main():
 
                                 if ITEMIPF == 0 and none_100:
                                     ITEMIPF = 100
-                                    logger.info("record on line {},with ISBN of {}, in {} did not generate valid IPF, default IPF{} assigned".format(row_counter, base_ISBN, new_file, ITEMIPF))
+                                    logger.debug("record on line {},with ISBN of {}, in {} did not generate valid IPF, default IPF{} assigned".format(row_counter, base_ISBN, new_file, ITEMIPF))
 
                                 elif ITEMIPF == 0 and not none_100 and str(base_ISBN).lower() != "ntr":
                                     ITEMIPF = 104
-                                    logger.info("record on line {}, with ISBN of {}, in {} did not generate valid IPF, default IPF{} assigned".format(row_counter, base_ISBN, new_file, ITEMIPF))
+                                    logger.debug("record on line {}, with ISBN of {}, in {} did not generate valid IPF, default IPF{} assigned".format(row_counter, base_ISBN, new_file, ITEMIPF))
 
                                 ##### Check ipf1x5 threshold exceeded, if so assign IPF1X5
                                 logger.debug("Out Prices 1-5, {}. IPF1X5 Threshold {}.".format(out_price, ipf1x5_threshold))
@@ -1355,7 +1355,7 @@ def main():
                                 if float(base_Sale_Price1) > 0 and int(sale_start1) > '1900-01-01 00:00:00':
 
                                     if s_stamp >= sale_start1 and s_stamp <= sale_end1:
-                                        save_amount = regular_price - base_Sale_Price1
+                                        save_amount = float(regular_price) - float(base_Sale_Price1)
                                         ITEMIPF = "Sale"
 
                                         base_Sale_Price = "%.2f" % (float(base_Sale_Price1) / 1)
@@ -1371,7 +1371,7 @@ def main():
 
 
                                     elif sale_start1 >= s_stamp and sale_end1 >= s_stamp:
-                                        save_amount = regular_price - base_Sale_Price1
+                                        save_amount = float(regular_price) - float(base_Sale_Price1)
                                         ITEMIPF = "Sale"
 
                                         base_Sale_Price = "%.2f" % (float(base_Sale_Price1) / 1)
@@ -1400,7 +1400,7 @@ def main():
                                 if float(base_Sale_Price2) > 0 and int(sale_start2) > '1900-01-01 00:00:00':
 
                                     if s_stamp >= sale_start2 and s_stamp <= sale_end2:
-                                        save_amount = regular_price - base_Sale_Price2
+                                        save_amount = float(regular_price) - float(base_Sale_Price2)
                                         ITEMIPF = "Sale"
 
                                         base_Sale_Price = "%.2f" % (float(base_Sale_Price2) / 1)
@@ -1416,7 +1416,7 @@ def main():
 
 
                                     elif sale_start1 >= s_stamp and sale_end1 >= s_stamp:
-                                        save_amount = regular_price - base_Sale_Price2
+                                        save_amount = float(regular_price) - float(base_Sale_Price2)
                                         ITEMIPF = "Sale"
 
                                         base_Sale_Price = "%.2f" % (float(base_Sale_Price2) / 1)
@@ -1445,7 +1445,7 @@ def main():
                                 if float(base_Sale_Price3) > 0 and int(sale_start3) > '1900-01-01 00:00:00':
 
                                     if s_stamp >= sale_start3 and s_stamp <= sale_end3:
-                                        save_amount = regular_price - base_Sale_Price3
+                                        save_amount = float(regular_price) - float(base_Sale_Price3)
                                         ITEMIPF = "Sale"
 
                                         base_Sale_Price = "%.2f" % (float(base_Sale_Price3) / 1)
@@ -1461,7 +1461,7 @@ def main():
 
 
                                     elif sale_start3 >= s_stamp and sale_end3 >= s_stamp:
-                                        save_amount = regular_price - base_Sale_Price3
+                                        save_amount = float(regular_price) - float(base_Sale_Price3)
                                         ITEMIPF = "Sale"
 
                                         base_Sale_Price = "%.2f" % (float(base_Sale_Price3) / 1)
@@ -1490,7 +1490,7 @@ def main():
                                 if float(base_Sale_Price4) > 0 and int(sale_start4) > '1900-01-01 00:00:00':
 
                                     if s_stamp >= sale_start4 and s_stamp <= sale_end4:
-                                        save_amount = regular_price - base_Sale_Price4
+                                        save_amount = float(regular_price) - float(base_Sale_Price4)
                                         ITEMIPF = "Sale"
 
                                         base_Sale_Price = "%.2f" % (float(base_Sale_Price4) / 1)
@@ -1506,7 +1506,7 @@ def main():
 
 
                                     elif sale_start4 >= s_stamp and sale_end1 >= s_stamp:
-                                        save_amount = regular_price - base_Sale_Price4
+                                        save_amount = float(regular_price) - float(base_Sale_Price4)
                                         ITEMIPF = "Sale"
 
                                         base_Sale_Price = "%.2f" % (float(base_Sale_Price4) / 1)
@@ -1759,33 +1759,42 @@ def main():
 
                             if sec_ebook_adopted.lower() != "y" and float(base_Ebook_Price) > 0 and str(ITEMIPF)[2:3] == 0 and ebook_count == 0:
                                 logger.debug("sec_ebook_adopted: {}, base_Ebook_Price: {}, ITEMIPF: {}, ebook_count: {}.".format(sec_ebook_adopted, base_Ebook_Price, str(ITEMIPF)[2:3], ebook_count))
-                                price_count = len(item_ipf_dict)
+                                # find out haw many prices
+                                price_count = len(item_ipf_dict) -1
+                                price_loc = ''
                                 logger.debug("price count: {}".format(price_count))
+
+                                # check position of ebook in sequence
                                 for i, elem in enumerate(out_text):
                                     if elem == base_Ebook_Price_Text:
-                                        price_loc = out_text[i]
+                                        price_loc = i
 
-                                    if price_count == price_loc:
-                                        logger.debug("price count: {}, price loc: {}.".format(price_count, price_loc))
-                                        out_text.pop(i)
-                                        out_price.pop(i)
+                                    logger.debug("price count: {}, price loc: {}.".format(price_count, price_loc))
+                                    out_text.pop(i)
+                                    out_price.pop(i)
 
-                                    else:
-                                        if price_loc == 1:
-                                            logger.debug(out_text)                  ##### NEEDS LOOKING AT #####
-                                            logger.debug(out_price)                 ##### NEEDS LOOKING AT #####
-                                        elif price_loc == 2:                        ##### NEEDS LOOKING AT #####
-                                            logger.debug(out_text)                  ##### NEEDS LOOKING AT #####
-                                            logger.debug(out_price)                 ##### NEEDS LOOKING AT #####
-                                        elif price_loc == 3:                        ##### NEEDS LOOKING AT #####
-                                            logger.debug(out_text)                  ##### NEEDS LOOKING AT #####
-                                            logger.debug(out_price)                 ##### NEEDS LOOKING AT #####
-                                        elif price_loc == 4:                        ##### NEEDS LOOKING AT #####
-                                            logger.debug(out_text)                  ##### NEEDS LOOKING AT #####
-                                            logger.debug(out_price)                 ##### NEEDS LOOKING AT #####
-                                        elif price_loc == 5:                        ##### NEEDS LOOKING AT #####
-                                            logger.debug(out_text)                  ##### NEEDS LOOKING AT #####
-                                            logger.debug(out_price)                 ##### NEEDS LOOKING AT #####
+                                    if len(out_price) and len(out_text) == 1:
+                                        out_price_1 = out_price[0]
+
+                                        out_text_1 = out_text[0]
+
+                                    if len(out_price) and len(out_text) == 2:
+                                        out_price_2 = out_price[1]
+
+                                        out_text_2 = out_text[1]
+
+                                    if len(out_price) and len(out_text) == 3:
+                                        out_price_3 = out_price[2]
+
+                                        out_text_3 = out_text[2]
+
+                                    if len(out_price) and len(out_text) == 4:
+                                        out_price_4 = out_price[3]
+
+                                        out_text_4 = out_text[3]
+
+                                    if len(out_price) and len(out_text) == 5:
+                                        out_price_5 = out_price[4]
 
                                     ITEMIPF = ITEMIPF - 100
                                     ebook_count = 1
