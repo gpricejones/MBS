@@ -160,9 +160,9 @@ def main():
                 AlertManager.alert_manager(config_path, log_path, 'fatal', "Logging failed to start with error " + str(e))
                 sys.exit(99)
 
-            if not os.path.isdir(log_path):
-                os.makedirs(log_path, mode=0o777)
-                logger.debug('Successfully created {} input folder for archiving.'.format(log_path))
+            if not os.path.isdir(os.path.join(drive_letter, log_path)):
+                os.makedirs(os.path.join(drive_letter, log_path), mode=0o777)
+                logger.debug('Successfully created {} input folder for archiving.'.format(os.path.join(drive_letter, log_path)))
 
             logger.info(file_name + ' successfully started with logging at ' + log_level.upper() + '.')
             if year_stamp != '2020':
