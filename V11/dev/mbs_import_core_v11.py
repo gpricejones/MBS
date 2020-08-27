@@ -370,7 +370,7 @@ def main():
 
         # clean up input directory
         if data_in_save and int(data_input_delete_after) > 0:
-            DirectoryCleaner.clean_directory(data_input_delete_after, input_data_path, log_file, log_level, config_path)
+            DirectoryCleaner.clean_directory(int(data_input_delete_after), input_data_path, log_file, log_level, config_path)
 
         ### Main File Content Processing ###
 
@@ -2042,7 +2042,8 @@ def main():
                             logger.info("Skipped due to license status")
                     if len(file_row) == 0:
                         logger.warn("Row {} in file {}, dropped no data.".format(row_counter, file_name))
-
+                logger.debug(os.path.join(data_path, new_file))
+                file_close_handler(file_content)
                 # move used data file to input
                 if data_in_save:
                     if not os.path.isdir(input_data_path):
@@ -2054,7 +2055,6 @@ def main():
                 else:
                     os.remove(os.path.join(data_path, new_file))
                     logger.info(str(os.path.join(data_path, new_file)) + ' deleted.')
-
             # Clean up < 1000 records for API
             if use_api:
                 if not use_soap:
@@ -2091,6 +2091,7 @@ def main():
 
                 logger.info(temp_m1_file + " file moved to " + m1_file + " to start PFI processing by PricerServer.")
                 logger.info("Finished processing items.")
+
         else:
             logger.info("No New Files to Process")
     except:
@@ -2122,9 +2123,13 @@ def file_handler(data_file):
         current_size = new_size
         new_size = os.path.getsize(file_path)
 
-    file_content = open(data_path + data_file, "r", encoding='utf-8')
+    file_content = open(file_path, "r", encoding='utf-8')
 
     return file_content
+
+def file_close_handler(file_content):
+
+    file_content.close()
 
 
 def send_pfi(OUTFILE, itemid, regular_price, ITEMIPF, target_delay, base_FormatFlag, base_Author, base_Title, base_ISBN, base_Used_ISBN, base_ISBN_HR, base_Vendor_Style, base_Publisher, base_Imprint, base_Edition, base_Edition_Status, base_New_Price, base_New_Price_Text, base_Used_Price, base_Used_Price_Text, base_New_Rental_Price, base_New_Rental_Price_Text, base_Ebook_Price, base_Ebook_Price_Text, base_Used_Rental_Price, base_Used_Rental_Price_Text, base_Sale_Price, target_date_start, target_date_end, base_Sale_Price1, base_Sale_Start_Date1, base_Sale_End_Date1, base_Sale_Start_Time1, base_Sale_End_Time1, base_Sale_Price2, base_Sale_Start_Date2, base_Sale_End_Date2, base_Sale_Start_Time2, base_Sale_End_Time2, base_Sale_Price3, base_Sale_Start_Date3, base_Sale_End_Date3, base_Sale_Start_Time3, base_Sale_End_Time3, base_Sale_Price4, base_Sale_Start_Date4, base_Sale_End_Date4, base_Sale_Start_Time4, base_Sale_End_Time4, base_Term, base_Term_Description, base_Requested_Qty,
