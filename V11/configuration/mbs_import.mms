@@ -15,7 +15,8 @@
 	<DataIn
 		DataInputSave="False"
 		DeleteAfter="7"
-		Path="Pricer\import\data\"
+		Path="Pricer\Import\data\"
+		InputHoldPath="Pricer\Import\data\input\"
 		FileWaitTime="60"
 	/>
     <Sort
