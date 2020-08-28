@@ -2083,7 +2083,7 @@ def main():
                 # process m1 file
                 M1FILE = open(temp_m1_file, "a")
                 logger.info(temp_m1_file + " opened for message record write.")
-                M1FILE.write("UPDATE,, 0001," + i1_file + "," + r7_file)
+                M1FILE.write("UPDATE,0001,," + i1_file + "," + r7_file)
                 M1FILE.close()
                 logger.info("Temp message file " + temp_m1_file + " closed.")
 
