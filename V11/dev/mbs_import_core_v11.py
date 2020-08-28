@@ -1358,7 +1358,7 @@ def main():
 
                                     if float(base_Sale_Price1) > 0 and int(sale_start1) > '1900-01-01 00:00:00':
 
-                                        if s_stamp >= sale_start1 and s_stamp <= sale_end1:
+                                        if s_stamp >= datetime.datetime(sale_start1) and s_stamp <= datetime.datetime(sale_end1):
                                             save_amount = float(regular_price) - float(base_Sale_Price1)
                                             ITEMIPF = "Sale"
 
@@ -1380,8 +1380,7 @@ def main():
                                                                                                                                                                                                                   out_price_1, out_price_2, out_price_3, out_price_4, out_price_5, out_text_1, out_text_2, out_text_3, out_text_4, out_text_5, usage, sec_dept, sec_course, sec_section, sec_loc_code, sec_bookxofy,
                                                                                                                                                                                                                   sec_course_id, sec_course_list, sec_instructor, save_amount, sec_delete_flag, sec_dept_course_section, sec_ebook_adopted, sec_class_cap, sec_prof_requested, sec_estimated_sales, sec_ebook1_vendor, sec_ebook1_period_1, sec_ebook1_price_1, sec_ebook1_period_2, sec_ebook1_price_2, sec_ebook1_period_3, sec_ebook1_price_3, sec_ebook1_period_4, sec_ebook1_price_4, sec_ebook1_period_5, sec_ebook1_price_5, sec_ebook2_vendor, sec_ebook2_period_1, sec_ebook2_price_1, sec_ebook2_period_2, sec_ebook2_price_2, sec_ebook2_period_3, sec_ebook2_price_3, sec_ebook2_period_4, sec_ebook2_price_4, sec_ebook2_period_5, sec_ebook2_price_5)
 
-
-                                        elif sale_start1 >= s_stamp and sale_end1 >= s_stamp:
+                                        elif datetime.datetime(sale_start1) >= s_stamp and datetime.datetime(sale_end1) >= s_stamp:
                                             save_amount = float(regular_price) - float(base_Sale_Price1)
                                             ITEMIPF = "Sale"
 
@@ -1404,7 +1403,7 @@ def main():
                                                                                                                                                                                                                   out_price_1, out_price_2, out_price_3, out_price_4, out_price_5, out_text_1, out_text_2, out_text_3, out_text_4, out_text_5, usage, sec_dept, sec_course, sec_section, sec_loc_code, sec_bookxofy,
                                                                                                                                                                                                                   sec_course_id, sec_course_list, sec_instructor, save_amount, sec_delete_flag, sec_dept_course_section, sec_ebook_adopted, sec_class_cap, sec_prof_requested, sec_estimated_sales, sec_ebook1_vendor, sec_ebook1_period_1, sec_ebook1_price_1, sec_ebook1_period_2, sec_ebook1_price_2, sec_ebook1_period_3, sec_ebook1_price_3, sec_ebook1_period_4, sec_ebook1_price_4, sec_ebook1_period_5, sec_ebook1_price_5, sec_ebook2_vendor, sec_ebook2_period_1, sec_ebook2_price_1, sec_ebook2_period_2, sec_ebook2_price_2, sec_ebook2_period_3, sec_ebook2_price_3, sec_ebook2_period_4, sec_ebook2_price_4, sec_ebook2_period_5, sec_ebook2_price_5)
 
-                                            ### Sale END
+                                            # Sale END
                                             ITEMIPF = "Regular"
                                             save_amount = 0
                                             target_delay = sale_end1
@@ -1424,7 +1423,7 @@ def main():
 
                                     if float(base_Sale_Price2) > 0 and int(sale_start2) > '1900-01-01 00:00:00':
 
-                                        if s_stamp >= sale_start2 and s_stamp <= sale_end2:
+                                        if s_stamp >= datetime.datetime(sale_start2) and s_stamp <= datetime.datetime(sale_end2):
                                             save_amount = float(regular_price) - float(base_Sale_Price2)
                                             ITEMIPF = "Sale"
 
@@ -1446,8 +1445,7 @@ def main():
                                                                                                                                                                                                                   out_price_1, out_price_2, out_price_3, out_price_4, out_price_5, out_text_1, out_text_2, out_text_3, out_text_4, out_text_5, usage, sec_dept, sec_course, sec_section, sec_loc_code, sec_bookxofy,
                                                                                                                                                                                                                   sec_course_id, sec_course_list, sec_instructor, save_amount, sec_delete_flag, sec_dept_course_section, sec_ebook_adopted, sec_class_cap, sec_prof_requested, sec_estimated_sales, sec_ebook1_vendor, sec_ebook1_period_1, sec_ebook1_price_1, sec_ebook1_period_2, sec_ebook1_price_2, sec_ebook1_period_3, sec_ebook1_price_3, sec_ebook1_period_4, sec_ebook1_price_4, sec_ebook1_period_5, sec_ebook1_price_5, sec_ebook2_vendor, sec_ebook2_period_1, sec_ebook2_price_1, sec_ebook2_period_2, sec_ebook2_price_2, sec_ebook2_period_3, sec_ebook2_price_3, sec_ebook2_period_4, sec_ebook2_price_4, sec_ebook2_period_5, sec_ebook2_price_5)
 
-
-                                        elif sale_start1 >= s_stamp and sale_end1 >= s_stamp:
+                                        elif datetime.datetime(sale_start2) >= s_stamp and datetime.datetime(sale_end2) >= s_stamp:
                                             save_amount = float(regular_price) - float(base_Sale_Price2)
                                             ITEMIPF = "Sale"
 
@@ -1470,7 +1468,7 @@ def main():
                                                                                                                                                                                                                   out_price_1, out_price_2, out_price_3, out_price_4, out_price_5, out_text_1, out_text_2, out_text_3, out_text_4, out_text_5, usage, sec_dept, sec_course, sec_section, sec_loc_code, sec_bookxofy,
                                                                                                                                                                                                                   sec_course_id, sec_course_list, sec_instructor, save_amount, sec_delete_flag, sec_dept_course_section, sec_ebook_adopted, sec_class_cap, sec_prof_requested, sec_estimated_sales, sec_ebook1_vendor, sec_ebook1_period_1, sec_ebook1_price_1, sec_ebook1_period_2, sec_ebook1_price_2, sec_ebook1_period_3, sec_ebook1_price_3, sec_ebook1_period_4, sec_ebook1_price_4, sec_ebook1_period_5, sec_ebook1_price_5, sec_ebook2_vendor, sec_ebook2_period_1, sec_ebook2_price_1, sec_ebook2_period_2, sec_ebook2_price_2, sec_ebook2_period_3, sec_ebook2_price_3, sec_ebook2_period_4, sec_ebook2_price_4, sec_ebook2_period_5, sec_ebook2_price_5)
 
-                                            ### Sale END
+                                            # Sale END
                                             ITEMIPF = "Regular"
                                             save_amount = 0
                                             target_delay = sale_end2
@@ -1490,7 +1488,7 @@ def main():
 
                                     if float(base_Sale_Price3) > 0 and int(sale_start3) > '1900-01-01 00:00:00':
 
-                                        if s_stamp >= sale_start3 and s_stamp <= sale_end3:
+                                        if s_stamp >= datetime.datetime(sale_start3) and s_stamp <= datetime.datetime(sale_end3):
                                             save_amount = float(regular_price) - float(base_Sale_Price3)
                                             ITEMIPF = "Sale"
 
@@ -1512,8 +1510,7 @@ def main():
                                                                                                                                                                                                                   out_price_1, out_price_2, out_price_3, out_price_4, out_price_5, out_text_1, out_text_2, out_text_3, out_text_4, out_text_5, usage, sec_dept, sec_course, sec_section, sec_loc_code, sec_bookxofy,
                                                                                                                                                                                                                   sec_course_id, sec_course_list, sec_instructor, save_amount, sec_delete_flag, sec_dept_course_section, sec_ebook_adopted, sec_class_cap, sec_prof_requested, sec_estimated_sales, sec_ebook1_vendor, sec_ebook1_period_1, sec_ebook1_price_1, sec_ebook1_period_2, sec_ebook1_price_2, sec_ebook1_period_3, sec_ebook1_price_3, sec_ebook1_period_4, sec_ebook1_price_4, sec_ebook1_period_5, sec_ebook1_price_5, sec_ebook2_vendor, sec_ebook2_period_1, sec_ebook2_price_1, sec_ebook2_period_2, sec_ebook2_price_2, sec_ebook2_period_3, sec_ebook2_price_3, sec_ebook2_period_4, sec_ebook2_price_4, sec_ebook2_period_5, sec_ebook2_price_5)
 
-
-                                        elif sale_start3 >= s_stamp and sale_end3 >= s_stamp:
+                                        elif datetime.datetime(sale_start3) >= s_stamp and datetime.datetime(sale_end3) >= s_stamp:
                                             save_amount = float(regular_price) - float(base_Sale_Price3)
                                             ITEMIPF = "Sale"
 
@@ -1556,7 +1553,7 @@ def main():
 
                                     if float(base_Sale_Price4) > 0 and int(sale_start4) > '1900-01-01 00:00:00':
 
-                                        if s_stamp >= sale_start4 and s_stamp <= sale_end4:
+                                        if s_stamp >= datetime.datetime(sale_start4) and s_stamp <= datetime.datetime(sale_end4):
                                             save_amount = float(regular_price) - float(base_Sale_Price4)
                                             ITEMIPF = "Sale"
 
@@ -1578,8 +1575,7 @@ def main():
                                                                                                                                                                                                                   out_price_1, out_price_2, out_price_3, out_price_4, out_price_5, out_text_1, out_text_2, out_text_3, out_text_4, out_text_5, usage, sec_dept, sec_course, sec_section, sec_loc_code, sec_bookxofy,
                                                                                                                                                                                                                   sec_course_id, sec_course_list, sec_instructor, save_amount, sec_delete_flag, sec_dept_course_section, sec_ebook_adopted, sec_class_cap, sec_prof_requested, sec_estimated_sales, sec_ebook1_vendor, sec_ebook1_period_1, sec_ebook1_price_1, sec_ebook1_period_2, sec_ebook1_price_2, sec_ebook1_period_3, sec_ebook1_price_3, sec_ebook1_period_4, sec_ebook1_price_4, sec_ebook1_period_5, sec_ebook1_price_5, sec_ebook2_vendor, sec_ebook2_period_1, sec_ebook2_price_1, sec_ebook2_period_2, sec_ebook2_price_2, sec_ebook2_period_3, sec_ebook2_price_3, sec_ebook2_period_4, sec_ebook2_price_4, sec_ebook2_period_5, sec_ebook2_price_5)
 
-
-                                        elif sale_start4 >= s_stamp and sale_end1 >= s_stamp:
+                                        elif datetime.datetime(sale_start4) >= s_stamp and datetime.datetime(sale_end4) >= s_stamp:
                                             save_amount = float(regular_price) - float(base_Sale_Price4)
                                             ITEMIPF = "Sale"
 
