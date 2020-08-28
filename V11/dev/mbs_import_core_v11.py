@@ -27,7 +27,7 @@ def main():
 
         global file_name, drive_letter, use_pricer_level, log_level, log_delete_after, log_max, log_name, log_path, log_file, use_pricer_db, local_db, data_in_save, data_input_delete_after, data_path, input_data_path, wait_time, sort_order, none_100, usage_convert, IPF100, term_multi, date_format, ipf1x5_threshold, display_original, section_commas, New_On_Hand, Used_On_Hand, New_Addl, Used_Addl, New_Pend_Ret, Used_Pend_Ret, New_insite_Pend_Ord, Used_insite_Pend_Ord, New_Rental_insite_Pend_Ord, Used_Rental_insite_Pend_Ord, use_pfi, use_api, use_soap, i1_path, m1_path, r7_path, api_page_count, soap_api_ip, soap_token, soap_user, rest_api_url, rest_token, api_responses
         global requests, db, client, config_path, license_status, pricer_api_alive, logger, origin_time, output_format, page_line_count, total_api_req_counter
-        global out_price, out_text
+        global out_price, out_text, json_outstring, soap_update_str
 
         origin_time = time.time()
 
@@ -47,22 +47,15 @@ def main():
         total_api_req_counter = 0
         api_out_page_count = 0
         api_out_line_count = 0
-        page_line_count = 0
         out_count = 0
-        row_counter = 0
 
-        soap_update_str = []
-
-        category_list = {}
 
         api_responses = []
         pricer_response = []
         json_outstring = []
         soap_update_str = []
 
-
         command_id = 0
-
 
         regular_price = 0
         save_amount = 0
@@ -274,8 +267,8 @@ def main():
             soap_api_ip = str(triple_des(key).decrypt(base64.b64decode(config.dataout.get('soapip')), padmode=2), 'utf-8')
             soap_token = str(triple_des(key).decrypt(base64.b64decode(config.dataout.get('soaptoken')), padmode=2), 'utf-8')
             soap_user = str(triple_des(key).decrypt(base64.b64decode(config.dataout.get('soapuser')), padmode=2), 'utf-8')
-            rest_api_url = str(triple_des(key).decrypt(base64.b64decode(config.dataout.get('soapip')), padmode=2), 'utf-8')
-            rest_token = str(triple_des(key).decrypt(base64.b64decode(config.dataout.get('soaptoken')), padmode=2), 'utf-8')
+            rest_api_url = str(triple_des(key).decrypt(base64.b64decode(config.dataout.get('resturl')), padmode=2), 'utf-8')
+            rest_token = str(triple_des(key).decrypt(base64.b64decode(config.dataout.get('resttoken')), padmode=2), 'utf-8')
 
 
 
@@ -2716,7 +2709,7 @@ def main():
                                                    sec_ebook1_price_3, sec_ebook1_period_4, sec_ebook1_price_4, sec_ebook1_period_5, sec_ebook1_price_5, sec_ebook2_vendor, sec_ebook2_period_1, sec_ebook2_price_1, sec_ebook2_period_2,
                                                    sec_ebook2_price_2, sec_ebook2_period_3, sec_ebook2_price_3, sec_ebook2_period_4, sec_ebook2_price_4, sec_ebook2_period_5, sec_ebook2_price_5)
                             if use_api:
-                               json_outstring, soap_update_str, api_req_counter, api_out_page_count, api_responses, command_id, page_line_count, api_out_line_count = send_api(use_soap, json_outstring, api_responses, page_line_count,
+                                json_outstring, soap_update_str, api_req_counter, api_out_page_count, api_responses, command_id, page_line_count, api_out_line_count = send_api(use_soap, json_outstring, api_responses, page_line_count,
                                                                                                                                                                                 api_out_page_count, patch_header, rest_api_url, soap_update_str,
                                                                                                                                                                                 api_req_counter, command_id, api_out_line_count, itemid, regular_price,
                                                                                                                                                                                 ITEMIPF, target_delay, base_FormatFlag,
@@ -3300,28 +3293,14 @@ def main():
                     if not os.path.isdir(input_data_path):
                         os.makedirs(input_data_path, mode=0o777)
                         logger.debug('Successfully created {} input folder for archiving.'.format(input_data_path))
-
-                    shutil.move((os.path.join(data_path, new_file)), (os.path.join(input_data_path, new_file)))
-                    logger.debug('Successfully moved {} to input folder for archiving.'.format(new_file))
+                    if new_file.endswith(".txt"):
+                        shutil.move((os.path.join(data_path, new_file)), (os.path.join(input_data_path, new_file)))
+                        shutil.move((os.path.join(data_path, new_file[:-4] + ".tx1")), (os.path.join(input_data_path, new_file[:-4] + ".tx1")))
+                        logger.debug('Successfully moved {} data set to input folder for archiving.'.format(new_file[:-4]))
                 else:
                     os.remove(os.path.join(data_path, new_file))
                     logger.info(str(os.path.join(data_path, new_file)) + ' deleted.')
-            # Clean up < 1000 records for API
-            if use_api:
-                if not use_soap:
-                    if len(json_outstring) > 0:
 
-                        # execute rest request and store responseid in list
-                        api_responses, api_req_counter, json_outstring, api_out_page_count = send_rest_api(api_req_counter, api_out_page_count, rest_api_url, json_outstring, patch_header, api_responses)
-                    else:
-                        logger.debug('REST API had no data to send.')
-
-                else:
-                    if len(soap_update_str) > 0:
-                        api_req_counter, api_responses, command_id, api_out_line_count = soap_api_updateitem(soap_update_str, api_responses, api_req_counter, api_out_line_count, api_out_page_count)
-                        # get results and process
-
-                        logger.debug('Command ID for last SOAP API request sent: ' + str(command_id))
             # wrap up pfi files
             if use_pfi:
                 OUTFILE.close()
@@ -3339,6 +3318,26 @@ def main():
 
                 logger.info(temp_m1_file + " file moved to " + m1_file + " to start PFI processing by PricerServer.")
                 logger.info("Finished processing items.")
+            # Clean up < 1000 records for API
+            if use_api:
+                if len(json_outstring) > int(api_page_count):
+                    logger.warning("Length of data is to great. {}.".format(len(json_outstring)))
+                if len(soap_update_str) > int(api_page_count):
+                    logger.warning("Length of data is to great. {}.".format(len(soap_update_str)))
+                if not use_soap:
+                    if len(json_outstring) in range(0, int(api_page_count)):
+
+                        # execute rest request and store responseid in list
+                        api_responses, api_req_counter, json_outstring, api_out_page_count = send_rest_api(api_req_counter, api_out_page_count, rest_api_url, json_outstring, patch_header, api_responses)
+                    else:
+                        logger.debug('REST API had no data to send.')
+
+                else:
+                    if len(soap_update_str) in range(0, int(api_page_count)):
+                        api_req_counter, api_responses, command_id, api_out_line_count = soap_api_updateitem(soap_update_str, api_responses, api_req_counter, api_out_line_count, api_out_page_count)
+                        # get results and process
+
+                        logger.debug('Command ID for last SOAP API request sent: ' + str(command_id))
 
         else:
             logger.info("No New Files to Process")
@@ -3554,14 +3553,15 @@ def send_api(use_soap, json_outstring, api_responses, page_line_count, api_out_p
              sec_course_id, sec_course_list, sec_instructor, save_amount, sec_delete_flag, sec_dept_course_section, sec_ebook_adopted, sec_class_cap, sec_prof_requested, sec_estimated_sales, sec_ebook1_vendor, sec_ebook1_period_1, sec_ebook1_price_1,
              sec_ebook1_period_2, sec_ebook1_price_2, sec_ebook1_period_3, sec_ebook1_price_3, sec_ebook1_period_4, sec_ebook1_price_4, sec_ebook1_period_5, sec_ebook1_price_5, sec_ebook2_vendor, sec_ebook2_period_1, sec_ebook2_price_1,
              sec_ebook2_period_2, sec_ebook2_price_2, sec_ebook2_period_3, sec_ebook2_price_3, sec_ebook2_period_4, sec_ebook2_price_4, sec_ebook2_period_5, sec_ebook2_price_5):
+    """
+    :type api_responses: list
+    :type soap_update_str: list
+    """
     if not use_soap:
         # REST API
         item_out_json = {}
 
-        item_out_json.update({"itemName": str(base_Author) + " " + str(base_Title),
-                              "presentation": str(ITEMIPF),
-                              "price": str(regular_price),
-                              "AUTHOR": str(str(base_Author)),
+        item_out_json.update({"AUTHOR": str(str(base_Author)),
                               "TITLE": str(str(base_Title)),
                               "ISBN": str(base_ISBN),
                               "ISBN_HR": str(base_ISBN_HR),
@@ -3691,7 +3691,10 @@ def send_api(use_soap, json_outstring, api_responses, page_line_count, api_out_p
                               "EBOOK2_PERIOD5": str(sec_ebook2_period_5),
                               "EBOOK2_PRICE5": str(sec_ebook2_price_5)})
 
-        json_outstring.append({"ITEMID": str(itemid),
+        json_outstring.append({"itemId": str(itemid),
+                               "itemName": str(base_Author) + " " + str(base_Title),
+                               "presentation": str(ITEMIPF),
+                               "price": str(regular_price),
                                "properties": item_out_json})
 
         if target_delay != "":
@@ -3699,9 +3702,10 @@ def send_api(use_soap, json_outstring, api_responses, page_line_count, api_out_p
 
         page_line_count += 1
         api_out_line_count += 1
-
-        if page_line_count == api_page_count:
+        logger.debug("page_line_count: {}".format(page_line_count))
+        if int(page_line_count) == int(api_page_count):
             if len(json_outstring) > 0:
+                logger.debug("Length of Data to be sent: {}.".format(len(json_outstring)))
 
                 api_out_page_count += 1
 
@@ -3713,7 +3717,6 @@ def send_api(use_soap, json_outstring, api_responses, page_line_count, api_out_p
             if float(api_out_line_count) != float(api_page_count):
                 logger.critical("REST API failed to send expected " + str(api_page_count) + " records, " + str(api_out_line_count) + " sent.")
 
-            api_out_page_count += 1
             page_line_count = 0
             json_outstring = []
             api_out_line_count = 0
@@ -3721,7 +3724,9 @@ def send_api(use_soap, json_outstring, api_responses, page_line_count, api_out_p
     else:
         # SOAP API
 
-        itemproperties_str = [{'id': {'number': 7}, 'value': str(base_Author) + "-" + str(base_Title)}
+        itemproperties_str = []
+
+        itemproperties_str.apped({'id': {'number': 7}, 'value': str(base_Author) + "-" + str(base_Title)}
             , {'id': {'number': 23}, 'value': str(regular_price)}
             , {'id': {'number': 121}, 'value': str(ITEMIPF)}
             , {'id': {'number': 9800}, 'value': str(base_Author)}
@@ -3852,7 +3857,7 @@ def send_api(use_soap, json_outstring, api_responses, page_line_count, api_out_p
             , {'id': {'number': 9955}, 'value': str(sec_ebook2_period_4)}
             , {'id': {'number': 9956}, 'value': str(sec_ebook2_price_4)}
             , {'id': {'number': 9957}, 'value': str(sec_ebook2_period_5)}
-            , {'id': {'number': 9958}, 'value': str(sec_ebook2_price_5)}]
+            , {'id': {'number': 9958}, 'value': str(sec_ebook2_price_5)})
 
         if target_delay != "":
             itemproperties_str.append({'id': {'number': 9500}, 'value': str(target_delay)})
@@ -3861,8 +3866,10 @@ def send_api(use_soap, json_outstring, api_responses, page_line_count, api_out_p
 
         page_line_count += 1
         api_out_line_count += 1
-
-        if page_line_count == api_page_count:
+        logger.debug("page_line_count: {}".format(page_line_count))
+        if int(page_line_count) == int(api_page_count):
+            logger.debug("Length of Data to be sent: {}.".format(len(soap_update_str)))
+            api_out_page_count += 1
 
             api_req_counter, api_responses, command_id, api_out_line_count = soap_api_updateitem(soap_update_str, api_responses, api_req_counter, api_out_line_count, api_out_page_count)
 
@@ -3871,7 +3878,6 @@ def send_api(use_soap, json_outstring, api_responses, page_line_count, api_out_p
             if float(api_out_line_count) != float(api_page_count):
                 logger.critical("SOAP API failed to send expected " + str(api_page_count) + " records, " + str(api_out_line_count) + " sent.")
 
-            api_out_page_count += 1
             page_line_count = 0
             soap_update_str = []
             api_out_line_count = 0
@@ -3880,19 +3886,27 @@ def send_api(use_soap, json_outstring, api_responses, page_line_count, api_out_p
 
 
 def soap_api_updateitem(soap_update_str, api_responses, api_req_counter, api_out_line_count, api_out_page_count):
+    """
+
+    :type api_responses: list
+    """
     good_content = 0
 
     if len(soap_update_str) > 0:
         if api_out_page_count == 1:
             logger.info('Starting to send data to Pricer API.')
+        logger.debug("soap_update_str: {}.".format(soap_update_str))
+        logger.debug("soap ip: {}.".format('http://' + soap_api_ip + '/pricer_5_0?wsdl'))
+        logger.debug("soap user: {}.".format(soap_user))
+        logger.debug("soap token: {}.".format(soap_token))
         command_id = client.service.updateItems(soap_update_str)
         api_req_counter += 1
         good_content = 1
 
         if command_id != None:
             try:
-                command_id = int(command_id)
-                api_responses.append(command_id)
+                api_responses.append(int(command_id))
+
             except ValueError:
                 logger.critical("Last Update failed to return valid command id.")
         else:
@@ -3905,9 +3919,16 @@ def soap_api_updateitem(soap_update_str, api_responses, api_req_counter, api_out
 
 
 def send_rest_api(api_req_counter, api_out_page_count, rest_api_url, json_outstring, patch_header, api_responses):
+    """
+
+    :type api_responses: list
+    """
     # execute rest request and store responseid in list
     if api_out_page_count == 1:
         logger.info('Starting to send data to Pricer API.')
+    logger.debug("Json outstring: {}.".format(json_outstring))
+    logger.debug("Patch Header: {}.".format(patch_header))
+    logger.debug("REST API url: {}.".format(rest_api_url))
     response_id = (json.loads(requests.patch(rest_api_url, json=json_outstring, headers=patch_header).content).get('requestId'))
     api_responses.append(response_id)
     # logger.debug("ResponseId for last REST API request sent: " + str(response_id) + ".")
