@@ -93,27 +93,38 @@ def main():
         try:
             with open(config_path) as config_source:
                 content = config_source.read()
-            config = BeautifulSoup(content, 'html.parser')
+            config = BeautifulSoup(content, 'xml')
 
             ###drive
+            drive_letter = config.MMImport.get('Drive')
+            pricer_folder = config.MMImport.get('Pricer_Folder')
+            r3server_folder = config.MMImport.get('R3Server_Folder')
+            pricer_level_xml = config.MMImport.get('Pricer_Level_File')
+
             if os.name == 'nt':
-                drive_letter = config.mmimport.get('drive') + ':\\'
+                drive_letter = config.MMImport.get('Drive') + ':\\'
             else:
                 drive_letter = '/'
 
+            # Get Paths for price log level
+            for dirpath, subdirs, files in os.walk(os.path.join(drive_letter, pricer_folder, r3server_folder)):
+                for x in files:
+                    if x.endswith(pricer_level_xml):
+                        pricer_conf_path = os.path.join(dirpath, x)
+
             ###logging
-            if (config.logging.get('use_pricer_level')).lower() == "true":
+            if (config.Logging.get('Use_Pricer_Level')).lower() == "true":
                 use_pricer_level = True
             else:
                 use_pricer_level = False
 
-            log_level = config.logging.get('level').lower()
-            log_delete_after = config.logging.get('delete_after')
-            log_max = config.logging.get('log_max_mb')
-            log_name = config.logging.get('log_name')
-            log_path = config.logging.get('path')
+            log_level = config.Logging.get('Level').lower()
+            log_delete_after = config.Logging.get('Delete_After')
+            log_max = config.Logging.get('Log_Max_MB')
+            log_name = config.Logging.get('Log_Name')
+            log_path = config.Logging.get('Path')
 
-            log_file = os.path.join(drive_letter, log_path, config.logging.get('log_name'))
+            log_file = os.path.join(drive_letter, log_path, log_name)
 
             if os.name != 'nt':
                 log_file = log_file.replace('\\', '/')
@@ -122,16 +133,15 @@ def main():
             # set up logging
 
             if use_pricer_level:
-                if os.name == 'nt':
-                    pricer_conf_path = drive_letter + "Pricer\\R3Server\\config\\log4j2.xml"
-                else:
-                    pricer_conf_path = "/pricer/r3server/config/log4j2.xml"
-                pricer_content = open(pricer_conf_path, "r").read()
-                pricer_level = pricer_content[(pricer_content.find('Root level') + 12): (pricer_content.find('Root level') + 16)]
+
+                with open(pricer_conf_path, "r") as pricer_content_file:
+                    pricer_content = pricer_content_file.read()
+                    config = BeautifulSoup(pricer_content, 'xml')
+                    pricer_level = config.Loggers.Root.get('level')
 
                 if pricer_level.lower() == 'info':
                     log_level = 'info'
-                elif pricer_level.lower() == 'erro':
+                elif pricer_level.lower() == 'error':
                     log_level = 'error'
                 elif pricer_level.lower() == 'warn':
                     log_level = 'warning'
@@ -156,9 +166,9 @@ def main():
                 os.makedirs(os.path.join(drive_letter, log_path), mode=0o777)
                 logger.debug('Successfully created {} input folder for archiving.'.format(os.path.join(drive_letter, log_path)))
 
-            logger.info(file_name + ' successfully started with logging at ' + log_level.upper() + '.')
+            logger.info('{} successfully started with logging at {}.'.format(file_name, log_level.upper()))
             if year_stamp != '2020':
-                logger.info('©Copyright 2020-' + year_stamp + ' MarginMate Corporation. All Rights Reserved.')
+                logger.info('©Copyright 2020-{} MarginMate Corporation. All Rights Reserved.'.format(year_stamp))
             else:
                 logger.info('©Copyright 2020 MarginMate Corporation. All Rights Reserved.')
             #
@@ -169,106 +179,108 @@ def main():
                 EventLogger.event_log_writer(file_name_raw, "info", "Pricer", 100, log_path)
 
             ##data local
-            if (config.datalocal.get('usepricer')).lower() == "true":
+            if (config.DataLocal.get('UsePricer')).lower() == "true":
                 use_pricer_db = True
             else:
                 use_pricer_db = False
 
-            local_db = str(triple_des(key).decrypt(base64.b64decode(config.datalocal.get('localdb')), padmode=2), 'utf-8')
+            local_db = str(triple_des(key).decrypt(base64.b64decode(config.DataLocal.get('LocalDB')), padmode=2), 'utf-8')
 
             # Datain
-            if (config.datain.get('datainputsave')).lower() == "true":
+            if (config.DataIn.get('DataInputSave')).lower() == "true":
                 data_in_save = True
             else:
                 data_in_save = False
 
-            data_input_delete_after = config.datain.get('deleteafter')
-            data_path = os.path.join(drive_letter, config.datain.get('path'))
-            input_data_path = os.path.join(drive_letter, config.datain.get('inputholdpath'))
-            wait_time = config.datain.get('filewaittime')
+            data_input_delete_after = config.DataIn.get('DeleteAfter')
+            data_path = os.path.join(drive_letter, config.DataIn.get('Path'))
+            input_data_path = os.path.join(drive_letter, config.DataIn.get('InputHoldPath'))
+            wait_time = config.DataIn.get('FileWaitTime')
 
             # Sort
-            sort_order = str(config.sort.get('order')).lower()
+            sort_order = str(config.Sort.get('Order')).lower()
 
             # Price
-            if (config.price.get('none_100')).lower() == "true":
+            if (config.Price.get('None_100')).lower() == "true":
                 none_100 = True
             else:
                 none_100 = False
 
             # Usage
-            if (config.usage.get('convert')).lower() == "true":
+            if (config.Usage.get('Convert')).lower() == "true":
                 usage_convert = True
             else:
                 usage_convert = False
 
             # Zero_Zero
-            if (config.zero_zero.get('ipf100')).lower() == "true":
+            if (config.Zero_Zero.get('IPF100')).lower() == "true":
                 IPF100 = True
             else:
                 IPF100 = False
 
             # Term
-            if (config.term.get('multi')).lower() == "true":
+            if (config.Term.get('Multi')).lower() == "true":
                 term_multi = True
             else:
                 term_multi = False
 
             # Date formate
-            date_format = config.date.get('format')
+            date_format = config.Date.get('Format')
 
             # IPF1X5
-            ipf1x5_threshold = config.ipf1x5.get('threshold')
+            ipf1x5_threshold = config.IPF1x5.get('Threshold')
 
             # Replace
-            if (config.replace_section_commas.get('displayoriginal')).lower() == "true":
+            if (config.Replace_Section_Commas.get('DisplayOriginal')).lower() == "true":
                 display_original = True
             else:
                 display_original = False
 
-            section_commas = config.replace_section_commas.get('char')
+            section_commas = config.Replace_Section_Commas.get('Char')
 
             # QOH CALC
 
-            New_On_Hand = config.qoh_calc.get('new_on_hand')
-            Used_On_Hand = config.qoh_calc.get('used_on_hand')
-            New_Addl = config.qoh_calc.get('new_addl')
-            Used_Addl = config.qoh_calc.get('used_addl')
-            New_Pend_Ret = config.qoh_calc.get('new_pend_ret')
-            Used_Pend_Ret = config.qoh_calc.get('used_pend_ret')
-            New_insite_Pend_Ord = config.qoh_calc.get('new_insite_pend_ord')
-            Used_insite_Pend_Ord = config.qoh_calc.get('used_insite_pend_ord')
-            New_Rental_insite_Pend_Ord = config.qoh_calc.get('new_rental_insite_pend_ord')
-            Used_Rental_insite_Pend_Ord = config.qoh_calc.get('used_rental_insite_pend_ord')
+            New_On_Hand = config.QOH_Calc.get('New_On_Hand')
+            Used_On_Hand = config.QOH_Calc.get('Used_On_Hand')
+            New_Addl = config.QOH_Calc.get('New_Addl')
+            Used_Addl = config.QOH_Calc.get('Used_Addl')
+            New_Pend_Ret = config.QOH_Calc.get('New_Pend_Ret')
+            Used_Pend_Ret = config.QOH_Calc.get('Used_Pend_Ret')
+            New_insite_Pend_Ord = config.QOH_Calc.get('New_insite_Pend_Ord')
+            Used_insite_Pend_Ord = config.QOH_Calc.get('Used_insite_Pend_Ord')
+            New_Rental_insite_Pend_Ord = config.QOH_Calc.get('New_Rental_insite_Pend_Ord')
+            Used_Rental_insite_Pend_Ord = config.QOH_Calc.get('Used_Rental_insite_Pend_Ord')
 
             # Dataout
-            if (config.dataout.get('usepfi')).lower() == "true":
+            if (config.DataOut.get('UsePFI')).lower() == "true":
                 use_pfi = True
                 output_format = "PFI FILE"
             else:
                 use_pfi = False
 
-            if (config.dataout.get('useapi')).lower() == "true":
+            if (config.DataOut.get('UseAPI')).lower() == "true":
                 use_api = True
                 output_format = "REST API"
             else:
                 use_api = False
 
-            if (config.dataout.get('usesoap')).lower() == "true":
+            if (config.DataOut.get('UseSoap')).lower() == "true":
                 use_soap = True
                 output_format = "SOAP API"
             else:
                 use_soap = False
 
-            i1_path = config.dataout.get('i1_path')
-            m1_path = config.dataout.get('m1_path')
-            r7_path = config.dataout.get('r7_path')
-            api_page_count = config.dataout.get('apipagecount')
-            soap_api_ip = str(triple_des(key).decrypt(base64.b64decode(config.dataout.get('soapip')), padmode=2), 'utf-8')
-            soap_token = str(triple_des(key).decrypt(base64.b64decode(config.dataout.get('soaptoken')), padmode=2), 'utf-8')
-            soap_user = str(triple_des(key).decrypt(base64.b64decode(config.dataout.get('soapuser')), padmode=2), 'utf-8')
-            rest_api_url = str(triple_des(key).decrypt(base64.b64decode(config.dataout.get('resturl')), padmode=2), 'utf-8')
-            rest_token = str(triple_des(key).decrypt(base64.b64decode(config.dataout.get('resttoken')), padmode=2), 'utf-8')
+            i1_path = config.DataOut.get('i1_Path')
+            m1_path = config.DataOut.get('m1_Path')
+            r7_path = config.DataOut.get('r7_Path')
+            api_page_count = config.DataOut.get('APIPageCount')
+            soap_api_ip = str(triple_des(key).decrypt(base64.b64decode(config.DataOut.get('SoapIP')), padmode=2), 'utf-8')
+            soap_token = str(triple_des(key).decrypt(base64.b64decode(config.DataOut.get('SoapToken')), padmode=2), 'utf-8')
+            soap_user = str(triple_des(key).decrypt(base64.b64decode(config.DataOut.get('soapuser')), padmode=2), 'utf-8')
+            rest_api_url = str(triple_des(key).decrypt(base64.b64decode(config.DataOut.get('RestURL')), padmode=2), 'utf-8')
+            pricer_user = str(triple_des(key).decrypt(base64.b64decode(config.DataOut.get('PricerUser')), padmode=2), 'utf-8')
+            pricer_password = str(triple_des(key).decrypt(base64.b64decode(config.DataOut.get('PricerPassword')), padmode=2), 'utf-8')
+            rest_token = "Basic {}".format(base64.b64encode((pricer_user + ":" + pricer_password).encode("utf-8")).decode("utf-8"))
 
 
 
