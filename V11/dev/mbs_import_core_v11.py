@@ -276,7 +276,6 @@ def main():
             api_page_count = config.DataOut.get('APIPageCount')
             soap_api_ip = str(triple_des(key).decrypt(base64.b64decode(config.DataOut.get('SoapIP')), padmode=2), 'utf-8')
             soap_token = str(triple_des(key).decrypt(base64.b64decode(config.DataOut.get('SoapToken')), padmode=2), 'utf-8')
-            soap_user = str(triple_des(key).decrypt(base64.b64decode(config.DataOut.get('soapuser')), padmode=2), 'utf-8')
             rest_api_url = str(triple_des(key).decrypt(base64.b64decode(config.DataOut.get('RestURL')), padmode=2), 'utf-8')
             pricer_user = str(triple_des(key).decrypt(base64.b64decode(config.DataOut.get('PricerUser')), padmode=2), 'utf-8')
             pricer_password = str(triple_des(key).decrypt(base64.b64decode(config.DataOut.get('PricerPassword')), padmode=2), 'utf-8')
