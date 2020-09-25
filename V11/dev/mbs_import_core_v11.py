@@ -1005,8 +1005,8 @@ def main():
                                             self.ipf = ipf
                                             self.price = price
                                             self.condition = condition
-                                            out_price.append(self.price)
-                                            out_text.append(self.condition)
+                                            # out_price.append(self.price)
+                                            # out_text.append(self.condition)
 
                                         def __repr__(self):
                                             return repr((self.ipf, self.price, self.condition))
@@ -1045,7 +1045,7 @@ def main():
                                         if len(item_ipf_dict) > 0:
                                             ITEMIPF = len(item_ipf_dict) * 100
 
-                                            sorted_item_ipf = sorted(item_ipf_dict, key=lambda book: book.price)
+                                            sorted_item_ipf = sorted(item_ipf_dict, key=lambda book: float(book.price))
 
                                             for item_ipf_key in sorted_item_ipf:
                                                 out_price.append(item_ipf_key.price)

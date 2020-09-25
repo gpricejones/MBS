@@ -3,7 +3,7 @@ import time
 from collections import OrderedDict
 from operator import getitem
 
-json_outstring = [{"GenKey": "1"},{"GenKey": "1"},{"GenKey": "1"},{"GenKey": "1"}]
+json_outstring = [{"GenKey": "1"}, {"GenKey": "1"}, {"GenKey": "1"}, {"GenKey": "1"}]
 api_out_page_count = 1000
 
 if len(json_outstring) in range(0, api_out_page_count):
