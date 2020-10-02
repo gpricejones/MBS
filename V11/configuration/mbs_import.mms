@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<MMImport Drive="c" >
+<MMImport
+		Drive="c"
+		Pricer_Folder="pricer"
+		R3Server_Folder= "r3server"
+		Pricer_Level_File="log4j2.xml"
+>
 	<Logging
 		Level="Info"
+		Use_Pricer_Level="False" 
 		Path="pricer\R3Server\logs\"
 		Log_Name="data_import.log"
 		Delete_After="60"
@@ -10,16 +16,17 @@
 	/>
 	<DataLocal
 		UsePricer="True"
-		LocalDB="MspWij8kda+j3KywuhGEryWjm+YRi4FCeB+wewq2qfRlLM16cFVnl94wSMGkV8bNCxf+jJWKzI8b5YdPqEkBsf+rSmM2LUCUptXayTGbqIt9va2t0y3GdA=="
+		LocalDB="Uk2ft6qb2bMCBnQu6PR+HWV9GEDPWuZnuWbbcqPlclUxi7UXKr4IQMs35TRXWXLsiclgHLzKnFEL+HsudVvD8Tm9HJI+tuLacsZvtJEqiobDZ+Kt8WUYCA=="
 	/>
 	<DataIn
-		DataInputSave="False"
-		DeleteAfter="7"
+		DataInputSave="True"
+		DeleteAfter="700"
 		Path="Pricer\import\data\"
+		InputHoldPath="Pricer\Import\data\input\"
 		FileWaitTime="60"
 	/>
     <Sort
-		Order="Natural"
+		Order="Ascending"
     />
     <Price
 		None_100="False"
@@ -56,18 +63,19 @@
 		Used_Rental_insite_Pend_Ord="Add"
     />
 	<DataOut
-		UsePFI="False"
-        UseAPI="True"
-        UseSoap="True"
+		UsePFI="True"
+        UseAPI="False"
+        UseSoap="False"
         i1_Path="pricer\PFIFiles\DataFiles\"
         m1_Path="pricer\PFIFiles\MessageFiles\"
         r7_Path="pricer\PFIFiles\ResultFiles\"
         APIPageCount="1000"
         SoapIP="g6GxX2vmX/5x3K3LD+YaqiahnhZzCrVn"
         SoapToken="QRjSFVbX3JzRQ/CaeWU+4rhKW6+PuR5GKZqNlAu/hkA="
-        SoapUser="E4AddKo1/Ygpmo2UC7+GQA=="
         RestURL="naSYAoFcT7AzN7aN2BIPjoooIrLE0Lq6N66ZnCIUvrtkoqCvKw05JrBNdiga36Qy9IT2OcXRvTM="
-        RestToken="z9JQLq1XLX/c+6T44q8ptdzjqaPyAeEhDeMXwYvgP4U="
+		PricerUser="E4AddKo1/Ygpmo2UC7+GQA=="
+		PricerPassword="a0NqisZOIK0pmo2UC7+GQA=="
+
 	/>
     <Alerts
 		WELLogging="True"
