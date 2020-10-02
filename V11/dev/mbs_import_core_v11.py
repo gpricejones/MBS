@@ -37,8 +37,6 @@ def main():
         adapter = HTTPAdapter(retry)
         requests.mount('http', adapter)
 
-        type_id = 5
-
         pricer_api_alive = False
 
         api_out_page_count = 0
@@ -73,6 +71,7 @@ def main():
         dev_mode = 'PYCHARM_HOSTED' in os.environ
 
         if not dev_mode:
+            type_id = 5
             if len(sys.argv) == 1:
                 if os.name == 'nt':
                     import EncrypterWinEmb
@@ -84,6 +83,7 @@ def main():
 
             config_path = sys.argv[1]
         else:
+            type_id = 0
             if os.name == 'nt':
                 config_path = "c:\pricer\import\configuration\\mbs_import.mms"
             else:
