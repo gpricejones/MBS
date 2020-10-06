@@ -118,8 +118,8 @@ def main():
                 use_pricer_level = True
                 with open(pricer_conf_path, "r") as pricer_content_file:
                     pricer_content = pricer_content_file.read()
-                    config = BeautifulSoup(pricer_content, 'xml')
-                    pricer_level = config.Loggers.Root.get('level')
+                    pricer_config = BeautifulSoup(pricer_content, 'xml')
+                    pricer_level = pricer_config.Loggers.Root.get('level')
 
                 if pricer_level.lower() == 'info':
                     log_level = 'info'
