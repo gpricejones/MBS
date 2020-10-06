@@ -112,28 +112,10 @@ def main():
                     if x.endswith(pricer_level_xml):
                         pricer_conf_path = os.path.join(dirpath, x)
 
-            ###logging
-            if (config.Logging.get('Use_Pricer_Level')).lower() == "true":
-                use_pricer_level = True
-            else:
-                use_pricer_level = False
-
-            log_level = config.Logging.get('Level').lower()
-            log_delete_after = config.Logging.get('Delete_After')
-            log_max = config.Logging.get('Log_Max_MB')
-            log_name = config.Logging.get('Log_Name')
-            log_path = config.Logging.get('Path')
-
-            log_file = os.path.join(drive_letter, log_path, log_name)
-
-            if os.name != 'nt':
-                log_file = log_file.replace('\\', '/')
-                log_path = log_path.replace('\\', '/')
-
             # set up logging
 
-            if use_pricer_level:
-
+            if (config.Logging.get('Use_Pricer_Level')).lower() == "true":
+                use_pricer_level = True
                 with open(pricer_conf_path, "r") as pricer_content_file:
                     pricer_content = pricer_content_file.read()
                     config = BeautifulSoup(pricer_content, 'xml')
@@ -147,6 +129,20 @@ def main():
                     log_level = 'warning'
                 else:
                     log_level = 'debug'
+            else:
+                use_pricer_level = False
+                log_level = config.Logging.get('Level').lower()
+
+            log_delete_after = config.Logging.get('Delete_After')
+            log_max = config.Logging.get('Log_Max_MB')
+            log_name = config.Logging.get('Log_Name')
+            log_path = config.Logging.get('Path')
+
+            log_file = os.path.join(drive_letter, log_path, log_name)
+
+            if os.name != 'nt':
+                log_file = log_file.replace('\\', '/')
+                log_path = log_path.replace('\\', '/')
 
             # clean up first
             try:
@@ -333,7 +329,7 @@ def main():
                     if time.time() > minute_timer:
                         api_wait_count += 1
                         minute_timer = time.time() + 60 * 1
-                        logger.info("Pricer SOAP API returned status NOT alive. after {} retry's".format(api_wait_count))
+                        logger.info("Pricer SOAP API returned status NOT alive. after {} retries".format(api_wait_count))
                         if api_wait_count >= 5:
                             logger.critical("Pricer SOAP API has failed to start. ")
                             break
@@ -364,7 +360,7 @@ def main():
 
         ##connect pricer db
         try:
-            db = DBhandler.pricer_db(drive_letter, log_file, log_path, log_level, config_path, file_name, 'True', '')
+            db = DBhandler.pricer_db(drive_letter, log_file, log_path, log_level, config_path, file_name, use_pricer_db, local_db)
         except:
             logger.critical("Critical error has occured see event viewer/log for more information.")
             e = traceback.format_exc(limit=None, chain=True)
