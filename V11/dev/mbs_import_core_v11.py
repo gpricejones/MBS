@@ -1154,7 +1154,7 @@ def main():
                                     # Format Quantities
 
                                     if isinstance(base_New_Store_Qty, (int, float)):
-                                        base_New_Store_Qty = "%d" % (float(base_New_Store_Qty) / 1)
+                                        base_New_Store_Qty = "%.d" % (float(base_New_Store_Qty) / 1)
 
                                     if isinstance(base_New_Warehouse_Qty, (int, float)):
                                         base_New_Warehouse_Qty = "%.d" % (float(base_New_Warehouse_Qty) / 1)
