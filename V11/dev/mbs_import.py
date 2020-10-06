@@ -7,6 +7,7 @@ import win32service
 import win32event
 import servicemanager
 import socket
+import time
 
 # get file name without extension
 file_name_raw = __file__
