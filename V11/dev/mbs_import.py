@@ -32,7 +32,7 @@ period = int(period)
 class Scheduler(win32serviceutil.ServiceFramework):
     _svc_name_ = "MarginMate MBS Import Processor"
     _svc_display_name_ = "MarginMate MBS Import Processor"
-    _svc_description_ = "Executes MarginMate NFM Import Processor Core Components on scheduled interval."
+    _svc_description_ = "Executes MarginMate MBS Import Processor Core Components on scheduled interval."
 
     def __init__(self, args):
         win32serviceutil.ServiceFramework.__init__(self, args)
