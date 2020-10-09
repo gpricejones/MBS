@@ -1,15 +1,25 @@
 import os
 import time
+import json
 from collections import OrderedDict
 from operator import getitem
+from chardet import detect
 
-json_outstring = [{"GenKey": "1"}, {"GenKey": "1"}, {"GenKey": "1"}, {"GenKey": "1"}]
-api_out_page_count = 1000
+file = "C:\\Users\\Wayne\\Downloads\\eshelftag.txt100920135143.txt"
 
-if len(json_outstring) in range(0, api_out_page_count):
-    print("yay")
-else:
-    print("not yay")
+encode = detect(open(file, "rb").read()).get("encoding")
+# print(encode)
+with open(file, "r", encoding=encode) as data:
+    data = data.read()
+    print(data)
+
+# json_outstring = [{"GenKey": "1"}, {"GenKey": "1"}, {"GenKey": "1"}, {"GenKey": "1"}]
+# api_out_page_count = 1000
+#
+# if len(json_outstring) in range(0, api_out_page_count):
+#     print("yay")
+# else:
+#     print("not yay")
 
 # ITEMIPF = 100
 #

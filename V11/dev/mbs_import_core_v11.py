@@ -16,6 +16,7 @@ import hashlib
 import requests
 import traceback
 from pyDes import *
+from chardet import detect
 from bs4 import BeautifulSoup
 from datetime import datetime
 from requests.adapters import HTTPAdapter
@@ -3377,7 +3378,9 @@ def file_handler(data_file):
         current_size = new_size
         new_size = os.path.getsize(file_path)
 
-    file_content = open(file_path, "r", encoding='utf-8')
+    encode = detect(open(file_path, "rb").read()).get("encoding")
+
+    file_content = open(file_path, "r", encoding=encode)
 
     return file_content
 
