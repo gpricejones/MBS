@@ -1311,7 +1311,7 @@ def main():
                                     # go to IPF x5x series for store format "D" (organized by Dept/Course/Section) vs "A", which is alpha by author/title
 
                                     if str(base_FormatFlag).lower() == "d":
-                                        ITEMIPF = ITEMIPF + 50
+                                        ITEMIPF = (ITEMIPF * 100) + 50
                                     logger.debug("This ISBN {}, is flagged for formating with {}. Incrementing ITEMIPF by 50".format(base_ISBN, base_FormatFlag))
                                     # check for digital edition, set base IPF at 700
 
