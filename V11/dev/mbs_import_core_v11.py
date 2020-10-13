@@ -2652,119 +2652,119 @@ def main():
 
                                 logger.debug("sec_dept_course_section: {}.".format(str(''.join(map(str, sec_dept_course_section)))))
                                 logger.debug("sec_course_list: {}.".format(str(''.join(map(str, sec_course_list)))))
-                            # check for digital edition
-                            if str(base_ISBN_HR).lower() != "dgt":
-                                sec_ebook1_vendor = ""
-                                sec_ebook1_period_1 = ""
-                                sec_ebook1_price_1 = ""
-                                sec_ebook1_period_2 = ""
-                                sec_ebook1_price_2 = ""
-                                sec_ebook1_period_3 = ""
-                                sec_ebook1_price_3 = ""
-                                sec_ebook1_period_4 = ""
-                                sec_ebook1_price_4 = ""
-                                sec_ebook1_period_5 = ""
-                                sec_ebook1_price_5 = ""
-                                sec_ebook2_vendor = ""
-                                sec_ebook2_period_1 = ""
-                                sec_ebook2_price_1 = ""
-                                sec_ebook2_period_2 = ""
-                                sec_ebook2_price_2 = ""
-                                sec_ebook2_period_3 = ""
-                                sec_ebook2_price_3 = ""
-                                sec_ebook2_period_4 = ""
-                                sec_ebook2_price_4 = ""
-                                sec_ebook2_period_5 = ""
-                                sec_ebook2_price_5 = ""
-                            # it is a digital edition
-                            else:
-                                # base 1 price IPF =701, 2 price = 702, 3 price = 703, 4 price = 704, 5 price = 705
-                                if int(sec_ebook1_price_2) > 0 or int(sec_ebook2_price_2) > 0:
-                                    ITEMIPF = ITEMIPF + 1
-                                if int(sec_ebook1_price_3) > 0 or int(sec_ebook2_price_3) > 0:
-                                    ITEMIPF = ITEMIPF + 1
-                                if int(sec_ebook1_price_4) > 0 or int(sec_ebook2_price_4) > 0:
-                                    ITEMIPF = ITEMIPF + 1
-                                if int(sec_ebook1_price_5) > 0 or int(sec_ebook2_price_5) > 0:
-                                    ITEMIPF = ITEMIPF + 1
+                                # check for digital edition
+                                if str(base_ISBN_HR).lower() != "dgt":
+                                    sec_ebook1_vendor = ""
+                                    sec_ebook1_period_1 = ""
+                                    sec_ebook1_price_1 = ""
+                                    sec_ebook1_period_2 = ""
+                                    sec_ebook1_price_2 = ""
+                                    sec_ebook1_period_3 = ""
+                                    sec_ebook1_price_3 = ""
+                                    sec_ebook1_period_4 = ""
+                                    sec_ebook1_price_4 = ""
+                                    sec_ebook1_period_5 = ""
+                                    sec_ebook1_price_5 = ""
+                                    sec_ebook2_vendor = ""
+                                    sec_ebook2_period_1 = ""
+                                    sec_ebook2_price_1 = ""
+                                    sec_ebook2_period_2 = ""
+                                    sec_ebook2_price_2 = ""
+                                    sec_ebook2_period_3 = ""
+                                    sec_ebook2_price_3 = ""
+                                    sec_ebook2_period_4 = ""
+                                    sec_ebook2_price_4 = ""
+                                    sec_ebook2_period_5 = ""
+                                    sec_ebook2_price_5 = ""
+                                # it is a digital edition
+                                else:
+                                    # base 1 price IPF =701, 2 price = 702, 3 price = 703, 4 price = 704, 5 price = 705
+                                    if int(sec_ebook1_price_2) > 0 or int(sec_ebook2_price_2) > 0:
+                                        ITEMIPF = ITEMIPF + 1
+                                    if int(sec_ebook1_price_3) > 0 or int(sec_ebook2_price_3) > 0:
+                                        ITEMIPF = ITEMIPF + 1
+                                    if int(sec_ebook1_price_4) > 0 or int(sec_ebook2_price_4) > 0:
+                                        ITEMIPF = ITEMIPF + 1
+                                    if int(sec_ebook1_price_5) > 0 or int(sec_ebook2_price_5) > 0:
+                                        ITEMIPF = ITEMIPF + 1
 
-                                # check for 2 vendors, bump to IPF 71x series
-                                if sec_ebook2_vendor != "":
-                                    ITEMIPF = ITEMIPF + 10
+                                    # check for 2 vendors, bump to IPF 71x series
+                                    if sec_ebook2_vendor != "":
+                                        ITEMIPF = ITEMIPF + 10
 
-                            if itemid not in all_itemids and itemid[0:2] != " -":
-                                all_itemids.append(itemid)
-                                db_sel = db.cursor()
-                                db_sel.callproc("sp_insert_mbs_itemid", [str(itemid), str(base_ISBN), str(sec_dept), str(sec_course), str(sec_section), str(base_Term)])
-                                db.commit()
-                                db_sel.close()
-                                logger.debug("Item ID not found in t_links, updating t_links with, ItemID: {}, ISBN: {}, Department: {}, Course: {} and Term: {}.".format(itemid, base_ISBN, base_Department, sec_course, sec_section, base_Term))
+                                if itemid not in all_itemids and itemid[0:2] != " -":
+                                    all_itemids.append(itemid)
+                                    db_sel = db.cursor()
+                                    db_sel.callproc("sp_insert_mbs_itemid", [str(itemid), str(base_ISBN), str(sec_dept), str(sec_course), str(sec_section), str(base_Term)])
+                                    db.commit()
+                                    db_sel.close()
+                                    logger.debug("Item ID not found in t_links, updating t_links with, ItemID: {}, ISBN: {}, Department: {}, Course: {} and Term: {}.".format(itemid, base_ISBN, base_Department, sec_course, sec_section, base_Term))
 
-                            if use_pfi:
-                                OUTFILE = send_pfi(OUTFILE, itemid, regular_price, ITEMIPF, target_delay, base_FormatFlag, base_Author, base_Title, base_ISBN, base_Used_ISBN, base_ISBN_HR, base_Vendor_Style, base_Publisher, base_Imprint,
-                                                   base_Edition, base_Edition_Status, base_New_Price, base_New_Price_Text, base_Used_Price, base_Used_Price_Text, base_New_Rental_Price, base_New_Rental_Price_Text, base_Ebook_Price,
-                                                   base_Ebook_Price_Text, base_Used_Rental_Price, base_Used_Rental_Price_Text, base_Sale_Price, target_date_start, target_date_end, base_Sale_Price1, base_Sale_Start_Date1, base_Sale_End_Date1,
-                                                   base_Sale_Start_Time1, base_Sale_End_Time1, base_Sale_Price2, base_Sale_Start_Date2, base_Sale_End_Date2, base_Sale_Start_Time2, base_Sale_End_Time2, base_Sale_Price3, base_Sale_Start_Date3,
-                                                   base_Sale_End_Date3, base_Sale_Start_Time3, base_Sale_End_Time3, base_Sale_Price4, base_Sale_Start_Date4, base_Sale_End_Date4, base_Sale_Start_Time4, base_Sale_End_Time4, base_Term,
-                                                   base_Term_Description, base_Requested_Qty, base_Class_Capacity_Qty, base_Actual_Enrollment_Qty, base_Est_Sales_Qty, base_Category, base_Division, base_Department, base_Class, base_New_Store_Qty,
-                                                   base_New_Warehouse_Qty, base_Used_Store_Qty, base_Used_Warehouse_Qty, base_New_Pending_Return_Qty, base_Used_Pending_Return_Qty, base_New_insite_Pending_Order, base_Used_insite_Pending_Order,
-                                                   base_New_Rental_insite_Pending_Order, base_Used_Rental_insite_Pending_Order, base_On_Order_PO1, base_On_Order_PO1_Vendor, base_On_Order_Qty1, base_On_Order_Qty1_Used, base_On_Order_Date1,
-                                                   base_On_Order_PO2, base_On_Order_PO2_Vendor, base_On_Order_Qty2, base_On_Order_Qty2_Used, base_On_Order_Date2, base_On_Order_PO3, base_On_Order_PO3_Vendor, base_On_Order_Qty3,
-                                                   base_On_Order_Qty3_Used, base_On_Order_Date3, base_Total_PO_Qty, base_image_name, out_price_1, out_price_2, out_price_3, out_price_4, out_price_5, out_text_1, out_text_2, out_text_3, out_text_4,
-                                                   out_text_5, usage, sec_dept, sec_course, sec_section, sec_loc_code, sec_bookxofy, sec_course_id, sec_course_list, sec_instructor, save_amount, sec_delete_flag, sec_dept_course_section,
-                                                   sec_ebook_adopted, sec_class_cap, sec_prof_requested, sec_estimated_sales, sec_ebook1_vendor, sec_ebook1_period_1, sec_ebook1_price_1, sec_ebook1_period_2, sec_ebook1_price_2, sec_ebook1_period_3,
-                                                   sec_ebook1_price_3, sec_ebook1_period_4, sec_ebook1_price_4, sec_ebook1_period_5, sec_ebook1_price_5, sec_ebook2_vendor, sec_ebook2_period_1, sec_ebook2_price_1, sec_ebook2_period_2,
-                                                   sec_ebook2_price_2, sec_ebook2_period_3, sec_ebook2_price_3, sec_ebook2_period_4, sec_ebook2_price_4, sec_ebook2_period_5, sec_ebook2_price_5)
-                            if use_api:
-                                json_outstring, soap_update_str, api_req_counter, api_out_page_count, api_responses, command_id, page_line_count, api_out_line_count = send_api(use_soap, json_outstring, api_responses, page_line_count,
-                                                                                                                                                                                api_out_page_count, patch_header, rest_api_url, soap_update_str,
-                                                                                                                                                                                api_req_counter, command_id, api_out_line_count, itemid, regular_price,
-                                                                                                                                                                                ITEMIPF, target_delay, base_FormatFlag,
-                                                                                                                                                                                base_Author, base_Title, base_ISBN, base_Used_ISBN, base_ISBN_HR,
-                                                                                                                                                                                base_Vendor_Style, base_Publisher, base_Imprint, base_Edition,
-                                                                                                                                                                                base_Edition_Status, base_New_Price, base_New_Price_Text, base_Used_Price,
-                                                                                                                                                                                base_Used_Price_Text,
-                                                                                                                                                                                base_New_Rental_Price, base_New_Rental_Price_Text, base_Ebook_Price,
-                                                                                                                                                                                base_Ebook_Price_Text, base_Used_Rental_Price,
-                                                                                                                                                                                base_Used_Rental_Price_Text, base_Sale_Price, target_date_start,
-                                                                                                                                                                                target_date_end, base_Sale_Price1,
-                                                                                                                                                                                base_Sale_Start_Date1, base_Sale_End_Date1, base_Sale_Start_Time1,
-                                                                                                                                                                                base_Sale_End_Time1, base_Sale_Price2, base_Sale_Start_Date2,
-                                                                                                                                                                                base_Sale_End_Date2, base_Sale_Start_Time2, base_Sale_End_Time2,
-                                                                                                                                                                                base_Sale_Price3, base_Sale_Start_Date3,
-                                                                                                                                                                                base_Sale_End_Date3, base_Sale_Start_Time3,
-                                                                                                                                                                                base_Sale_End_Time3, base_Sale_Price4, base_Sale_Start_Date4,
-                                                                                                                                                                                base_Sale_End_Date4, base_Sale_Start_Time4, base_Sale_End_Time4,
-                                                                                                                                                                                base_Term, base_Term_Description, base_Requested_Qty,
-                                                                                                                                                                                base_Class_Capacity_Qty, base_Actual_Enrollment_Qty, base_Est_Sales_Qty,
-                                                                                                                                                                                base_Category, base_Division, base_Department, base_Class,
-                                                                                                                                                                                base_New_Store_Qty, base_New_Warehouse_Qty, base_Used_Store_Qty,
-                                                                                                                                                                                base_Used_Warehouse_Qty,
-                                                                                                                                                                                base_New_Pending_Return_Qty, base_Used_Pending_Return_Qty,
-                                                                                                                                                                                base_New_insite_Pending_Order, base_Used_insite_Pending_Order,
-                                                                                                                                                                                base_New_Rental_insite_Pending_Order,
-                                                                                                                                                                                base_Used_Rental_insite_Pending_Order, base_On_Order_PO1,
-                                                                                                                                                                                base_On_Order_PO1_Vendor, base_On_Order_Qty1, base_On_Order_Qty1_Used,
-                                                                                                                                                                                base_On_Order_Date1, base_On_Order_PO2, base_On_Order_PO2_Vendor,
-                                                                                                                                                                                base_On_Order_Qty2, base_On_Order_Qty2_Used, base_On_Order_Date2,
-                                                                                                                                                                                base_On_Order_PO3,
-                                                                                                                                                                                base_On_Order_PO3_Vendor, base_On_Order_Qty3, base_On_Order_Qty3_Used,
-                                                                                                                                                                                base_On_Order_Date3, base_Total_PO_Qty, base_image_name, out_price_1,
-                                                                                                                                                                                out_price_2, out_price_3, out_price_4, out_price_5, out_text_1,
-                                                                                                                                                                                out_text_2, out_text_3,
-                                                                                                                                                                                out_text_4, out_text_5, usage, sec_dept, sec_course, sec_section,
-                                                                                                                                                                                sec_loc_code, sec_bookxofy,
-                                                                                                                                                                                sec_course_id, sec_course_list, sec_instructor, save_amount,
-                                                                                                                                                                                sec_delete_flag, sec_dept_course_section, sec_ebook_adopted,
-                                                                                                                                                                                sec_class_cap, sec_prof_requested, sec_estimated_sales, sec_ebook1_vendor,
-                                                                                                                                                                                sec_ebook1_period_1, sec_ebook1_price_1,
-                                                                                                                                                                                sec_ebook1_period_2, sec_ebook1_price_2, sec_ebook1_period_3,
-                                                                                                                                                                                sec_ebook1_price_3, sec_ebook1_period_4, sec_ebook1_price_4,
-                                                                                                                                                                                sec_ebook1_period_5, sec_ebook1_price_5, sec_ebook2_vendor,
-                                                                                                                                                                                sec_ebook2_period_1, sec_ebook2_price_1,
-                                                                                                                                                                                sec_ebook2_period_2, sec_ebook2_price_2, sec_ebook2_period_3,
-                                                                                                                                                                                sec_ebook2_price_3, sec_ebook2_period_4, sec_ebook2_price_4,
-                                                                                                                                                                                sec_ebook2_period_5, sec_ebook2_price_5)
+                                if use_pfi:
+                                    OUTFILE = send_pfi(OUTFILE, itemid, regular_price, ITEMIPF, target_delay, base_FormatFlag, base_Author, base_Title, base_ISBN, base_Used_ISBN, base_ISBN_HR, base_Vendor_Style, base_Publisher, base_Imprint,
+                                                       base_Edition, base_Edition_Status, base_New_Price, base_New_Price_Text, base_Used_Price, base_Used_Price_Text, base_New_Rental_Price, base_New_Rental_Price_Text, base_Ebook_Price,
+                                                       base_Ebook_Price_Text, base_Used_Rental_Price, base_Used_Rental_Price_Text, base_Sale_Price, target_date_start, target_date_end, base_Sale_Price1, base_Sale_Start_Date1, base_Sale_End_Date1,
+                                                       base_Sale_Start_Time1, base_Sale_End_Time1, base_Sale_Price2, base_Sale_Start_Date2, base_Sale_End_Date2, base_Sale_Start_Time2, base_Sale_End_Time2, base_Sale_Price3, base_Sale_Start_Date3,
+                                                       base_Sale_End_Date3, base_Sale_Start_Time3, base_Sale_End_Time3, base_Sale_Price4, base_Sale_Start_Date4, base_Sale_End_Date4, base_Sale_Start_Time4, base_Sale_End_Time4, base_Term,
+                                                       base_Term_Description, base_Requested_Qty, base_Class_Capacity_Qty, base_Actual_Enrollment_Qty, base_Est_Sales_Qty, base_Category, base_Division, base_Department, base_Class, base_New_Store_Qty,
+                                                       base_New_Warehouse_Qty, base_Used_Store_Qty, base_Used_Warehouse_Qty, base_New_Pending_Return_Qty, base_Used_Pending_Return_Qty, base_New_insite_Pending_Order, base_Used_insite_Pending_Order,
+                                                       base_New_Rental_insite_Pending_Order, base_Used_Rental_insite_Pending_Order, base_On_Order_PO1, base_On_Order_PO1_Vendor, base_On_Order_Qty1, base_On_Order_Qty1_Used, base_On_Order_Date1,
+                                                       base_On_Order_PO2, base_On_Order_PO2_Vendor, base_On_Order_Qty2, base_On_Order_Qty2_Used, base_On_Order_Date2, base_On_Order_PO3, base_On_Order_PO3_Vendor, base_On_Order_Qty3,
+                                                       base_On_Order_Qty3_Used, base_On_Order_Date3, base_Total_PO_Qty, base_image_name, out_price_1, out_price_2, out_price_3, out_price_4, out_price_5, out_text_1, out_text_2, out_text_3, out_text_4,
+                                                       out_text_5, usage, sec_dept, sec_course, sec_section, sec_loc_code, sec_bookxofy, sec_course_id, sec_course_list, sec_instructor, save_amount, sec_delete_flag, sec_dept_course_section,
+                                                       sec_ebook_adopted, sec_class_cap, sec_prof_requested, sec_estimated_sales, sec_ebook1_vendor, sec_ebook1_period_1, sec_ebook1_price_1, sec_ebook1_period_2, sec_ebook1_price_2, sec_ebook1_period_3,
+                                                       sec_ebook1_price_3, sec_ebook1_period_4, sec_ebook1_price_4, sec_ebook1_period_5, sec_ebook1_price_5, sec_ebook2_vendor, sec_ebook2_period_1, sec_ebook2_price_1, sec_ebook2_period_2,
+                                                       sec_ebook2_price_2, sec_ebook2_period_3, sec_ebook2_price_3, sec_ebook2_period_4, sec_ebook2_price_4, sec_ebook2_period_5, sec_ebook2_price_5)
+                                if use_api:
+                                    json_outstring, soap_update_str, api_req_counter, api_out_page_count, api_responses, command_id, page_line_count, api_out_line_count = send_api(use_soap, json_outstring, api_responses, page_line_count,
+                                                                                                                                                                                    api_out_page_count, patch_header, rest_api_url, soap_update_str,
+                                                                                                                                                                                    api_req_counter, command_id, api_out_line_count, itemid, regular_price,
+                                                                                                                                                                                    ITEMIPF, target_delay, base_FormatFlag,
+                                                                                                                                                                                    base_Author, base_Title, base_ISBN, base_Used_ISBN, base_ISBN_HR,
+                                                                                                                                                                                    base_Vendor_Style, base_Publisher, base_Imprint, base_Edition,
+                                                                                                                                                                                    base_Edition_Status, base_New_Price, base_New_Price_Text, base_Used_Price,
+                                                                                                                                                                                    base_Used_Price_Text,
+                                                                                                                                                                                    base_New_Rental_Price, base_New_Rental_Price_Text, base_Ebook_Price,
+                                                                                                                                                                                    base_Ebook_Price_Text, base_Used_Rental_Price,
+                                                                                                                                                                                    base_Used_Rental_Price_Text, base_Sale_Price, target_date_start,
+                                                                                                                                                                                    target_date_end, base_Sale_Price1,
+                                                                                                                                                                                    base_Sale_Start_Date1, base_Sale_End_Date1, base_Sale_Start_Time1,
+                                                                                                                                                                                    base_Sale_End_Time1, base_Sale_Price2, base_Sale_Start_Date2,
+                                                                                                                                                                                    base_Sale_End_Date2, base_Sale_Start_Time2, base_Sale_End_Time2,
+                                                                                                                                                                                    base_Sale_Price3, base_Sale_Start_Date3,
+                                                                                                                                                                                    base_Sale_End_Date3, base_Sale_Start_Time3,
+                                                                                                                                                                                    base_Sale_End_Time3, base_Sale_Price4, base_Sale_Start_Date4,
+                                                                                                                                                                                    base_Sale_End_Date4, base_Sale_Start_Time4, base_Sale_End_Time4,
+                                                                                                                                                                                    base_Term, base_Term_Description, base_Requested_Qty,
+                                                                                                                                                                                    base_Class_Capacity_Qty, base_Actual_Enrollment_Qty, base_Est_Sales_Qty,
+                                                                                                                                                                                    base_Category, base_Division, base_Department, base_Class,
+                                                                                                                                                                                    base_New_Store_Qty, base_New_Warehouse_Qty, base_Used_Store_Qty,
+                                                                                                                                                                                    base_Used_Warehouse_Qty,
+                                                                                                                                                                                    base_New_Pending_Return_Qty, base_Used_Pending_Return_Qty,
+                                                                                                                                                                                    base_New_insite_Pending_Order, base_Used_insite_Pending_Order,
+                                                                                                                                                                                    base_New_Rental_insite_Pending_Order,
+                                                                                                                                                                                    base_Used_Rental_insite_Pending_Order, base_On_Order_PO1,
+                                                                                                                                                                                    base_On_Order_PO1_Vendor, base_On_Order_Qty1, base_On_Order_Qty1_Used,
+                                                                                                                                                                                    base_On_Order_Date1, base_On_Order_PO2, base_On_Order_PO2_Vendor,
+                                                                                                                                                                                    base_On_Order_Qty2, base_On_Order_Qty2_Used, base_On_Order_Date2,
+                                                                                                                                                                                    base_On_Order_PO3,
+                                                                                                                                                                                    base_On_Order_PO3_Vendor, base_On_Order_Qty3, base_On_Order_Qty3_Used,
+                                                                                                                                                                                    base_On_Order_Date3, base_Total_PO_Qty, base_image_name, out_price_1,
+                                                                                                                                                                                    out_price_2, out_price_3, out_price_4, out_price_5, out_text_1,
+                                                                                                                                                                                    out_text_2, out_text_3,
+                                                                                                                                                                                    out_text_4, out_text_5, usage, sec_dept, sec_course, sec_section,
+                                                                                                                                                                                    sec_loc_code, sec_bookxofy,
+                                                                                                                                                                                    sec_course_id, sec_course_list, sec_instructor, save_amount,
+                                                                                                                                                                                    sec_delete_flag, sec_dept_course_section, sec_ebook_adopted,
+                                                                                                                                                                                    sec_class_cap, sec_prof_requested, sec_estimated_sales, sec_ebook1_vendor,
+                                                                                                                                                                                    sec_ebook1_period_1, sec_ebook1_price_1,
+                                                                                                                                                                                    sec_ebook1_period_2, sec_ebook1_price_2, sec_ebook1_period_3,
+                                                                                                                                                                                    sec_ebook1_price_3, sec_ebook1_period_4, sec_ebook1_price_4,
+                                                                                                                                                                                    sec_ebook1_period_5, sec_ebook1_price_5, sec_ebook2_vendor,
+                                                                                                                                                                                    sec_ebook2_period_1, sec_ebook2_price_1,
+                                                                                                                                                                                    sec_ebook2_period_2, sec_ebook2_price_2, sec_ebook2_period_3,
+                                                                                                                                                                                    sec_ebook2_price_3, sec_ebook2_period_4, sec_ebook2_price_4,
+                                                                                                                                                                                    sec_ebook2_period_5, sec_ebook2_price_5)
 
                                 if base_Used_ISBN != "" and base_Used_ISBN != " " and base_ISBN != " " and str(base_Used_ISBN[0:3]).lower() != "ntr" and base_ISBN != "" and base_Used_ISBN != base_ISBN:
                                     itemid = base_Used_ISBN
