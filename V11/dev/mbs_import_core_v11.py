@@ -2692,6 +2692,9 @@ def main():
                                     if sec_ebook2_vendor != "":
                                         ITEMIPF = ITEMIPF + 10
 
+                                itemid = base_ISBN + '-' + course_hold
+                                itemid = itemid.replace(" ", section_commas)
+
                                 if itemid not in all_itemids and itemid[0:2] != " -":
                                     all_itemids.append(itemid)
                                     db_sel = db.cursor()
