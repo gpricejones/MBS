@@ -1012,7 +1012,6 @@ def main():
 
                                     if sort_order == "ascending":
                                         if len(item_ipf_dict) > 0:
-                                            ITEMIPF = len(item_ipf_dict) * 100
 
                                             sorted_item_ipf = sorted(item_ipf_dict, key=lambda book: book.condition)
 
@@ -1026,7 +1025,6 @@ def main():
 
                                     if sort_order == "natural":
                                         if len(item_ipf_dict) > 0:
-                                            ITEMIPF = len(item_ipf_dict) * 100
 
                                             sorted_item_ipf = sorted(item_ipf_dict, key=lambda book: book.ipf)
 
@@ -1040,7 +1038,6 @@ def main():
 
                                     if sort_order == "price":
                                         if len(item_ipf_dict) > 0:
-                                            ITEMIPF = len(item_ipf_dict) * 100
 
                                             sorted_item_ipf = sorted(item_ipf_dict, key=lambda book: float(book.price))
 
@@ -1049,6 +1046,8 @@ def main():
                                                 out_text.append(item_ipf_key.condition)
 
                                             logger.debug("Sorted IPF List: {}.".format(sorted_item_ipf))
+
+                                    ITEMIPF = int(len(item_ipf_dict)) * 100
 
                                     logger.debug('Using sort order {}, item_ipf_dict : {}'.format(sort_order, item_ipf_dict))
                                     logger.debug('Current IPF {}, set for ISBN {}.'.format(ITEMIPF, base_ISBN))
@@ -1311,7 +1310,7 @@ def main():
                                     # go to IPF x5x series for store format "D" (organized by Dept/Course/Section) vs "A", which is alpha by author/title
 
                                     if str(base_FormatFlag).lower() == "d":
-                                        ITEMIPF = (ITEMIPF * 100) + 50
+                                        ITEMIPF = ITEMIPF + 50
                                     logger.debug("This ISBN {}, is flagged for formating with {}. Incrementing ITEMIPF by 50".format(base_ISBN, base_FormatFlag))
                                     # check for digital edition, set base IPF at 700
 
