@@ -18,7 +18,7 @@ import traceback
 from pyDes import *
 from chardet import detect
 from bs4 import BeautifulSoup
-from datetime import datetime
+from datetime import datetime, timedelta
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 
@@ -2645,14 +2645,14 @@ def main():
                                 sec_course_list = []
                                 sec_dept_course_section = []
 
-                                sec_dept_course_section.append(sec_dept + ', ' + sec_course + ', ' + usage)
-                                sec_course_list.append(sec_dept + ', ' + sec_course + ', ' + sec_section + ', ' + usage)
+                                sec_dept_course_section.append(sec_dept + ' ' + sec_course + ' ' + sec_section)
+                                sec_course_list.append('<' + sec_dept + ' ' + sec_course + ' ' + sec_section + ' ' + usage + '>')
                                 # trim to 1024 max length
                                 sec_dept_course_section = sec_dept_course_section[0:1024]
                                 sec_course_list = sec_course_list[0:1024]
 
-                                logger.debug("sec_dept_course_section: {}.".format(sec_dept_course_section))
-                                logger.debug("sec_course_list: {}.".format(sec_course_list))
+                                logger.debug("sec_dept_course_section: {}.".format(str(''.join(map(str, sec_dept_course_section)))))
+                                logger.debug("sec_course_list: {}.".format(str(''.join(map(str, sec_course_list)))))
                             # check for digital edition
                             if str(base_ISBN_HR).lower() != "dgt":
                                 sec_ebook1_vendor = ""
@@ -3356,11 +3356,20 @@ def main():
         logger.info("---")
         sys.exit(99)
 
-    total_time = str("%.3f" % (time.time() - origin_time))
-    if float(total_time) < 60:
-        logger.info("Execution time: " + str(total_time) + " seconds.")
+    total_time = int(time.time() - origin_time)
+
+    time_list = str(timedelta(seconds=total_time)).split(":")
+
+    if int(total_time) < 60:
+        time_text = "{} seconds.".format(int(time_list[2]))
+    elif int(total_time) < 120:
+        time_text = "{} minute {} seconds.".format(int(time_list[1]), int(time_list[2]))
+    elif int(total_time) < 3600:
+        time_text = "{} minutes {} seconds.".format(int(time_list[1]), int(time_list[2]))
     else:
-        logger.info("Execution time: " + str("%.2f" % (float(total_time) / 60)) + " minutes.")
+        time_text = "{} hours {} minutes {} seconds.".format(int(time_list[0]), int(time_list[1]), int(time_list[2]))
+
+    logger.info("Execution time: {}".format(time_text))
     logger.info("---")
 
 
@@ -3455,7 +3464,7 @@ def send_pfi(OUTFILE, itemid, regular_price, ITEMIPF, target_delay, base_FormatF
                "| 9845 0 |" + str(sec_loc_code) + \
                "| 9846 0 |" + str(sec_bookxofy) + \
                "| 9847 0 |" + str(sec_course_id) + \
-               "| 9848 0 |" + str(sec_course_list) + \
+               "| 9848 0 |" + str(''.join(map(str, sec_course_list))) + \
                "| 9849 0 |" + str(sec_ebook_adopted) + \
                "| 9850 0 |" + str(sec_class_cap) + \
                "| 9851 0 |" + str(sec_prof_requested) + \
@@ -3492,7 +3501,7 @@ def send_pfi(OUTFILE, itemid, regular_price, ITEMIPF, target_delay, base_FormatF
                "| 9902 0 |" + str(sec_delete_flag) + \
                "| 9903 0 |" + str(base_FormatFlag) + \
                "| 9914 0 |" + str(usage) + \
-               "| 9915 0 |" + str(sec_dept_course_section) + \
+               "| 9915 0 |" + str(''.join(map(str, sec_dept_course_section))) + \
                "| 9916 0 |" + str(base_Sale_Price1) + \
                "| 9917 0 |" + str(base_Sale_Start_Date1) + \
                "| 9918 0 |" + str(base_Sale_End_Date1) + \
@@ -3619,7 +3628,7 @@ def send_api(use_soap, json_outstring, api_responses, page_line_count, api_out_p
                               "LOCATION_CODE": str(sec_loc_code),
                               "BOOK_X_OF_Y": str(sec_bookxofy),
                               "COURSE_ID": str(sec_course_id),
-                              "COURSE_LIST": str(sec_course_list),
+                              "COURSE_LIST": str(''.join(map(str, sec_course_list))),
                               "EBOOK_ADOPTED": str(sec_ebook_adopted),
                               "CLASS_CAPACITY": str(sec_class_cap),
                               "PROF_REQUESTED": str(sec_prof_requested),
@@ -3656,7 +3665,7 @@ def send_api(use_soap, json_outstring, api_responses, page_line_count, api_out_p
                               "DELETE_FLAG": str(sec_delete_flag),
                               "FORMAT_FLAG": str(base_FormatFlag),
                               "COURSE_USAGE": str(usage),
-                              "DEPT_COURSE_SECTION": str(sec_dept_course_section),
+                              "DEPT_COURSE_SECTION": str(''.join(map(str, sec_dept_course_section))),
                               "SALE_PRICE_1": str(base_Sale_Price1),
                               "SALE_START_DATE_1": str(base_Sale_Start_Date1),
                               "SALE_END_DATE_1": str(base_Sale_End_Date1),
@@ -3787,7 +3796,7 @@ def send_api(use_soap, json_outstring, api_responses, page_line_count, api_out_p
             , {'id': {'number': 9845}, 'value': str(sec_loc_code)}
             , {'id': {'number': 9846}, 'value': str(sec_bookxofy)}
             , {'id': {'number': 9847}, 'value': str(sec_course_id)}
-            , {'id': {'number': 9848}, 'value': str(sec_course_list)}
+            , {'id': {'number': 9848}, 'value': str(''.join(map(str, sec_course_list)))}
             , {'id': {'number': 9849}, 'value': str(sec_ebook_adopted)}
             , {'id': {'number': 9850}, 'value': str(sec_class_cap)}
             , {'id': {'number': 9851}, 'value': str(sec_prof_requested)}
@@ -3824,7 +3833,7 @@ def send_api(use_soap, json_outstring, api_responses, page_line_count, api_out_p
             , {'id': {'number': 9902}, 'value': str(sec_delete_flag)}
             , {'id': {'number': 9903}, 'value': str(base_FormatFlag)}
             , {'id': {'number': 9914}, 'value': str(usage)}
-            , {'id': {'number': 9915}, 'value': str(sec_dept_course_section)}
+            , {'id': {'number': 9915}, 'value': str(''.join(map(str, sec_dept_course_section)))}
             , {'id': {'number': 9916}, 'value': str(base_Sale_Price1)}
             , {'id': {'number': 9917}, 'value': str(base_Sale_Start_Date1)}
             , {'id': {'number': 9918}, 'value': str(base_Sale_End_Date1)}
