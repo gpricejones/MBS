@@ -742,11 +742,11 @@ def main():
                             base_Total_PO_Qty = row_fields[77]
                             base_image_name = base_ISBN + ".png"
 
-                            if base_New_Rental_Price_Text.lower() != "new rental price":
-                                base_New_Rental_Price_Text = "New Rental Price"
+                            if base_New_Rental_Price_Text.lower() != "new rental":
+                                base_New_Rental_Price_Text = "New Rental"
 
-                            if base_Used_Rental_Price_Text.lower() != "used rental price":
-                                base_Used_Rental_Price_Text = "Used Rental Price"
+                            if base_Used_Rental_Price_Text.lower() != "used rental":
+                                base_Used_Rental_Price_Text = "Used Rental"
 
                             if base_New_Price_Text.lower() != "new":
                                 base_New_Price_Text = "New"
