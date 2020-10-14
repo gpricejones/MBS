@@ -1141,7 +1141,7 @@ def main():
                                     if isinstance(base_Sale_Price, (int, float)):
                                         base_Sale_Price = "%.2f" % (float(base_Sale_Price) / 1)
 
-                                    if isinstance(out_text_1, (int, float)):
+                                    if isinstance(out_price_1, (int, float)):
                                         out_price_1 = "%.2f" % (float(out_price_1) / 1)
 
                                     if isinstance(out_price_2, (int, float)):
