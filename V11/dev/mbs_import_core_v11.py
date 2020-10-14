@@ -372,6 +372,10 @@ def main():
         if data_in_save and int(data_input_delete_after) > 0:
             DirectoryCleaner.clean_directory(int(data_input_delete_after), input_data_path, log_file, log_level, config_path)
 
+        if sort_order.lower() not in ['natural', 'ascending', 'price']:
+            logger.critical("Sort order value incorrect, value given: {}, needs to be one of these values, 'Natural', 'Ascending', or 'Price'. this execution will now exit, please check config file and retry.".format(sort_order))
+            raise SystemExit
+
         ### Main File Content Processing ###
 
         file_list = {}
@@ -3206,9 +3210,12 @@ def main():
 
         else:
             logger.info("No New Files to Process")
+
+    except SystemExit:
+        pass
     except:
         e = traceback.format_exc(limit=None, chain=True)
-        AlertManager.alert_manager(config_path, log_path, 'fatal', "XML Import Processor crashed inelegantly with: " + str(e))
+        AlertManager.alert_manager(config_path, log_path, 'fatal', "MBS Import Processor crashed inelegantly with: " + str(e))
         logger.critical(file_name + " crashed inelegantly with: " + str(e))
         logger.info("---")
         sys.exit(99)
