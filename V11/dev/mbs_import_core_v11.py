@@ -284,19 +284,6 @@ def main():
             EventLogger.event_log_writer(file_name + " failed to find configuration file " + config_path + " I/O error({0}): {1}".format(e.errno, e.strerror), "error", "Pricer", 101, log_path)
             sys.exit(99)
 
-        # setup outfiles for pfi use
-
-        if use_pfi:
-            data_file = 'MBS_' + file_time
-            i1_file = os.path.join(drive_letter, i1_path, data_file + ".i1")
-            m1_file = os.path.join(drive_letter, m1_path, data_file + ".m1")
-            r7_file = os.path.join(drive_letter, r7_path, data_file + ".r7")
-            temp_m1_file = os.path.join(drive_letter, i1_path, data_file + ".m1")
-
-            logger.debug("i1 file: {}".format(i1_file))
-
-            OUTFILE = open(i1_file, "w", encoding="utf-8")
-
         # start soap client if used
 
         if (use_api and use_soap):
@@ -439,6 +426,19 @@ def main():
 
         if len(file_list_new) > 0:
             # process each file
+
+            # setup outfiles for pfi use
+
+            if use_pfi:
+                data_file = 'MBS_' + file_time
+                i1_file = os.path.join(drive_letter, i1_path, data_file + ".i1")
+                m1_file = os.path.join(drive_letter, m1_path, data_file + ".m1")
+                r7_file = os.path.join(drive_letter, r7_path, data_file + ".r7")
+                temp_m1_file = os.path.join(drive_letter, i1_path, data_file + ".m1")
+
+                logger.debug("i1 file: {}".format(i1_file))
+
+                OUTFILE = open(i1_file, "w", encoding="utf-8")
 
             for new_file in sorted(file_list_new):
                 file_content = file_handler(new_file)
