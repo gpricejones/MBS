@@ -974,6 +974,21 @@ def main():
                                 # Start book record###
 
                                 if base_Category.lower() == "t":
+
+                                    out_price = []
+                                    out_text = []
+
+                                    class Book:
+                                        def __init__(self, ipf, price, condition):
+                                            self.ipf = ipf
+                                            self.price = price
+                                            self.condition = condition
+                                            # out_price.append(self.price)
+                                            # out_text.append(self.condition)
+
+                                        def __repr__(self):
+                                            return repr((self.ipf, self.price, self.condition))
+
                                     # Determine base item IPF
                                     ITEMIPF = 0
                                     item_ipf_dict = []
@@ -1006,20 +1021,6 @@ def main():
                                                                                                                                                                                                                               base_Used_Rental_Price,
                                                                                                                                                                                                                               base_Ebook_Price,
                                                                                                                                                                                                                               item_ipf_dict))
-
-                                    out_price = []
-                                    out_text = []
-
-                                    class Book:
-                                        def __init__(self, ipf, price, condition):
-                                            self.ipf = ipf
-                                            self.price = price
-                                            self.condition = condition
-                                            # out_price.append(self.price)
-                                            # out_text.append(self.condition)
-
-                                        def __repr__(self):
-                                            return repr((self.ipf, self.price, self.condition))
 
                                     # Ascending order output
 
