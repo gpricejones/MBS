@@ -1336,14 +1336,14 @@ def main():
                                     logger.debug("{} This ISBN {}, has an ITEMIPF of {}.".format(row_counter, base_ISBN, ITEMIPF))
 
                                 if base_Category.lower() == "gm":
-                                    sale_start1 = "1900-01-01 00:00";
-                                    sale_end1 = "1900-01-01 00:00:00";
-                                    sale_start2 = "1900-01-01 00:00:00";
-                                    sale_end2 = "1900-01-01 00:00:00";
-                                    sale_start3 = "1900-01-01 00:00:00";
-                                    sale_end3 = "1900-01-01 00:00:00";
-                                    sale_start4 = "1900-01-01 00:00:00";
-                                    sale_end4 = "1900-01-01 00:00:00";
+                                    sale_start1 = "1900-01-01 00:00"
+                                    sale_end1 = "1900-01-01 00:00:00"
+                                    sale_start2 = "1900-01-01 00:00:00"
+                                    sale_end2 = "1900-01-01 00:00:00"
+                                    sale_start3 = "1900-01-01 00:00:00"
+                                    sale_end3 = "1900-01-01 00:00:00"
+                                    sale_start4 = "1900-01-01 00:00:00"
+                                    sale_end4 = "1900-01-01 00:00:00"
 
                                     if len(base_Sale_Start_Date1) == 8 and len(base_Sale_Start_Time1) == 4:
                                         sale_start1 = base_Sale_Start_Date1[0:4] + "-" + base_Sale_Start_Date1[4:6] + "-" + base_Sale_Start_Date1[6:8] + " " + base_Sale_Start_Time1[0:2] + ":" + base_Sale_Start_Time1[2:4] + ":00"
@@ -2900,7 +2900,7 @@ def main():
                                         if itemid not in all_itemids and itemid[0:2] != " -":
                                             all_itemids.append(itemid)
                                             db_sel = db.cursor()
-                                            db_sel.callproc("sp_insert_mbs_itemid", [str(itemid), str(base_ISBN), str(sec_dept), str(sec_course), str(sec_section), str(base_Term)])
+                                            db_sel.callproc("sp_insert_mbs_itemid", [str(itemid), str(base_Used_ISBN), str(sec_dept), str(sec_course), str(sec_section), str(base_Term)])
                                             db.commit()
                                             db_sel.close()
                                             logger.debug(
@@ -3078,7 +3078,7 @@ def main():
                                 if itemid not in all_itemids and itemid[0:2] != " -":
                                     all_itemids.append(itemid)
                                     db_sel = db.cursor()
-                                    db_sel.callproc("sp_insert_mbs_itemid", [str(itemid), str(base_ISBN), str(sec_dept), str(sec_course), str(sec_section), str(base_Term)])
+                                    db_sel.callproc("sp_insert_mbs_itemid", [str(itemid), str(base_Used_ISBN), str(sec_dept), str(sec_course), str(sec_section), str(base_Term)])
                                     db.commit()
                                     db_sel.close()
                                     logger.debug("Item ID not found in t_links, updating t_links with, ItemID: {}, ISBN: {}, Department: {}, Course: {} and Term: {}.".format(itemid, base_ISBN, base_Department, sec_course, sec_section, base_Term))
