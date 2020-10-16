@@ -2812,6 +2812,9 @@ def main():
                                                 ITEMIPF = ITEMIPF + 10
 
                                     if itemid not in all_itemids and itemid[0:2] != " -":
+                                        itemid = base_ISBN + '-' + course_hold
+                                        itemid = itemid.replace(" ", section_commas)
+
                                         all_itemids.append(itemid)
                                         db_sel = db.cursor()
                                         db_sel.callproc("sp_insert_mbs_itemid", [str(itemid), str(base_ISBN), str(sec_dept), str(sec_course), str(sec_section), str(base_Term)])
@@ -2993,13 +2996,13 @@ def main():
 
                             # create a base record for both a and d type store
 
-                            if itemid not in all_itemids and itemid[0:2] != " -":
-                                all_itemids.append(itemid)
-                                db_sel = db.cursor()
-                                db_sel.callproc("sp_insert_mbs_itemid", [str(itemid), str(base_ISBN), str(sec_dept), str(sec_course), str(sec_section), str(base_Term)])
-                                db.commit()
-                                db_sel.close()
-                                logger.debug("Item ID not found in t_links, updating t_links with, ItemID: {}, ISBN: {}, Department: {}, Course: {} and Term: {}.".format(itemid, base_ISBN, base_Department, sec_course, sec_section, base_Term))
+                            # if itemid not in all_itemids and itemid[0:2] != " -":
+                            #     all_itemids.append(itemid)
+                            #     db_sel = db.cursor()
+                            #     db_sel.callproc("sp_insert_mbs_itemid", [str(itemid), str(base_ISBN), str(sec_dept), str(sec_course), str(sec_section), str(base_Term)])
+                            #     db.commit()
+                            #     db_sel.close()
+                            #     logger.debug("Item ID not found in t_links, updating t_links with, ItemID: {}, ISBN: {}, Department: {}, Course: {} and Term: {}.".format(itemid, base_ISBN, base_Department, sec_course, sec_section, base_Term))
 
                             if use_pfi:
                                 OUTFILE = send_pfi(OUTFILE, itemid, regular_price, ITEMIPF, target_delay, base_FormatFlag, base_Author, base_Title, base_ISBN, base_Used_ISBN, base_ISBN_HR, base_Vendor_Style, base_Publisher, base_Imprint,
@@ -3075,13 +3078,13 @@ def main():
                             if base_Used_ISBN != "" and base_Used_ISBN != " " and base_ISBN != " " and str(base_ISBN[0:3]).lower() != "ntr" and base_ISBN != "" and base_Used_ISBN != base_ISBN:
                                 itemid = base_Used_ISBN
 
-                                if itemid not in all_itemids and itemid[0:2] != " -":
-                                    all_itemids.append(itemid)
-                                    db_sel = db.cursor()
-                                    db_sel.callproc("sp_insert_mbs_itemid", [str(itemid), str(base_Used_ISBN), str(sec_dept), str(sec_course), str(sec_section), str(base_Term)])
-                                    db.commit()
-                                    db_sel.close()
-                                    logger.debug("Item ID not found in t_links, updating t_links with, ItemID: {}, ISBN: {}, Department: {}, Course: {} and Term: {}.".format(itemid, base_ISBN, base_Department, sec_course, sec_section, base_Term))
+                                # if itemid not in all_itemids and itemid[0:2] != " -":
+                                #     all_itemids.append(itemid)
+                                #     db_sel = db.cursor()
+                                #     db_sel.callproc("sp_insert_mbs_itemid", [str(itemid), str(base_Used_ISBN), str(sec_dept), str(sec_course), str(sec_section), str(base_Term)])
+                                #     db.commit()
+                                #     db_sel.close()
+                                #     logger.debug("Item ID not found in t_links, updating t_links with, ItemID: {}, ISBN: {}, Department: {}, Course: {} and Term: {}.".format(itemid, base_ISBN, base_Department, sec_course, sec_section, base_Term))
 
                                 if use_pfi:
                                     OUTFILE = send_pfi(OUTFILE, itemid, regular_price, ITEMIPF, target_delay, base_FormatFlag, base_Author, base_Title, base_ISBN, base_Used_ISBN, base_ISBN_HR, base_Vendor_Style, base_Publisher, base_Imprint,
