@@ -2795,7 +2795,7 @@ def main():
                                                                                                                                                                                                                           out_price_3, out_text_3,
                                                                                                                                                                                                                           out_price_4, out_text_4,
                                                                                                                                                                                                                           out_price_5, out_text_5))
-                                    if itemid[1:2] != "-":
+                                    if itemid[1:2] != " -":
                                         if base_ISBN_HR.lower() == "dgt":
                                             # base 1 price IPF =701, 2 price = 702, 3 price = 703, 4 price = 704, 5 price = 705
                                             if int(sec_ebook1_price_2) > 0 or int(sec_ebook2_price_2) > 0:
