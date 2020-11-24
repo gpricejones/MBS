@@ -11,7 +11,7 @@
 		Use_Pricer_Level="False" 
 		Path="pricer\R3Server\logs\"
 		Log_Name="data_import.log"
-		Delete_After="60"
+		Delete_After="7"
 		Log_Max_MB="100"
 	/>
 	<DataLocal
@@ -20,7 +20,7 @@
 	/>
 	<DataIn
 		DataInputSave="True"
-		DeleteAfter="700"
+		DeleteAfter="7"
 		Path="Pricer\import\data\"
 		InputHoldPath="Pricer\Import\data\input\"
 		FileWaitTime="60"

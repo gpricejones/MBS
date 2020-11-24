@@ -4,11 +4,22 @@ import json
 from collections import OrderedDict
 from operator import getitem
 from chardet import detect
-sec_course_list = ['<MAT 101 100-200 RQ>', '<MAT 201 238 RC>']
+import DirectoryCleaner
+import LogCleaner
+# log_cleaner(drive_letter, log_file, log_level, config_path, log_max)
+# clean_directory(interval, path, log_file, log_level, config_path)
 
-print(sec_course_list)
+LogCleaner.log_cleaner("C:\\", 'C:\\Pricer\\R3Server\\logs\\data_import.log', "debug", "C:\\Pricer\\import\\configuration\\mbs_import.mms", 7)
+# time = int("7")
+# DirectoryCleaner.clean_directory(time, 'C:\\Pricer\\R3Server\\logs\\', 'C:\\Pricer\\R3Server\\logs\\data_import.log', 'debug', 'C:\\Pricer\\import\\configuration\\mbs_import.mms')
 
-print(str(''.join(map(str, sec_course_list))))
+
+
+# sec_course_list = ['<MAT 101 100-200 RQ>', '<MAT 201 238 RC>']
+#
+# print(sec_course_list)
+#
+# print(str(''.join(map(str, sec_course_list))))
 
 # file = "C:\\Users\\Wayne\\Downloads\\eshelftag.txt100920135143.txt"
 #

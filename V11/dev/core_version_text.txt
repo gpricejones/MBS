@@ -6,8 +6,8 @@ VSVersionInfo(
   ffi=FixedFileInfo(
 # filevers and prodvers should be always a tuple with four items: (1, 2, 3, 4)
 # Set not needed items to zero 0.
-filevers=(11, 1, 1, 50320),
-prodvers=(11, 1, 1, 50320),
+filevers=(11, 1, 1, 55320),
+prodvers=(11, 1, 1, 55320),
 # Contains a bitmask that specifies the valid bits 'flags'r
 mask=0x3f,
 # Contains a bitmask that specifies the Boolean attributes of the file.
@@ -31,12 +31,12 @@ StringFileInfo(
     u'040904B0',
     [StringStruct(u'CompanyName', u'MarginMate Corporation'),
     StringStruct(u'FileDescription', u'MBS_import_core_v11'),
-    StringStruct(u'FileVersion', u'11.1.1.50320'),
+    StringStruct(u'FileVersion', u'11.1.1.55320'),
     StringStruct(u'InternalName', u'MBS_import_core_v11'),
     StringStruct(u'LegalCopyright', u'Copyright (c) 2020 MarginMate Corporation'),
     StringStruct(u'OriginalFilename', u'MBS_import_core_v11.exe'),
     StringStruct(u'ProductName', u'MBS API/PFI Import Processor Core Components'),
-    StringStruct(u'ProductVersion', u'11.1.1.50320')])
+    StringStruct(u'ProductVersion', u'11.1.1.55320')])
   ]), 
 VarFileInfo([VarStruct(u'Translation', [1033, 1200])])
   ]
