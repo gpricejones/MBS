@@ -3171,8 +3171,10 @@ def main():
                         shutil.move((os.path.join(data_path, new_file[:-4] + ".tx1")), (os.path.join(input_data_path, new_file[:-4] + ".tx1")))
                         logger.debug('Successfully moved {} data set to input folder for archiving.'.format(new_file[:-4]))
                 else:
-                    os.remove(os.path.join(data_path, new_file))
-                    logger.info(str(os.path.join(data_path, new_file)) + ' deleted.')
+                    if new_file.endswith(".txt"):
+                        os.remove(os.path.join(data_path, new_file))
+                        os.remove(os.path.join(data_path, new_file[:-4] + ".tx1"))
+                        logger.info("Data set {} has been deleted".format(os.path.join(data_path, new_file[:-4])))
 
             # wrap up pfi files
             if use_pfi:
