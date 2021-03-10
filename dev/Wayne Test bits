@@ -1,0 +1,407 @@
+import os
+import time
+import json
+from collections import OrderedDict
+from operator import getitem
+from chardet import detect
+import DirectoryCleaner
+import LogCleaner
+# log_cleaner(drive_letter, log_file, log_level, config_path, log_max)
+# clean_directory(interval, path, log_file, log_level, config_path)
+
+LogCleaner.log_cleaner("C:\\", 'C:\\Pricer\\R3Server\\logs\\data_import.log', "debug", "C:\\Pricer\\import\\configuration\\mbs_import.mms", 7)
+# time = int("7")
+# DirectoryCleaner.clean_directory(time, 'C:\\Pricer\\R3Server\\logs\\', 'C:\\Pricer\\R3Server\\logs\\data_import.log', 'debug', 'C:\\Pricer\\import\\configuration\\mbs_import.mms')
+
+
+
+# sec_course_list = ['<MAT 101 100-200 RQ>', '<MAT 201 238 RC>']
+#
+# print(sec_course_list)
+#
+# print(str(''.join(map(str, sec_course_list))))
+
+# file = "C:\\Users\\Wayne\\Downloads\\eshelftag.txt100920135143.txt"
+#
+# encode = detect(open(file, "rb").read()).get("encoding")
+# # print(encode)
+# with open(file, "r", encoding=encode) as data:
+#     data = data.read()
+#     print(data)
+
+# json_outstring = [{"GenKey": "1"}, {"GenKey": "1"}, {"GenKey": "1"}, {"GenKey": "1"}]
+# api_out_page_count = 1000
+#
+# if len(json_outstring) in range(0, api_out_page_count):
+#     print("yay")
+# else:
+#     print("not yay")
+
+# ITEMIPF = 100
+#
+# print(str(ITEMIPF)[2:3])
+
+
+#
+# student_tuples = [('john', 'A', 15), ('jane', 'B', 12), ('dave', 'B', 10)]
+# print(sorted(student_tuples, key=lambda student: student[0]))
+#
+#
+# class Student:
+#     def __init__(self, name, grade, age):
+#         self.name = name
+#         self.grade = grade
+#         self.age = age
+#     def __repr__(self):
+#         return repr((self.name, self.grade, self.age))
+#
+# student_objects = [Student('john', 'A', 15), Student('jane', 'B', 12), Student('dave', 'B', 10)]
+#
+# print(sorted(student_objects, key=lambda student: student.age))
+#
+# sort_order = "ascending"
+# out_price = []
+# out_text = []
+# class Book:
+#     def __init__(self, ipf, price, condition):
+#         self.ipf = ipf
+#         self.price = price
+#         self.condition = condition
+#     def __repr__(self):
+#         return repr((self.ipf, self.price, self.condition))
+# #
+# item_ipf_dict = [Book(1, '6.95', 'New'), Book(2, '5.20', 'Used'), Book(3, '3.45', 'New Rental Price'), Book(4, '2.55', 'Used Rental Price'), Book(5, '6.95', 'Ebook')]
+# out_price = ['12.00', '6.48', '9.00', '3.48', '10.25']
+# out_text = ['New', 'New Rental Price', 'Used', 'Used Rental Price', 'eBook']
+# price_loc = 0
+# price_count = len(out_price) -1
+# print(price_count)
+# base_Ebook_Price_Text = "ebook"
+#
+# for i, elem in enumerate(out_text):
+#     if elem.lower() == base_Ebook_Price_Text.lower():
+#         price_loc = i
+#         print(price_loc)
+#     if price_count == price_loc:
+#         print("price count: {}, price loc: {}.".format(price_count, price_loc))
+#         out_text.pop(i)
+#         out_price.pop(i)
+#
+# print(out_text)
+# print(out_price)
+
+#
+# if len(item_ipf_dict) > 0:
+#
+#     sorted_item_ipf = sorted(item_ipf_dict, key=lambda book: book.condition)
+#     print('item_ipf_dict : {}'.format(sorted_item_ipf))
+#     print(len(sorted_item_ipf))
+#
+#     ITEMIPF = len(sorted_item_ipf) *100
+#     print(ITEMIPF)
+#
+#     for item_ipf_key in sorted_item_ipf:
+#         print("item_ipf_key: {}.".format(item_ipf_key))
+#         # print(item_ipf_key.price)
+#         out_price.append(item_ipf_key.price)
+#         out_text.append(item_ipf_key.condition)
+#
+# print('Using sort order {}, item_ipf_dict : {}'.format(sort_order, item_ipf_dict))
+# print('Current IPF {}.'.format(ITEMIPF))
+# print("out Price list: {}".format(out_price))
+# print("out Text list: {}".format(out_text))
+
+# if not isinstance(x, (int, float)):
+#     x = 0
+#     print("x was invalid set to 0")
+# else:
+#     print("x is {}".format(x))
+
+
+# #
+# base_ISBN = "978007058041"
+#
+# secondary_file_data_list = [{"GenKey": "1", "csn": "12879", "seq_no": "0", "ISBN": "NTR", "Term": "T14", "Term_Description": "Test 2014", "dept": "ART", "course": "300", "section": "1", "loc_code": " ", "bookxofy": " ", "course_id": " ", "instructor": "ANDREWS", "course_code": " ", "delete_flag": "N", "ebook_adopted": "N", "class_cap": "30", "prof_requested": "0", "estimated_sales": "0", "ebook1_vendor": "0", "ebook1_period_1": "0", "ebook1_price_1": "0", "ebook1_period_2": "0", "ebook1_price_2": "0", "ebook1_period_3": "0", "ebook1_price_3": "0", "ebook1_period_4": "0", "ebook1_price_4": "0", "ebook1_period_5": "0", "ebook1_price_5": "0", "ebook2_vendor": "0", "ebook2_period_1": "0", "ebook2_price_1": "0", "ebook2_period_2": "0", "ebook2_price_2": "0", "ebook2_period_3": "0", "ebook2_price_3": "0", "ebook2_period_4": "0", "ebook2_price_4": "0", "ebook2_period_5": "0", "ebook2_price_5": "0"}, {"GenKey": "1", "csn": "12880", "seq_no": "0", "ISBN": "NTR", "Term": "T14", "Term_Description": "Test 2014", "dept": "BIOL", "course": "425", "section": "1234567", "loc_code": " ", "bookxofy": " ", "course_id": " ", "instructor": "MILLER JOHNSON", "course_code": " ", "delete_flag": "N", "ebook_adopted": "N", "class_cap": "50", "prof_requested": "0", "estimated_sales": "0", "ebook1_vendor": "0", "ebook1_period_1": "0", "ebook1_price_1": "0", "ebook1_period_2": "0", "ebook1_price_2": "0", "ebook1_period_3": "0", "ebook1_price_3": "0", "ebook1_period_4": "0", "ebook1_price_4": "0", "ebook1_period_5": "0", "ebook1_price_5": "0", "ebook2_vendor": "0", "ebook2_period_1": "0", "ebook2_price_1": "0", "ebook2_period_2": "0", "ebook2_price_2": "0", "ebook2_period_3": "0", "ebook2_price_3": "0", "ebook2_period_4": "0", "ebook2_price_4": "0", "ebook2_period_5": "0", "ebook2_price_5": "0"}, {"GenKey": "1", "csn": "12881", "seq_no": "0", "ISBN": "NTR", "Term": "T14", "Term_Description": "Test 2014", "dept": "BUS", "course": "275", "section": "3", "loc_code": " ", "bookxofy": " ", "course_id": " ", "instructor": "SHEEHAN", "course_code": " ", "delete_flag": "N", "ebook_adopted": "N", "class_cap": "10", "prof_requested": "0", "estimated_sales": "0", "ebook1_vendor": "0", "ebook1_period_1": "0", "ebook1_price_1": "0", "ebook1_period_2": "0", "ebook1_price_2": "0", "ebook1_period_3": "0", "ebook1_price_3": "0", "ebook1_period_4": "0", "ebook1_price_4": "0", "ebook1_period_5": "0", "ebook1_price_5": "0", "ebook2_vendor": "0", "ebook2_period_1": "0", "ebook2_price_1": "0", "ebook2_period_2": "0", "ebook2_price_2": "0", "ebook2_period_3": "0", "ebook2_price_3": "0", "ebook2_period_4": "0", "ebook2_price_4": "0", "ebook2_period_5": "0", "ebook2_price_5": "0"}, {"GenKey": "1", "csn": "12882", "seq_no": "0", "ISBN": "NTR", "Term": "T14", "Term_Description": "Test 2014", "dept": "CHEM", "course": "1650", "section": "275", "loc_code": " ", "bookxofy": " ", "course_id": " ", "instructor": "STAFF", "course_code": " ", "delete_flag": "N", "ebook_adopted": "N", "class_cap": "200", "prof_requested": "0", "estimated_sales": "0", "ebook1_vendor": "0", "ebook1_period_1": "0", "ebook1_price_1": "0", "ebook1_period_2": "0", "ebook1_price_2": "0", "ebook1_period_3": "0", "ebook1_price_3": "0", "ebook1_period_4": "0", "ebook1_price_4": "0", "ebook1_period_5": "0", "ebook1_price_5": "0", "ebook2_vendor": "0", "ebook2_period_1": "0", "ebook2_price_1": "0", "ebook2_period_2": "0", "ebook2_price_2": "0", "ebook2_period_3": "0", "ebook2_price_3": "0", "ebook2_period_4": "0", "ebook2_price_4": "0", "ebook2_period_5": "0", "ebook2_price_5": "0"}, {"GenKey": "2", "csn": "8945", "seq_no": "1", "ISBN": "978007058041", "Term": "T14", "Term_Description": "Test 2014", "dept": "ACCT", "course": "250", "section": "1", "loc_code": " ", "bookxofy": "Book 1 of 2", "course_id": " ", "instructor": "JOHNSON", "course_code": "REQUIRED", "delete_flag": "N", "ebook_adopted": "N", "class_cap": "0", "prof_requested": "0", "estimated_sales": "20", "ebook1_vendor": "0", "ebook1_period_1": "0", "ebook1_price_1": "0", "ebook1_period_2": "0", "ebook1_price_2": "0", "ebook1_period_3": "0", "ebook1_price_3": "0", "ebook1_period_4": "0", "ebook1_price_4": "0", "ebook1_period_5": "0", "ebook1_price_5": "0", "ebook2_vendor": "0", "ebook2_period_1": "0", "ebook2_price_1": "0", "ebook2_period_2": "0", "ebook2_price_2": "0", "ebook2_period_3": "0", "ebook2_price_3": "0", "ebook2_period_4": "0", "ebook2_price_4": "0", "ebook2_period_5": "0", "ebook2_price_5": "0"}, {"GenKey": "3", "csn": "8969", "seq_no": "5", "ISBN": "978031214110", "Term": "T14", "Term_Description": "Test 2014", "dept": "PSY", "course": "100", "section": "1", "loc_code": " ", "bookxofy": "Book 4 of 5", "course_id": " ", "instructor": " ", "course_code": "REQUIRED", "delete_flag": "N", "ebook_adopted": "N", "class_cap": "0", "prof_requested": "0", "estimated_sales": "10", "ebook1_vendor": "0", "ebook1_period_1": "0", "ebook1_price_1": "0", "ebook1_period_2": "0", "ebook1_price_2": "0", "ebook1_period_3": "0", "ebook1_price_3": "0", "ebook1_period_4": "0", "ebook1_price_4": "0", "ebook1_period_5": "0", "ebook1_price_5": "0", "ebook2_vendor": "0", "ebook2_period_1": "0", "ebook2_price_1": "0", "ebook2_period_2": "0", "ebook2_price_2": "0", "ebook2_period_3": "0", "ebook2_price_3": "0", "ebook2_period_4": "0", "ebook2_price_4": "0", "ebook2_period_5": "0", "ebook2_price_5": "0"}, {"GenKey": "4", "csn": "8944", "seq_no": "9", "ISBN": "978032102435", "Term": "T14", "Term_Description": "Test 2014", "dept": "ACCT", "course": "100", "section": "1,2,3", "loc_code": " ", "bookxofy": "Book 9 of 26", "course_id": " ", "instructor": "PELLOCK", "course_code": "REQUIRED", "delete_flag": "N", "ebook_adopted": "N", "class_cap": "0", "prof_requested": "0", "estimated_sales": "10", "ebook1_vendor": "0", "ebook1_period_1": "0", "ebook1_price_1": "0", "ebook1_period_2": "0", "ebook1_price_2": "0", "ebook1_period_3": "0", "ebook1_price_3": "0", "ebook1_period_4": "0", "ebook1_price_4": "0", "ebook1_period_5": "0", "ebook1_price_5": "0", "ebook2_vendor": "0", "ebook2_period_1": "0", "ebook2_price_1": "0", "ebook2_period_2": "0", "ebook2_price_2": "0", "ebook2_period_3": "0", "ebook2_price_3": "0", "ebook2_period_4": "0", "ebook2_price_4": "0", "ebook2_period_5": "0", "ebook2_price_5": "0"}]
+#
+# print(list(filter(lambda person: person["ISBN"] == base_ISBN, secondary_file_data_list)))
+
+
+
+
+
+
+
+
+
+# out_price_dict = {100': '284.60', '200': '213.45', '300': '53.45', '400': '46.45', '500': '213.35'}
+# out_price = {'100': 'New', '200': 'Used', '300': 'New Rental', '400': 'Used Rental', '500': 'Ebook'}
+#
+# # sorted_dict = sorted(dict.items())
+#
+# ds = [out_price_dict, out_price]
+# d = {}
+# for k in out_price_dict.keys():
+#     d[k] = tuple(d[k] for d in ds)
+# print(d)
+# for keys in d:
+#     print(keys)
+#     print(d.get(keys)[0])
+#     print(d.get(keys)[1])
+
+
+
+
+
+
+# sorted_dict = sorted(dict.items(), key=lambda kv: kv[0])
+#
+# print(sorted_dict)
+#
+# wait_time = 2
+#
+# file_txt_list = {}
+# file_tx1_list = {}
+# file_list_new = []
+# sleep_count = 0
+#
+# data_path = 'C:\\Pricer\\import\\data\\'
+# # data_path = 'C:\\Users\\Glenn Price-Jones\\Dropbox\\MarginMate\\Systems and Development\\Python Data Integration\\MBS\\V11\\data\\'
+#
+# for ext_file_name in os.listdir(data_path):
+#     if ext_file_name.lower().endswith("txt"):
+#         file_txt_list.update({ext_file_name: str(os.stat(os.path.join(data_path + ext_file_name)).st_mtime)})
+#     if ext_file_name.lower().endswith("tx1"):
+#         file_tx1_list.update({ext_file_name: str(os.stat(os.path.join(data_path + ext_file_name)).st_mtime)})
+#
+#
+#
+# for current_file in sorted(file_txt_list, key=file_txt_list.get, reverse=False):
+#     sleep_count = 0
+#     if current_file[:-4] + '.tx1' in sorted(file_tx1_list, key=file_tx1_list.get, reverse=False):
+#         file_list_new.append(current_file)
+#         print('Found matching file for {}'.format(current_file))
+#     else:
+#         while current_file[:-4] + '.tx1' not in sorted(file_tx1_list, key=file_tx1_list.get, reverse=False):
+#             time.sleep(1)
+#             sleep_count += 1
+#             if sleep_count == wait_time:
+#                 print("could not find matching file for {}".format(current_file))
+#                 break
+#
+#
+# for current_file in sorted(file_tx1_list, key=file_tx1_list.get, reverse=False):
+#     sleep_count = 0
+#     if current_file[:-4] + '.txt' in sorted(file_txt_list, key=file_txt_list.get, reverse=False):
+#         file_list_new.append(current_file)
+#         print('Found matching file for {}'.format(current_file))
+#     else:
+#         while current_file[:-4] + '.txt' not in sorted(file_txt_list, key=file_txt_list.get, reverse=False):
+#             time.sleep(1)
+#             sleep_count += 1
+#             if sleep_count == wait_time:
+#                 print("could not find matching file for {}".format(current_file))
+#                 break
+#
+# print(sorted(file_list_new))
+# row_counter = 0
+# for data_file in sorted(file_list_new):
+#     file_path = data_path + data_file
+#
+#     # check file for stability
+#     current_size = 0
+#     new_size = os.path.getsize(file_path)
+#     while new_size > current_size:
+#         time.sleep(0.25)
+#         current_size = new_size
+#         new_size = os.path.getsize(file_path)
+#
+#     secondary_file_data_list = []
+#
+#     if data_file.lower().endswith("txt"):
+#         with open(data_path + data_file, "r", encoding='utf-8') as file_content:
+#             # print(data_file)
+#             for file_row in file_content:
+#                 row_counter += 1
+#                 file_row = file_row.rstrip(os.linesep)
+#                 row_fields = file_row.split('|')
+#
+#                 base_GenKey = row_fields[0]
+#                 base_FormatFlag = row_fields[1]
+#                 base_Author = row_fields[2]
+#                 base_Title = row_fields[3]
+#                 base_ISBN = row_fields[4]
+#                 base_ISBN_HR = row_fields[5]
+#                 base_Vendor_Style = row_fields[6]
+#                 base_Publisher = row_fields[7]
+#                 base_Imprint = row_fields[8]
+#                 base_Edition = row_fields[9]
+#                 base_Edition_Status = row_fields[10]
+#                 base_New_Price = row_fields[11]
+#                 base_New_Price_Text = row_fields[12]
+#                 base_Used_Price = row_fields[13]
+#                 base_Used_Price_Text = row_fields[14]
+#                 base_New_Rental_Price = row_fields[15]
+#                 base_New_Rental_Price_Text = row_fields[16]
+#                 base_Ebook_Price = row_fields[17]
+#                 base_Ebook_Price_Text = row_fields[18]
+#                 base_Used_Rental_Price = row_fields[19]
+#                 base_Used_Rental_Price_Text = row_fields[20]
+#                 base_Sale_Price1 = row_fields[21]
+#                 base_Sale_Start_Date1 = row_fields[22]
+#                 base_Sale_End_Date1 = row_fields[23]
+#                 base_Sale_Start_Time1 = row_fields[24]
+#                 base_Sale_End_Time1 = row_fields[25]
+#                 base_Sale_Price2 = row_fields[26]
+#                 base_Sale_Start_Date2 = row_fields[27]
+#                 base_Sale_End_Date2 = row_fields[28]
+#                 base_Sale_Start_Time2 = row_fields[29]
+#                 base_Sale_End_Time2 = row_fields[30]
+#                 base_Sale_Price3 = row_fields[31]
+#                 base_Sale_Start_Date3 = row_fields[32]
+#                 base_Sale_End_Date3 = row_fields[33]
+#                 base_Sale_Start_Time3 = row_fields[34]
+#                 base_Sale_End_Time3 = row_fields[35]
+#                 base_Sale_Price4 = row_fields[36]
+#                 base_Sale_Start_Date4 = row_fields[37]
+#                 base_Sale_End_Date4 = row_fields[38]
+#                 base_Sale_Start_Time4 = row_fields[39]
+#                 base_Sale_End_Time4 = row_fields[40]
+#                 base_Term = row_fields[41]
+#                 base_Term_Description = row_fields[42]
+#                 base_Requested_Qty = row_fields[43]
+#                 base_Class_Capacity_Qty = row_fields[44]
+#                 base_Actual_Enrollment_Qty = row_fields[45]
+#                 base_Est_Sales_Qty = row_fields[46]
+#                 base_Category = row_fields[47]
+#                 base_Division = row_fields[48]
+#                 base_Department = row_fields[49]
+#                 base_Class = row_fields[50]
+#                 base_New_Store_Qty = row_fields[51]
+#                 base_New_Warehouse_Qty = row_fields[52]
+#                 base_Used_Store_Qty = row_fields[53]
+#                 base_Used_Warehouse_Qty = row_fields[54]
+#                 base_New_Pending_Return_Qty = row_fields[55]
+#                 base_Used_Pending_Return_Qty = row_fields[56]
+#                 base_New_insite_Pending_Order = row_fields[57]
+#                 base_Used_insite_Pending_Order = row_fields[58]
+#                 base_New_Rental_insite_Pending_Order = row_fields[59]
+#                 base_Used_Rental_insite_Pending_Order = row_fields[60]
+#                 base_On_Order_PO1 = row_fields[61]
+#                 base_On_Order_PO1_Vendor = row_fields[62]
+#                 base_On_Order_Qty1 = row_fields[63]
+#                 base_On_Order_Qty1_Used = row_fields[64]
+#                 base_On_Order_Date1 = row_fields[65]
+#                 base_On_Order_PO2 = row_fields[66]
+#                 base_On_Order_PO2_Vendor = row_fields[67]
+#                 base_On_Order_Qty2 = row_fields[68]
+#                 base_On_Order_Qty2_Used = row_fields[69]
+#                 base_On_Order_Date2 = row_fields[70]
+#                 base_On_Order_PO3 = row_fields[71]
+#                 base_On_Order_PO3_Vendor = row_fields[72]
+#                 base_On_Order_Qty3 = row_fields[73]
+#                 base_On_Order_Qty3_Used = row_fields[74]
+#                 base_On_Order_Date3 = row_fields[75]
+#                 base_Total_PO_Qty = row_fields[76]
+#                 base_image_name = base_ISBN + ".png"
+#
+#                 print("base_GenKey {}, base_FormatFlag {}, base_Author {}, base_Title {}, base_ISBN {}, base_ISBN_HR {}, base_Vendor_Style {}, base_Publisher {}, base_Imprint {}, base_Edition {}, base_Edition_Status {}, base_New_Price {}, base_New_Price_Text {}, base_Used_Price {}, base_Used_Price_Text {}, base_New_Rental_Price {}, base_New_Rental_Price_Text {}, base_Ebook_Price {}, base_Ebook_Price_Text {}, base_Used_Rental_Price {}, base_Used_Rental_Price_Text {}, base_Sale_Price1 {}, base_Sale_Start_Date1 {}, base_Sale_End_Date1 {}, base_Sale_Start_Time1 {}, base_Sale_End_Time1 {}, base_Sale_Price2 {}, base_Sale_Start_Date2 {}, base_Sale_End_Date2 {}, base_Sale_Start_Time2 {}, base_Sale_End_Time2 {}, base_Sale_Price3 {}, base_Sale_Start_Date3 {}, base_Sale_End_Date3 {}, base_Sale_Start_Time3 {}, base_Sale_End_Time3 {}, base_Sale_Price4 {}, base_Sale_Start_Date4 {}, base_Sale_End_Date4 {}, base_Sale_Start_Time4 {}, base_Sale_End_Time4 {}, base_Term {}, base_Term_Description {}, base_Requested_Qty {}, base_Class_Capacity_Qty {}, base_Actual_Enrollment_Qty {}, base_Est_Sales_Qty {}, base_Category {}, base_Division {}, base_Department {}, base_Class {}, base_New_Store_Qty {}, base_New_Warehouse_Qty {}, base_Used_Store_Qty {}, base_Used_Warehouse_Qty {}, base_New_Pending_Return_Qty {}, base_Used_Pending_Return_Qty {}, base_New_insite_Pending_Order {}, base_Used_insite_Pending_Order {}, base_New_Rental_insite_Pending_Order {}, base_Used_Rental_insite_Pending_Order {}, base_On_Order_PO1 {}, base_On_Order_PO1_Vendor {}, base_On_Order_Qty1 {}, base_On_Order_Qty1_Used {}, base_On_Order_Date1 {}, base_On_Order_PO2 {}, base_On_Order_PO2_Vendor {}, base_On_Order_Qty2 {}, base_On_Order_Qty2_Used {}, base_On_Order_Date2 {}, base_On_Order_PO3 {}, base_On_Order_PO3_Vendor {}, base_On_Order_Qty3 {}, base_On_Order_Qty3_Used {}, base_On_Order_Date3 {}, base_Total_PO_Qty {}, base_image_name {}".format(base_GenKey, base_FormatFlag, base_Author, base_Title, base_ISBN, base_ISBN_HR, base_Vendor_Style, base_Publisher, base_Imprint, base_Edition, base_Edition_Status, base_New_Price, base_New_Price_Text, base_Used_Price, base_Used_Price_Text, base_New_Rental_Price, base_New_Rental_Price_Text, base_Ebook_Price, base_Ebook_Price_Text, base_Used_Rental_Price, base_Used_Rental_Price_Text, base_Sale_Price1, base_Sale_Start_Date1, base_Sale_End_Date1, base_Sale_Start_Time1, base_Sale_End_Time1, base_Sale_Price2, base_Sale_Start_Date2, base_Sale_End_Date2, base_Sale_Start_Time2, base_Sale_End_Time2, base_Sale_Price3, base_Sale_Start_Date3, base_Sale_End_Date3, base_Sale_Start_Time3, base_Sale_End_Time3, base_Sale_Price4, base_Sale_Start_Date4, base_Sale_End_Date4, base_Sale_Start_Time4, base_Sale_End_Time4, base_Term, base_Term_Description, base_Requested_Qty, base_Class_Capacity_Qty, base_Actual_Enrollment_Qty, base_Est_Sales_Qty, base_Category, base_Division, base_Department, base_Class, base_New_Store_Qty, base_New_Warehouse_Qty, base_Used_Store_Qty, base_Used_Warehouse_Qty, base_New_Pending_Return_Qty, base_Used_Pending_Return_Qty, base_New_insite_Pending_Order, base_Used_insite_Pending_Order, base_New_Rental_insite_Pending_Order, base_Used_Rental_insite_Pending_Order, base_On_Order_PO1, base_On_Order_PO1_Vendor, base_On_Order_Qty1, base_On_Order_Qty1_Used, base_On_Order_Date1, base_On_Order_PO2, base_On_Order_PO2_Vendor, base_On_Order_Qty2, base_On_Order_Qty2_Used, base_On_Order_Date2, base_On_Order_PO3, base_On_Order_PO3_Vendor, base_On_Order_Qty3, base_On_Order_Qty3_Used, base_On_Order_Date3, base_Total_PO_Qty, base_image_name))
+#
+#     if data_file.lower().endswith("tx1"):
+#         with open(data_path + data_file, "r", encoding='utf-8') as secondary_file_content:
+#             # print(data_file)
+#             for file_row in secondary_file_content:
+#                 row_counter += 1
+#                 file_row = file_row.rstrip(os.linesep)
+#                 row_fields = file_row.split('|')
+#
+#                 secondary_file_dict = {}
+#
+#                 if len(row_fields) >= 19:
+#                     secondary_file_dict.update({"GenKey": row_fields[0]})
+#                     secondary_file_dict.update({"csn": row_fields[1]})
+#                     secondary_file_dict.update({"seq_no": row_fields[2]})
+#                     secondary_file_dict.update({"ISBN": row_fields[3]})
+#                     secondary_file_dict.update({"Term": row_fields[4]})
+#                     secondary_file_dict.update({"Term_Description": row_fields[5]})
+#                     secondary_file_dict.update({"dept": row_fields[6]})
+#                     secondary_file_dict.update({"course": row_fields[7]})
+#                     secondary_file_dict.update({"section": row_fields[8]})
+#                     secondary_file_dict.update({"loc_code": row_fields[9]})
+#                     secondary_file_dict.update({"bookxofy": row_fields[10]})
+#                     secondary_file_dict.update({"course_id": row_fields[11]})
+#                     secondary_file_dict.update({"instructor": row_fields[12]})
+#                     secondary_file_dict.update({"course_code": row_fields[13]})
+#                     secondary_file_dict.update({"delete_flag": row_fields[14]})
+#                     secondary_file_dict.update({"ebook_adopted": row_fields[15]})
+#                     secondary_file_dict.update({"class_cap": row_fields[16]})
+#                     secondary_file_dict.update({"prof_requested": row_fields[17]})
+#                     secondary_file_dict.update({"estimated_sales": row_fields[18]})
+#                     secondary_file_dict.update({"ebook1_vendor": 0})
+#                     secondary_file_dict.update({"ebook1_period_1": 0})
+#                     secondary_file_dict.update({"ebook1_price_1": 0})
+#                     secondary_file_dict.update({"ebook1_period_2": 0})
+#                     secondary_file_dict.update({"ebook1_price_2": 0})
+#                     secondary_file_dict.update({"ebook1_period_3": 0})
+#                     secondary_file_dict.update({"ebook1_price_3": 0})
+#                     secondary_file_dict.update({"ebook1_period_4": 0})
+#                     secondary_file_dict.update({"ebook1_price_4": 0})
+#                     secondary_file_dict.update({"ebook1_period_5": 0})
+#                     secondary_file_dict.update({"ebook1_price_5": 0})
+#                     secondary_file_dict.update({"ebook2_vendor": 0})
+#                     secondary_file_dict.update({"ebook2_period_1": 0})
+#                     secondary_file_dict.update({"ebook2_price_1": 0})
+#                     secondary_file_dict.update({"ebook2_period_2": 0})
+#                     secondary_file_dict.update({"ebook2_price_2": 0})
+#                     secondary_file_dict.update({"ebook2_period_3": 0})
+#                     secondary_file_dict.update({"ebook2_price_3": 0})
+#                     secondary_file_dict.update({"ebook2_period_4": 0})
+#                     secondary_file_dict.update({"ebook2_price_4": 0})
+#                     secondary_file_dict.update({"ebook2_period_5": 0})
+#                     secondary_file_dict.update({"ebook2_price_5": 0})
+#                 if len(row_fields) >= 20:
+#                     secondary_file_dict.update({"ebook1_vendor" : row_fields[19]})
+#                 if len(row_fields) >= 21:
+#                     secondary_file_dict.update({"ebook1_period_1" : row_fields[20]})
+#                 if len(row_fields) >= 22:
+#                     secondary_file_dict.update({"ebook1_price_1" : row_fields[21]})
+#                 if len(row_fields) >= 23:
+#                     secondary_file_dict.update({"ebook1_period_2" : row_fields[22]})
+#                 if len(row_fields) >= 24:
+#                     secondary_file_dict.update({"ebook1_price_2" : row_fields[23]})
+#                 if len(row_fields) >= 25:
+#                     secondary_file_dict.update({"ebook1_period_3" : row_fields[24]})
+#                 if len(row_fields) >= 26:
+#                     secondary_file_dict.update({"ebook1_price_3" : row_fields[25]})
+#                 if len(row_fields) >= 27:
+#                     secondary_file_dict.update({"ebook1_period_4" : row_fields[26]})
+#                 if len(row_fields) >= 28:
+#                     secondary_file_dict.update({"ebook1_price_4" : row_fields[27]})
+#                 if len(row_fields) >= 29:
+#                     secondary_file_dict.update({"ebook1_period_5" : row_fields[28]})
+#                 if len(row_fields) >= 30:
+#                     secondary_file_dict.update({"ebook1_price_5" : row_fields[29]})
+#                 if len(row_fields) >= 31:
+#                     secondary_file_dict.update({"ebook2_vendor" : row_fields[30]})
+#                 if len(row_fields) >= 32:
+#                     secondary_file_dict.update({"ebook2_period_1" : row_fields[31]})
+#                 if len(row_fields) >= 33:
+#                     secondary_file_dict.update({"ebook2_price_1" : row_fields[32]})
+#                 if len(row_fields) >= 34:
+#                     secondary_file_dict.update({"ebook2_period_2" : row_fields[33]})
+#                 if len(row_fields) >= 35:
+#                     secondary_file_dict.update({"ebook2_price_2" : row_fields[34]})
+#                 if len(row_fields) >= 36:
+#                     secondary_file_dict.update({"ebook2_period_3" : row_fields[35]})
+#                 if len(row_fields) >= 37:
+#                     secondary_file_dict.update({"ebook2_price_3" : row_fields[36]})
+#                 if len(row_fields) >= 38:
+#                     secondary_file_dict.update({"ebook2_period_4" : row_fields[37]})
+#                 if len(row_fields) >= 39:
+#                     secondary_file_dict.update({"ebook2_price_4" : row_fields[38]})
+#                 if len(row_fields) >= 40:
+#                     secondary_file_dict.update({"ebook2_period_5" : row_fields[39]})
+#                 if len(row_fields) == 41:
+#                     secondary_file_dict.update({"ebook2_price_5" : row_fields[40]})
+#
+#                 secondary_file_data_list.append(secondary_file_dict)
+#             print(secondary_file_data_list)

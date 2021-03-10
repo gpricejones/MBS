@@ -1,0 +1,1 @@
+"C:\Users\Wayne\AppData\Local\Programs\Python\Python38\Scripts\pyinstaller" -F -i "C:\Users\Wayne\PycharmProjects\Encrypter_Stand_Alone\MarginMate1.ico" -p "C:\Users\Wayne\PycharmProjects\MM_CodeBase" -p C:\Users\Wayne\AppData\Local\Programs\Python\Python38\Lib\site-packages "C:\Users\Wayne\PycharmProjects\MBS\V11\dev\mbs_import_core_v11.py" --version-file core_version_text.txt
