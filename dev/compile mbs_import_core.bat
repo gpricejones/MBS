@@ -1,0 +1,1 @@
+"C:\Users\Wayne\AppData\Local\Programs\Python\Python38\Scripts\pyinstaller" -F -i "C:\Users\Wayne\PycharmProjects\MM_CodeBase\icon.ico" -p "C:\Users\Wayne\PycharmProjects\MM_CodeBase" -p C:\Users\Wayne\AppData\Local\Programs\Python\Python38\Lib\site-packages "C:\Users\Wayne\PycharmProjects\MBS\dev\mbs_import_core.py" --name mbs_import_core_v11 --version-file core_version_text.txt
